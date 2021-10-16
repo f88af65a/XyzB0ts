@@ -3,6 +3,7 @@ import uuid
 import json
 import asyncio
 from botsdk.tool.JsonConfig import getConfig
+
 '''
 在load中实例化，确认name和target不重复后会调用init()
 在unload中析构
@@ -16,6 +17,7 @@ clean用于在init出错时手动清理相关资源
 
 canDetach用于标记可跨进程插件，会在route时交由其它进程处理
 '''
+
 class BotPlugin:
     def __init__(self):
         #[["type1",func],["type2",func],...,["typen",func]]

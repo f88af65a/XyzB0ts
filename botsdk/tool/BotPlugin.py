@@ -1,6 +1,7 @@
+import os
 import uuid
+import json
 import asyncio
-from botsdk.Bot import Bot
 from botsdk.tool.JsonConfig import getConfig
 
 #在load中实例化，确认name和target不重复后会调用init()
@@ -26,6 +27,8 @@ class BotPlugin:
         self.canDetach = False
         #UUID
         self.uuid = uuid.uuid4()
+        #配置文件,在pluginInit中修改
+        self.config = None
 
     def __del__(self):
         pass
@@ -55,6 +58,12 @@ class BotPlugin:
     def addFilterToList(self, func):
         self.listenType.append(func)
     
+    def pluginInit(self):
+        pluginConfigPath = f'''{getConfig()["pluginsPath"]}{self.name}/config.json'''
+        if os.path.exists(pluginConfigPath):
+            with os.open(pluginConfigPath) as file:
+                self.config = json.loads(file.read())
+
     #在成功加载后才会调用
     def init(self, bot):
         pass
@@ -107,4 +116,4 @@ class BotPlugin:
         return self.uuid
 
     def getConfig(self):
-        return getConfig(self.__class__.__name__)
+        return self.config

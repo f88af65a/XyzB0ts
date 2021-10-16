@@ -13,7 +13,6 @@ from botsdk.tool.Cookie import *
 from botsdk.tool.HttpRequest import *
 from botsdk.tool.JsonConfig import getConfig
 from botsdk.tool.TimeTest import *
-from botsdk.tool.Error import debugPrint
 
 class plugin(BotPlugin):
     def __init__(self):
@@ -30,8 +29,8 @@ class plugin(BotPlugin):
         self.help = "/pixiv.[search/rank] [关键字/无] [on]"
         #"插件帮助"
         self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
-        self.url = getConfig()["hibiapiUrl"]
-        self.proxy = getConfig()["pixivProxy"]
+        self.url = self.getConfig()["hibiapiUrl"]
+        self.proxy = self.getConfig()["pixivProxy"]
         self.canDetach = True
         self.limitTags = {"R18","R-18","R18G","R-18G","R18-G"}
 

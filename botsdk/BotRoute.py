@@ -60,6 +60,7 @@ class BotRoute:
         #初始化
         try:
             handle.init(self.bot)
+            handle.pluginInit()
         except Exception as e:
             handle.clear()
             printTraceBack()

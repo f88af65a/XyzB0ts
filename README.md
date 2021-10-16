@@ -5,3 +5,5 @@
  教程后续会补的
 # Gitee地址
  [Gitee](https://gitee.com/d6e3032b/XyzB0ts)
+# 约定
+ Q号以及Q群以字符串的形式储存而不是整形

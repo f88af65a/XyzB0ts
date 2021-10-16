@@ -30,7 +30,8 @@ class plugin(BotPlugin):
         self.help = "/pixiv.[search/rank] [关键字/无] [on]"
         #"插件帮助"
         self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
-        self.url = "https://api.obfs.dev"
+        #self.url = "https://api.obfs.dev"
+        self.url = ""
         self.canDetach = True
         self.limitTags = {"R18","R-18","R18G","R-18G","R18-G"}
 
@@ -114,7 +115,7 @@ class plugin(BotPlugin):
             image = Image.open(fPath)
             image = image.convert("RGB")
             image.save(fPath)
-            msg.text("\n").image(path=config["appPath"] + fPath[2:])
+            msg.text("\n").image(path=config["runPath"] + fPath[2:])
             await request.sendMessage(msg)
             os.remove(fPath)
         else:

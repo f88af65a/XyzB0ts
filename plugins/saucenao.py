@@ -4,6 +4,7 @@ import botsdk.BotRequest
 from botsdk.tool.MessageChain import MessageChain
 from botsdk.tool.BotPlugin import BotPlugin
 from botsdk.tool.HttpRequest import *
+
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()

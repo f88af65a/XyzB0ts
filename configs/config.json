@@ -7,7 +7,6 @@
 	"pluginsPath":"./plugins/",
 	"sqlPath":"./botsql.sql",
 	"localFilePath":"./localFile/",
-	"appPath":"",
 	"workProcess":"4",
 	"workThread":"4",
 	"multi":true,
@@ -21,10 +20,7 @@
 			"load":"ADMINISTRATOR",
 			"reload":"ADMINISTRATOR",
 			"unload":"ADMINISTRATOR",
-			"config":"ADMINISTRATOR",
-			"isadmin":"ADMINISTRATOR",
-			"isowner":"OWNER",
-			"ismember":"MEMBER"
+			"config":"ADMINISTRATOR"
 		},
 		"user":{
 		}

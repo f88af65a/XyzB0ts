@@ -3,6 +3,7 @@ import botsdk.BotRequest
 import botsdk.tool.JsonConfig
 from botsdk.tool.MessageChain import MessageChain
 from botsdk.tool.BotPlugin import BotPlugin
+
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()

@@ -1,0 +1,32 @@
+{
+	"api":
+	{
+		"path":"localhost",
+		"port":"8080"
+	},
+	"pluginsPath":"./plugins/",
+	"sqlPath":"./botsql.sql",
+	"localFilePath":"./localFile/",
+	"appPath":"",
+	"workProcess":"4",
+	"workThread":"4",
+	"multi":true,
+	"debug":false,
+	"debugPrint":5,
+	"deBugGroupId":[],
+	"commandTarget":["/","#","."],
+	"account":{"qq":"","passwd":""},
+	"systemCookie":{
+		"systemPermission":{
+			"load":"ADMINISTRATOR",
+			"reload":"ADMINISTRATOR",
+			"unload":"ADMINISTRATOR",
+			"config":"ADMINISTRATOR",
+			"isadmin":"ADMINISTRATOR",
+			"isowner":"OWNER",
+			"ismember":"MEMBER"
+		},
+		"user":{
+		}
+	}
+}

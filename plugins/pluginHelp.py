@@ -7,8 +7,8 @@ class plugin(BotPlugin):
         super().__init__()
         self.listenType = []
         #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "help", self.helpr], \
-                             ["GroupMessage", "info", self.info], \
+        self.listenTarget = [["GroupMessage", "help", self.helper], \
+                             ["GroupMessage", "info", self.infoFunc], \
                              ["GroupMessage", "load", self.load], \
                              ["GroupMessage", "reload", self.reload], \
                              ["GroupMessage", "unload", self.unload], \
@@ -23,7 +23,7 @@ class plugin(BotPlugin):
         self.help = "/[help/info/load/reload/unload] 插件名"
         #"插件帮助"
 
-    async def helpr(self, request):
+    async def helper(self, request):
         data = request.getFirstTextSplit()
         bot = request.bot
         route = request.route
@@ -37,7 +37,7 @@ class plugin(BotPlugin):
             return
         await bot.sendGroupMessage(request.groupId, MessageChain().text(route.getPlugin(targetPlugin).getHelp()).getData())
 
-    async def info(self, request):
+    async def infoFunc(self, request):
         data = request.getFirstTextSplit()
         bot = request.bot
         route = request.route

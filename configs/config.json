@@ -15,6 +15,7 @@
 	"deBugGroupId":[],
 	"commandTarget":["/","#","."],
 	"account":{"qq":"","passwd":""},
+	"hibiapiUrl":"",
 	"systemCookie":{
 		"systemPermission":{
 			"load":"ADMINISTRATOR",

@@ -1,6 +1,7 @@
 import time
 from botsdk.tool.Error import printTraceBack
 from botsdk.tool.Error import asyncExceptTrace
+from botsdk.tool.Error import debugPrint
 from botsdk.tool.TimeTest import *
 from botsdk.BotRequest import BotRequest
 
@@ -9,11 +10,11 @@ endCallBackTask = []
 
 def asyncStartHandleNotify(func, *args, **kwargs):
     request = args[0]
-    print(f"[asyncHandleTimeTest][{func.__name__}][{request.getFirstTextSplit()[0]}][{request.getUuid()}][START] time={time.time()}")
+    debugPrint(f"[asyncHandleTimeTest][{func.__name__}][{request.getFirstTextSplit()[0]}][{request.getUuid()}][START] time={time.time()}")
 
 def asyncEndHandleNotify(func, *args, **kwargs):
     request = args[0]
-    print(f"[asyncHandleTimeTest][{func.__name__}][{request.getFirstTextSplit()[0]}][{request.getUuid()}][END] time={time.time()}")
+    debugPrint(f"[asyncHandleTimeTest][{func.__name__}][{request.getFirstTextSplit()[0]}][{request.getUuid()}][END] time={time.time()}")
 
 def addToStartCallBack(func):
     global startCallBackTask

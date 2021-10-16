@@ -4,6 +4,7 @@
 		"path":"localhost",
 		"port":"8080"
 	},
+	"appPath":"",
 	"pluginsPath":"./plugins/",
 	"sqlPath":"./botsql.sql",
 	"localFilePath":"./localFile/",

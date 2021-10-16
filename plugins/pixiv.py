@@ -11,7 +11,7 @@ from botsdk.tool.MessageChain import MessageChain
 from botsdk.tool.BotPlugin import BotPlugin
 from botsdk.tool.Cookie import *
 from botsdk.tool.HttpRequest import *
-from botsdk.tool.JsonConfig import config
+from botsdk.tool.JsonConfig import getConfig
 from botsdk.tool.TimeTest import *
 from botsdk.tool.Error import debugPrint
 
@@ -107,14 +107,14 @@ class plugin(BotPlugin):
         img = await get(imgType.replace("https","http"), headers={"user-agent":"Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36", 'Referer': 'https://www.pixiv.net/'}, byte = True)
         #img = await get(imgType.replace("https","http"), headers={"user-agent":"Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36", 'Referer': 'https://www.pixiv.net/'}, proxy="http://45.148.120.239:8084", byte = True)
         if img is not None:
-            fPath = config["localFilePath"] + str(re["id"]) + str(random.randint(0,65535)) + ".jpg"
+            fPath = getConfig["localFilePath"] + str(re["id"]) + str(random.randint(0,65535)) + ".jpg"
             f = open(fPath, "bw")
             f.write(img)
             f.close()
             image = Image.open(fPath)
             image = image.convert("RGB")
             image.save(fPath)
-            msg.text("\n").image(path=config["runPath"] + fPath[2:])
+            msg.text("\n").image(path=getConfig()["appPath"] + fPath[1:])
             await request.sendMessage(msg)
             os.remove(fPath)
         else:

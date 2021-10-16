@@ -1,4 +1,5 @@
 import json
+import sys
 import os
 
 config = None
@@ -23,6 +24,7 @@ def load():
             except Exception as e:
                 print(f"{i} 配置文件读取出错")
                 return False
+    config["runPath"] = sys.argv[0]
     return True
 load()
 

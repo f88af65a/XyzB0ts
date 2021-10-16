@@ -1,8 +1,8 @@
-from botsdk.tool.JsonConfig import *
 import asyncio
 import botsdk.Bot
 import botsdk.BotRequest
 import botsdk.BotRoute
+from botsdk.tool.JsonConfig import *
 from botsdk.tool.Error import *
 from botsdk.tool.BotConcurrentModule import defaultBotConcurrentModule
 

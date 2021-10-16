@@ -117,7 +117,5 @@ class plugin(BotPlugin):
         else:
             await request.sendMessage(msg)
 
-
-
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

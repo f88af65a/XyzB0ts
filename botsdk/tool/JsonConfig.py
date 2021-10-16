@@ -1,6 +1,7 @@
 import json
 import sys
 import os
+from botsdk.tool.BotException import BotException
 
 config = None
 pluginsConfig = dict()
@@ -39,3 +40,8 @@ def getConfig(pluginName: str = None):
             return pluginsConfig[pluginName]
         return None
     return config
+
+def checkLocalFile():
+    if not os.path.exists(getConfig()["localFilePath"]):
+        raise BotException("localFile不存在")
+checkLocalFile()

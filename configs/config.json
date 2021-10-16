@@ -4,6 +4,7 @@
 		"path":"localhost",
 		"port":"8080"
 	},
+	"appPath":"",
 	"pluginsPath":"./plugins/",
 	"sqlPath":"./botsql.sql",
 	"localFilePath":"./localFile/",
@@ -16,6 +17,7 @@
 	"commandTarget":["/","#","."],
 	"account":{"qq":"","passwd":""},
 	"hibiapiUrl":"",
+	"pixivProxy":"",
 	"systemCookie":{
 		"systemPermission":{
 			"load":"ADMINISTRATOR",

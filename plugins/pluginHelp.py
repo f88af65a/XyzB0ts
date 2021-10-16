@@ -103,6 +103,5 @@ class plugin(BotPlugin):
                 re.append("{}:{}".format(i, j[1]))
         await bot.sendGroupMessage(request.groupId, MessageChain().text(str(re)).getData())
 
-
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

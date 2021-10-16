@@ -59,8 +59,8 @@ class BotRoute:
                 return False
         #初始化
         try:
-            handle.init(self.bot)
             handle.pluginInit()
+            handle.init(self.bot)
         except Exception as e:
             handle.clear()
             printTraceBack()

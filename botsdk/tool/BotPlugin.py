@@ -59,10 +59,10 @@ class BotPlugin:
         self.listenType.append(func)
     
     def pluginInit(self):
-        pluginConfigPath = f'''{getConfig()["pluginsPath"]}{self.name}/config.json'''
+        pluginConfigPath = f'''./configs/{self.name}/config.json'''
         if os.path.exists(pluginConfigPath):
-            with os.open(pluginConfigPath) as file:
-                self.config = json.loads(file.read())
+            with open(pluginConfigPath, "r") as configFile:
+                self.config = json.loads(configFile.read())
 
     #在成功加载后才会调用
     def init(self, bot):

@@ -24,7 +24,7 @@ def load():
             except Exception as e:
                 print(f"{i} 配置文件读取出错")
                 return False
-    config["runPath"] = os.argv[0]
+    config["runPath"] = sys.argv[0]
     return True
 load()
 

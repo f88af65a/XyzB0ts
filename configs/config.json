@@ -17,6 +17,7 @@
 	"commandTarget":["/","#","."],
 	"account":{"qq":"","passwd":""},
 	"hibiapiUrl":"",
+	"pixivProxy":"",
 	"systemCookie":{
 		"systemPermission":{
 			"load":"ADMINISTRATOR",

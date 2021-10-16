@@ -37,6 +37,8 @@ async def workProcessRun(queue, threadList):
             request = BotRequest(event[1][0], bot)
             module = importlib.reload(__import__(f"plugins.{event[2][0]}", fromlist=(event[2][0],)))
             plugin = getattr(module, "handle")()
+            plugin.pluginInit()
+            plugin.init(bot)
             handle = None
             for i in plugin.getListenTarget():
                 if i[1] == event[2][1]:

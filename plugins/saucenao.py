@@ -51,7 +51,7 @@ class plugin(BotPlugin):
         await request.sendMessage(MessageChain().text("未找到图片或参数不为图片(hxd你连发图都不会了🐎)"))
 
     async def search(self,url):
-        searchUrl =  self.saucenaoUrl.format(self.key, url)
+        searchUrl =  self.saucenaoUrl.format(key = self.key, url = url)
         response = json.loads(await get(searchUrl))
         printData = MessageChain()
         if response is None:

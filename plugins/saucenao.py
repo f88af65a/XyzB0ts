@@ -22,7 +22,7 @@ class plugin(BotPlugin):
         self.saucenaoUrl = "https://saucenao.com/search.php?db=999&output_type=2&numres=16&api_key={key}&url={url}"
         self.key = None
 
-    def init(self):
+    def init(self, bot):
         self.key = self.getConfig()["saucenaoKey"]
 
     async def saucenao(self, request):

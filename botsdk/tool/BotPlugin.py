@@ -10,7 +10,7 @@ from botsdk.tool.JsonConfig import getConfig
 listenType用于监听某一类型消息
 listenTarget用于监听关键字，具体处理方法见BotRoute.route
 filterList用于自定义过滤，返回bool，若为False则不再处理该消息
-在继承BotPlugin后可以通过addType/addTarget/addFilter装饰器进行注册或者直接重载相关list
+在继承BotPlugin后可以通过addType/addTarget/addFilter函数进行注册或者直接重载相关list
 addFuture用于在init时向eventLoop中添加future
 listenType/listenTarget/filterList/futures在unload时会由BotRoute清理
 clean用于在init出错时手动清理相关资源
@@ -45,30 +45,14 @@ class BotPlugin:
     def __del__(self):
         pass
 
-    def addType(typeName: str):
-        def forward(func):
-            func.__self__.addTypeToList(typeName, func)
-            return func
-        return forward
-
-    def addTarget(typeName: str, targetName: str):
-        def forward(func):
-            func.__self__.addTargetToList(typeName, targetName, func)
-            return func
-        return forward
-
-    def addFilter(func):
-        func.__self__.addFilterToList(func)
-        return func
-
-    def addTypeToList(self, typeName: str, func):
+    def addType(self, typeName: str, func):
         self.listenType.append([typeName, func])
 
-    def addTargetToList(self, typeName: str, targetName: str, func):
-        self.listenType.append([typeName, targetName, func])
+    def addTarget(self, typeName: str, targetName: str, func):
+        self.listenTarget.append([typeName, targetName, func])
     
-    def addFilterToList(self, func):
-        self.listenType.append(func)
+    def addFilter(self, func):
+        self.filterList.append(func)
     
     def pluginInit(self):
         pluginConfigPath = f'''./configs/{self.name}/config.json'''

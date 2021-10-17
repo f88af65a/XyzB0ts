@@ -11,18 +11,18 @@
  plugins中有实现好的插件可以作为参考
 
 
-### 插件何时被调用
+## 插件何时被调用
  插件被调用有三种方式:监听某一类型消息、监听某一关键字、过滤器
  当收到符合条件的消息时会调用注册的回调函数
 
 
-#### 通过类型
+### 通过类型
  参考plugins.rechat  
  通过listenType直接赋值、listenType.append或者addType装饰器在listenType中添加监听信息
  具体格式请参考注释，消息类型请参考[mirai-api-http 消息类型说明](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/MessageType.md)
 
 
-#### 通过关键字
+### 通过关键字
  参考plugins.saucenao  
  通过listenTarget直接赋值、listenTarget.append或者addTarget装饰器在listenTarget中添加监听信息
  具体格式请参考注释
@@ -35,7 +35,7 @@
  具体判定方式请参考实现
 
 
-#### 过滤器
+### 过滤器
  参考plugins.blacklist  
  通过filterList直接赋值、filterList.append或者addFilter装饰器在filterList中添加监听信息
  filter在调用后需要返回一个bool，若返回False则会直接结束route不再传递

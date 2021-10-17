@@ -29,6 +29,12 @@ class BotRequest:
                 stringList.append(i["text"])
         return "".join(stringList)
 
+    def getBot(self):
+        return self.bot
+    
+    def getRoute(self):
+        return self.route
+
     def getUuid(self):
         return self.uuid
 

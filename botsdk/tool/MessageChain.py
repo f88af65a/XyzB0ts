@@ -20,7 +20,6 @@ class MessageChain:
         if url is not None:
             self.data += [{"type": "Image", "url":url}]
         elif path is not None:
-            #self.data += [{"type": "Image","imageId":"{{{}}}.mirai".format(uuid.uuid4()),"path":path}]
             self.data += [{"type": "Image","path":path}]
         else:
             raise

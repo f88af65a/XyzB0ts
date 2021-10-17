@@ -28,7 +28,7 @@ class plugin(BotPlugin):
             for i in request.getMessageChain()[1:]:
                 chain.append(dict())
                 for j in i:
-                    if not (i["type"] == "Image" and "url" in i):
+                    if not (i["type"] == "Image" and j == "url"):
                         chain[-1][j] = i[j]
             if groupid not in self.reChatDict:
                 self.reChatDict[groupid] = chain

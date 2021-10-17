@@ -4,8 +4,20 @@ import json
 import asyncio
 from botsdk.tool.JsonConfig import getConfig
 
-#在load中实例化，确认name和target不重复后会调用init()
-#在unload中析构
+'''
+在load中实例化，确认name和target不重复后会调用init()
+在unload中析构
+listenType用于监听某一类型消息
+listenTarget用于监听关键字，具体处理方法见BotRoute.route
+filterList用于自定义过滤，返回bool，若为False则不再处理该消息
+在继承BotPlugin后可以通过addType/addTarget/addFilter装饰器进行注册或者直接重载相关list
+addFuture用于在init时向eventLoop中添加future
+listenType/listenTarget/filterList/futures在unload时会由BotRoute清理
+clean用于在init出错时手动清理相关资源
+
+canDetach用于标记可跨进程插件，会在route时交由其它进程处理
+'''
+
 class BotPlugin:
     def __init__(self):
         #[["type1",func],["type2",func],...,["typen",func]]
@@ -27,7 +39,7 @@ class BotPlugin:
         self.canDetach = False
         #UUID
         self.uuid = uuid.uuid4()
-        #配置文件,在pluginInit中修改
+        #配置文件,在pluginInit中初始化
         self.config = None
 
     def __del__(self):

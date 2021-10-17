@@ -45,30 +45,14 @@ class BotPlugin:
     def __del__(self):
         pass
 
-    def addType(typeName: str):
-        def forward(func):
-            func.__self__.addTypeToList(typeName, func)
-            return func
-        return forward
-
-    def addTarget(typeName: str, targetName: str):
-        def forward(func):
-            func.__self__.addTargetToList(typeName, targetName, func)
-            return func
-        return forward
-
-    def addFilter(func):
-        func.__self__.addFilterToList(func)
-        return func
-
     def addTypeToList(self, typeName: str, func):
         self.listenType.append([typeName, func])
 
     def addTargetToList(self, typeName: str, targetName: str, func):
-        self.listenType.append([typeName, targetName, func])
+        self.listenTarget.append([typeName, targetName, func])
     
     def addFilterToList(self, func):
-        self.listenType.append(func)
+        self.filterList.append(func)
     
     def pluginInit(self):
         pluginConfigPath = f'''./configs/{self.name}/config.json'''

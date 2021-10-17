@@ -19,7 +19,11 @@ class plugin(BotPlugin):
         self.help = "/saucenao [图片]"
         #"插件帮助"
         self.canDetach = True
-        self.saucenaoUrl = ""
+        self.saucenaoUrl = "https://saucenao.com/search.php?db=999&output_type=2&numres=16&api_key={key}&url={url}"
+        self.key = None
+
+    def init(self, bot):
+        self.key = self.getConfig()["saucenaoKey"]
 
     async def saucenao(self, request):
         groupid = request.getGroupId()
@@ -47,7 +51,7 @@ class plugin(BotPlugin):
         await request.sendMessage(MessageChain().text("未找到图片或参数不为图片(hxd你连发图都不会了🐎)"))
 
     async def search(self,url):
-        searchUrl =  f"{self.saucenaoUrl}{url}"
+        searchUrl =  self.saucenaoUrl.format(key = self.key, url = url)
         response = json.loads(await get(searchUrl))
         printData = MessageChain()
         if response is None:

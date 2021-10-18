@@ -29,7 +29,7 @@ def getCookieByStr(groupid : str):
     cur.execute('''SELECT * FROM GroupCookie WHERE groupid="{0}"'''.format(groupid))
     re = cur.fetchall()
     if len(re) == 0:
-        changeCookieByStr(groupid, "{}")
+        setCookieByStr(groupid, "{}")
         return updateCookie(groupid, "{}")
     return updateCookie(groupid, base64.b64decode(re[0][1]).decode("utf8"))
 
@@ -38,13 +38,13 @@ def getCookieByDict(groupid: str):
         return getConfig()["systemCookie"]
     return json.loads(getCookieByStr(groupid))
 
-def changeCookieByStr(groupid : str, cookie : str):
+def setCookieByStr(groupid : str, cookie : str):
     cookieDict[groupid] = cookie
     cur.execute('''REPLACE INTO GroupCookie VALUES("{0}","{1}")'''.format(groupid, base64.b64encode(cookie.encode()).decode()))
     conn.commit()
 
-def changeCookieByDict(groupid : str, cookie: dict):
-    changeCookieByStr(groupid, json.dumps(cookie))
+def setCookieByDict(groupid : str, cookie: dict):
+    setCookieByStr(groupid, json.dumps(cookie))
 
 def getCookie(groupid : str, key : str):
     if key == "":
@@ -65,4 +65,4 @@ def setCookie(groupid : str, key : str, value : str):
             return None
     else:
         cookie[key] = value
-    changeCookieByDict(groupid, cookie)
+    setCookieByDict(groupid, cookie)

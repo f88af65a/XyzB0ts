@@ -2,6 +2,7 @@ import os
 import uuid
 import json
 import asyncio
+from botsdk.tool.Error import printTraceBack
 from botsdk.tool.JsonConfig import getConfig
 
 '''
@@ -54,7 +55,21 @@ class BotPlugin:
     def addFilter(self, func):
         self.filterList.append(func)
     
-    def pluginInit(self):
+    #初始化相关函数
+
+    #系统调用的初始化函数
+    def initBySystem(self, bot):
+        try:
+            self.initPluginConfig()
+            self.init(bot)
+        except Exception as e:
+            self.clear()
+            printTraceBack()
+            return False
+        return True
+
+    #配置文件初始化
+    def initPluginConfig(self):
         pluginConfigPath = f'''./configs/{self.name}/config.json'''
         if os.path.exists(pluginConfigPath):
             with open(pluginConfigPath, "r") as configFile:
@@ -64,6 +79,7 @@ class BotPlugin:
     def init(self, bot):
         pass
 
+    #初始化失败调用
     def clear(self):
         pass
 

@@ -58,12 +58,7 @@ class BotRoute:
             if i[0] in self.targetRoute and i[1] in self.targetRoute[i[0]]:
                 return False
         #初始化
-        try:
-            handle.pluginInit()
-            handle.init(self.bot)
-        except Exception as e:
-            handle.clear()
-            printTraceBack()
+        if not handle.initBySystem(self.bot):
             return False
         for i in handle.getListenType():
             self.addType(i[0], i[1])

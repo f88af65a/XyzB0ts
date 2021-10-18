@@ -64,5 +64,55 @@
  插件配置文件需要手动创建
 
 
+# 群数据持久化
+ 实现见botsdk.tool.Cookie  
+ Cookie封装了一个基于sqLite3的sql保存经过base64编码的Json用于保存群数据
+
+
+### 获取群cookie
+ 获取方式为getCookieByDict(groupid)或getCookie(groupid, keyName)  
+
+
+### 设置群cookie
+ 修改方式为setCookieByDict(groupid, cookie)或setCookie(groupid, cookie)  
+
+
+# 权限系统
+ 实现见botsdk.tool.Permission  
+ 权限管理插件可以参考plugins.permission  
+ 内置权限共有系统权限与群内权限两种，可能会做好友消息的权限
+
+
+### 权限
+ 系统权限与群内权限共分为三种:OWNER、ADMINISTRATOR、MEMBER  
+
+
+## 系统权限
+ 系统权限保存于configs/config.json systemCookie字段中  
+
+
+### user字段
+ user字段保存Q号对应的`系统权限`  
+ 格式为"qq":"权限"
+
+
+### systemPermission字段
+ systemPermission字段保存命令执行所需的`系统权限`  
+ 格式为"命令":"权限"
+
+
+## 群内权限
+ 群内权限保存于群Cookie中的groupPermission与groupMemberPermission  
+ 群内权限共有两种，指令权限与成员权限
+
+
+### 指令权限
+ 指令权限指调用某个指令的最低权限，作用范围为所在群群  
+
+
+### 成员权限
+ 成员权限使某个成员可以使用某命令在某群  
+
+
 # Gitee地址
 [Gitee](https://gitee.com/d6e3032b/XyzB0ts)

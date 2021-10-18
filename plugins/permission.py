@@ -17,7 +17,7 @@ class plugin(BotPlugin):
         #"插件名称"
         self.info = "权限管理"
         #"插件信息"
-        self.help = "/权限 命令 [OWNER/ADMINISTRATOR/MEMBER]\n/群友权限 群友qq [ADD/REMOVE] 命令"
+        self.help = "/权限 命令 [OWNER/ADMINISTRATOR/MEMBER]\n/群友权限 群友qq [add/remove] 命令"
         #"插件帮助"
         self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
 
@@ -34,7 +34,7 @@ class plugin(BotPlugin):
         if "groupPermission" not in cookie:
             cookie["groupPermission"] = {}
         cookie["groupPermission"][data[1]] = data[2]
-        changeCookieByDict(groupid, cookie)
+        setCookieByDict(groupid, cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
 
     async def qunyouquanxian(self, request):
@@ -61,7 +61,7 @@ class plugin(BotPlugin):
         else:
             await request.sendMessage(MessageChain().text("错误操作"))
             return
-        changeCookieByDict(groupid, cookie)
+        setCookieByDict(groupid, cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
 
 def handle(*args, **kwargs):

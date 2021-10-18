@@ -66,7 +66,7 @@
 
 # 群数据持久化
  实现见botsdk.tool.Cookie  
- Cookie封装了一个基于sqLite3的sql保存经过base64编码的Json用于保存群数据  
+ Cookie封装了一个基于sqLite3的sql保存经过base64编码的Json用于保存群数据
 
 
 ### 获取群cookie
@@ -79,7 +79,7 @@
 
 # 权限系统
  实现见botsdk.tool.Permission  
- 权限管理插件可以参考plugins.permission
+ 权限管理插件可以参考plugins.permission  
  内置权限共有系统权限与群内权限两种，可能会做好友消息的权限
 
 
@@ -103,7 +103,7 @@
 
 ## 群内权限
  群内权限保存于群Cookie中的groupPermission与groupMemberPermission  
- 群内权限共有两种，指令权限与成员权限  
+ 群内权限共有两种，指令权限与成员权限
 
 
 ### 指令权限

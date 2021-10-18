@@ -53,7 +53,7 @@ class plugin(BotPlugin):
             return
         if oldState != newState:
             cookie["rechatState"] = newState
-            changeCookieByDict(groupid, cookie)
+            setCookieByDict(groupid, cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
 
 def handle(*args, **kwargs):

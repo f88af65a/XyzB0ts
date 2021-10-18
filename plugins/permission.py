@@ -17,7 +17,7 @@ class plugin(BotPlugin):
         #"插件名称"
         self.info = "权限管理"
         #"插件信息"
-        self.help = "/权限 命令 [OWNER/ADMINISTRATOR/MEMBER]\n/群友权限 群友qq [ADD/REMOVE] 命令"
+        self.help = "/权限 命令 [OWNER/ADMINISTRATOR/MEMBER]\n/群友权限 群友qq [add/remove] 命令"
         #"插件帮助"
         self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
 

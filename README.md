@@ -64,9 +64,9 @@
  插件配置文件需要手动创建
 
 
-# 群数据持久化
+# 数据持久化
  实现见botsdk.tool.Cookie  
- Cookie封装了一个基于sqLite3的sql保存经过base64编码的Json用于保存群数据
+ Cookie封装了操作SQLite3的方式保存经过base64编码的Json用于保存数据
 
 
 ### 获取群cookie

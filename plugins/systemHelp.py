@@ -9,7 +9,7 @@ class plugin(BotPlugin):
         super().__init__()
         self.listenType = []
         #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "config", self.config], \
+        self.listenTarget = [["GroupMessage", "config", self.configHelp], \
                 ]
         #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "systemHelp"
@@ -19,10 +19,8 @@ class plugin(BotPlugin):
         self.help = "/[config] [reload]"
         #"插件帮助"
 
-    async def config(self, request):
+    async def configHelp(self, request):
         data = request.getFirstTextSplit()
-        bot = request.bot
-        route = request.route
         if len(data) < 2:
             await request.sendMessage(MessageChain().text("缺少参数"))
             return

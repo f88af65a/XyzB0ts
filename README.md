@@ -114,11 +114,11 @@
  成员权限使某个成员可以使用某命令在某群  
 
 
-# Gitee地址
-[Gitee](https://gitee.com/d6e3032b/XyzB0ts)
-
-
 # 鸣谢
- 项目基于[mirai-api-http](https://github.com/project-mirai/mirai-api-http)
- tool.pixiv使用了[hibiapi](https://github.com/mixmoe/HibiAPI)
+ 项目基于[mirai-api-http](https://github.com/project-mirai/mirai-api-http)  
+ tool.pixiv使用了[hibiapi](https://github.com/mixmoe/HibiAPI)  
  tool.saucenao使用了[saucenao](https://saucenao.com/)
+
+
+ # Gitee地址
+[Gitee](https://gitee.com/d6e3032b/XyzB0ts)

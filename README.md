@@ -59,7 +59,7 @@
 
 ## 一个简单的插件实现
  在群中输入/hello时bot将发送hello  
- '''python
+'''python
 from botsdk.BotRequest import BotRequest
 from botsdk.tool.MessageChain import MessageChain
 from botsdk.tool.BotPlugin import BotPlugin
@@ -73,7 +73,7 @@ class handle(BotPlugin):
  async def hello(self, request):
     await request.sendMessage(MessageChain().text("hello"))
 
- '''
+'''
 
 
 # 配置文件

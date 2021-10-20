@@ -57,6 +57,25 @@
  该类对api进行了一定的封装，不够用就自己加吧
 
 
+## 一个简单的插件实现
+ 在群中输入/hello时bot将发送hello  
+ '''python
+from botsdk.BotRequest import BotRequest
+from botsdk.tool.MessageChain import MessageChain
+from botsdk.tool.BotPlugin import BotPlugin
+
+class handle(BotPlugin):
+    def __init__(self):
+        super().__init__()
+        self.listenTarget = [["GroupMessage", "hello", self.hello]]
+        self.name = "hello"
+
+ async def hello(self, request):
+    await request.sendMessage(MessageChain().text("hello"))
+
+ '''
+
+
 # 配置文件
  配置文件夹默认位于./configs/  
  框架配置文件为./configs/config.json  

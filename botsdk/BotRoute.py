@@ -178,7 +178,7 @@ class BotRoute:
                     bot = request.bot
                     self.concurrentModule.addTask( \
                         ((bot.path, bot.port, bot.sessionKey), \
-                        [request], \
+                        [dict(request)], \
                         [self.pluginPath[self.getHandleByTarget(target).getName()][:-3], target]) \
                         )
                 else:

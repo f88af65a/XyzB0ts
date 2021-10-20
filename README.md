@@ -73,6 +73,25 @@ class handle(BotPlugin):
     async def hello(self, request):
         await request.sendMessage(MessageChain().text("hello"))
 ```
+或者
+```python
+from botsdk.BotRequest import BotRequest
+from botsdk.tool.MessageChain import MessageChain
+from botsdk.tool.BotPlugin import BotPlugin
+
+class plugin(BotPlugin):
+    def __init__(self):
+        super().__init__()
+        self.name = "hello"
+
+    async def hello(self, request):
+        await request.sendMessage(MessageChain().text("hello"))
+
+def handle():
+    p = plugin()
+    p.addTarget("GroupMessage", "hello", p.hello)
+    return p
+```
 
 
 # 配置文件

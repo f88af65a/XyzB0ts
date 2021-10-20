@@ -2,16 +2,20 @@ from uuid import uuid4
 from botsdk.tool.MessageType import messageType
 from botsdk.tool.OutDated import OutDated
 
-class BotRequest:
-    def __init__(self, data, bot, route = None):
+class BotRequest(dict):
+    def __init__(self, responseChain, bot, route = None):
+        '''
+        BotRquest(dict)
+        继承自dict，封装了部分处理消息的函数
+        '''
+        super().__init__(responseChain)
         self.bot = bot
         self.route = route
-        self.type = data["type"]
-        self.originData = data
+        self.type = self["type"]
         self.uuid = uuid4()
         if self.type in messageType:
-            self.messageChain = data["messageChain"]
-            self.sender = data["sender"]
+            self.messageChain = self["messageChain"]
+            self.sender = self["sender"]
             self.senderId = str(self.sender["id"])
             self.qq = str(self.sender["id"])
             if self.type == "GroupMessage":
@@ -21,13 +25,6 @@ class BotRequest:
                 self.myPermission = self.sender["group"]["permission"]
             elif self.type == "FriendMessage":
                 self.id = self.qq
-
-    def __str__(self):
-        stringList = []
-        for i in self.messageChain:
-            if i["type"] == "Plain":
-                stringList.append(i["text"])
-        return "".join(stringList)
 
     def getBot(self):
         return self.bot
@@ -49,9 +46,6 @@ class BotRequest:
 
     def getGroupId(self):
         return self.groupId
-
-    def getOriginData(self):
-        return self.originData
 
     def getMessageChain(self):
         return self.messageChain
@@ -75,3 +69,10 @@ class BotRequest:
 
     async def sendMessage(self, msgChain):
         await self.bot.sendMessage(self.id, msgChain.getData())
+
+    def toString(self):
+        stringList = []
+        for i in self.messageChain:
+            if i["type"] == "Plain":
+                stringList.append(i["text"])
+        return "".join(stringList)

@@ -118,7 +118,7 @@ class BotRoute:
 
     def getTarget(self, messageType: str, target: str):
         if messageType in self.targetRoute and target in self.targetRoute[messageType]:
-            return self.targetRoute[messageType][target].__self__
+            return self.targetRoute[messageType][target]
         return None
 
     def getHandleByTarget(self, messageType: str, target: str):

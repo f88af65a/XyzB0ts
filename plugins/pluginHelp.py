@@ -24,18 +24,20 @@ class plugin(BotPlugin):
         #"插件帮助"
 
     async def helper(self, request):
+        """/help [plugin/target] [插件名/命令名]"""
         data = request.getFirstTextSplit()
-        bot = request.bot
-        route = request.route
-        if len(data) < 2:
-            await bot.sendGroupMessage(request.groupId, MessageChain().text("缺少参数").getData())
+        if len(data) < 3:
+            await request.sendMessage(MessageChain().text("缺少参数"))
             return
-        targetPlugin = data[1]
-        allName = request.route.getAllPluginName()
-        if targetPlugin not in allName:
-            await bot.sendGroupMessage(request.groupId, MessageChain().text("插件不存在").getData())
-            return
-        await bot.sendGroupMessage(request.groupId, MessageChain().text(route.getPlugin(targetPlugin).getHelp()).getData())
+        route = request.getRoute()
+        if data[1] == "plugin":
+            if (re := route.getPlugin(data[2])) is not None:
+                await request.sendMessage(MessageChain().text(str(re.__doc__)))
+        elif data[1] == "target":
+            if (re := route.getTarget(data[2])) is not None:
+                await request.sendMessage(MessageChain().text(str(re.__doc__)))
+        else:
+            await request.sendMessage(MessageChain().text("参数错误"))
 
     async def infoFunc(self, request):
         data = request.getFirstTextSplit()

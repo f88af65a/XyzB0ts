@@ -34,7 +34,7 @@ class plugin(BotPlugin):
             if (re := route.getPlugin(data[2])) is not None:
                 await request.sendMessage(MessageChain().text(str(re.__doc__)))
         elif data[1] == "target":
-            if (re := route.getTarget(data[2])) is not None:
+            if (re := route.getTarget(request.type, data[2])) is not None:
                 await request.sendMessage(MessageChain().text(str(re.__doc__)))
         else:
             await request.sendMessage(MessageChain().text("参数错误"))

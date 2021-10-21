@@ -17,12 +17,17 @@ from botsdk.tool.HandlePacket import asyncHandlePacket
 class BotRoute:
     def __init__(self, bot, concurrentModule = None):
         self.bot = bot
+        #插件目录路径
         self.pluginsPath = getConfig()["pluginsPath"]
+        #{messageType:{target:func}}
         self.targetRoute = dict()
+        #{messageType:{func}}
         self.typeRoute = dict()
+        #{pluginName:pluginInstance}
         self.plugins = dict()
+        #{pluginName:pluginFileName}
         self.pluginPath = dict()
-        self.targetToHandle = dict()
+        #{func}
         self.filterSet = set()
         self.concurrentModule = concurrentModule
 
@@ -63,7 +68,6 @@ class BotRoute:
         for i in handle.getListenType():
             self.addType(i[0], i[1])
         for i in handle.getListenTarget():
-            self.targetToHandle[i[1]] = handle
             self.addTarget(i[0], i[1], i[2])
         for i in handle.getFilterList():
             self.filterSet.add(i)
@@ -76,7 +80,6 @@ class BotRoute:
             for i in self.plugins[pluginName].getListenType():
                 self.removeType(i[0], i[1])
             for i in self.plugins[pluginName].getListenTarget():
-                del self.targetToHandle[i[1]]
                 self.removeTarget(i[0], i[1], i[2])
             for i in [i for i in self.plugins[pluginName].getFutureDict()]:
                 self.plugins[pluginName].removeFuture(i)
@@ -111,9 +114,9 @@ class BotRoute:
     def getPlugin(self, pluginName):
         return self.plugins[pluginName]
 
-    def getHandleByTarget(self, target : str):
-        if target in self.targetToHandle:
-            return self.targetToHandle[target]
+    def getHandleByTarget(self, messageType: str, target : str):
+        if messageType in self.targetRoute and target in self.targetRoute[messageType]:
+            return self.targetRoute[messageType][target].__self__
         return None
 
     @asyncExceptTrace
@@ -173,13 +176,13 @@ class BotRoute:
                 return
             #路由
             for i in range(controlData["size"]):
-                if self.concurrentModule is not None and self.getHandleByTarget(target).getCanDetach():
+                if self.concurrentModule is not None and self.getHandleByTarget(request.type, target).getCanDetach():
                     #多线程方式
                     bot = request.bot
                     self.concurrentModule.addTask( \
                         ((bot.path, bot.port, bot.sessionKey), \
                         [dict(request)], \
-                        [self.pluginPath[self.getHandleByTarget(target).getName()][:-3], target]) \
+                        [self.pluginPath[self.getHandleByTarget(request.type, target).getName()][:-3], target]) \
                         )
                 else:
                     await asyncHandlePacket(self.targetRoute[request.type][target], request)

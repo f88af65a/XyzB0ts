@@ -45,18 +45,8 @@ async def asyncHandlePacket(fn, *args, **kwargs):
         try:
             await fn(*args, **kwargs)
         except Exception as e:
-            await args[0].sendMessage(MessageChain().text(f"发生异常 {str(e)}"))
+            await args[0].sendMessage(MessageChain().text(f"执行过程中发生异常 {str(e)}"))
             raise e
-        for i in getEndCallBackTask():
-            i(fn, *args, **kwargs)
-    except Exception as e:
-        printTraceBack()
-
-def HandlePacket(fn, *args, **kwargs):
-    try:
-        for i in getStartCallBackTask():
-            i(fn, *args, **kwargs)
-        fn(*args, **kwargs)
         for i in getEndCallBackTask():
             i(fn, *args, **kwargs)
     except Exception as e:

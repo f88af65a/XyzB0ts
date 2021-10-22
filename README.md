@@ -57,6 +57,43 @@
  该类对api进行了一定的封装，不够用就自己加吧
 
 
+## 一个简单的插件实现
+ 在群中输入/hello时bot将发送hello  
+```python
+from botsdk.BotRequest import BotRequest
+from botsdk.tool.MessageChain import MessageChain
+from botsdk.tool.BotPlugin import BotPlugin
+
+class handle(BotPlugin):
+    def __init__(self):
+        super().__init__()
+        self.listenTarget = [["GroupMessage", "hello", self.hello]]
+        self.name = "hello"
+
+    async def hello(self, request):
+        await request.sendMessage(MessageChain().text("hello"))
+```
+或者
+```python
+from botsdk.BotRequest import BotRequest
+from botsdk.tool.MessageChain import MessageChain
+from botsdk.tool.BotPlugin import BotPlugin
+
+class plugin(BotPlugin):
+    def __init__(self):
+        super().__init__()
+        self.name = "hello"
+
+    async def hello(self, request):
+        await request.sendMessage(MessageChain().text("hello"))
+
+def handle():
+    p = plugin()
+    p.addTarget("GroupMessage", "hello", p.hello)
+    return p
+```
+
+
 # 配置文件
  配置文件夹默认位于./configs/  
  框架配置文件为./configs/config.json  
@@ -107,12 +144,18 @@
 
 
 ### 指令权限
- 指令权限指调用某个指令的最低权限，作用范围为所在群群  
+ 指令权限指调用某个指令的最低权限，作用范围为所在群群
 
 
 ### 成员权限
- 成员权限使某个成员可以使用某命令在某群  
+ 成员权限使某个成员可以使用某命令在某群
 
 
-# Gitee地址
-[Gitee](https://gitee.com/d6e3032b/XyzB0ts)
+# 鸣谢
+ 项目基于[mirai-api-http](https://github.com/project-mirai/mirai-api-http)  
+ tool.pixiv使用了[hibiapi](https://github.com/mixmoe/HibiAPI)  
+ tool.saucenao使用了[saucenao](https://saucenao.com/)
+
+
+ # Gitee地址
+ [Gitee](https://gitee.com/d6e3032b/XyzB0ts)

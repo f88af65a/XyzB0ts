@@ -112,9 +112,16 @@ class BotRoute:
         return list(self.plugins.keys())
 
     def getPlugin(self, pluginName):
-        return self.plugins[pluginName]
+        if pluginName in self.plugins:
+            return self.plugins[pluginName]
+        return None
 
-    def getHandleByTarget(self, messageType: str, target : str):
+    def getTarget(self, messageType: str, target: str):
+        if messageType in self.targetRoute and target in self.targetRoute[messageType]:
+            return self.targetRoute[messageType][target]
+        return None
+
+    def getHandleByTarget(self, messageType: str, target: str):
         if messageType in self.targetRoute and target in self.targetRoute[messageType]:
             return self.targetRoute[messageType][target].__self__
         return None
@@ -169,20 +176,20 @@ class BotRoute:
         if not isTargetFlag:
             return
         #命令判断
-        if request.type in self.targetRoute and target in self.targetRoute[request.type]:
+        if (re := self.getTarget(request.type, target)) is not None:
             #权限判断
             if not permissionCheck(request, target):
                 await request.sendMessage(MessageChain().text("权限限制"))
                 return
             #路由
             for i in range(controlData["size"]):
-                if self.concurrentModule is not None and self.getHandleByTarget(request.type, target).getCanDetach():
+                if self.concurrentModule is not None and re.__self__.getCanDetach():
                     #多线程方式
                     bot = request.bot
                     self.concurrentModule.addTask( \
                         ((bot.path, bot.port, bot.sessionKey), \
                         [dict(request)], \
-                        [self.pluginPath[self.getHandleByTarget(request.type, target).getName()][:-3], target]) \
+                        [self.pluginPath[re.__self__.getName()][:-3], target]) \
                         )
                 else:
-                    await asyncHandlePacket(self.targetRoute[request.type][target], request)
+                    await asyncHandlePacket(re, request)

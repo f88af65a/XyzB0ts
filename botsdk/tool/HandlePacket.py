@@ -4,6 +4,7 @@ from botsdk.tool.Error import asyncExceptTrace
 from botsdk.tool.Error import debugPrint
 from botsdk.tool.TimeTest import *
 from botsdk.BotRequest import BotRequest
+from botsdk.tool.MessageChain import MessageChain
 
 startCallBackTask = []
 endCallBackTask = []
@@ -41,19 +42,12 @@ async def asyncHandlePacket(fn, *args, **kwargs):
     try:
         for i in getStartCallBackTask():
             i(fn, *args, **kwargs)
-        await fn(*args, **kwargs)
+        try:
+            await fn(*args, **kwargs)
+        except Exception as e:
+            await args[0].sendMessage(MessageChain().text(f"执行过程中发生异常 {str(e)}"))
+            raise e
         for i in getEndCallBackTask():
             i(fn, *args, **kwargs)
     except Exception as e:
         printTraceBack()
-
-def HandlePacket(fn, *args, **kwargs):
-    try:
-        for i in getStartCallBackTask():
-            i(fn, *args, **kwargs)
-        fn(*args, **kwargs)
-        for i in getEndCallBackTask():
-            i(fn, *args, **kwargs)
-    except Exception as e:
-        printTraceBack()
-

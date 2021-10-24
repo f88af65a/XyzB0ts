@@ -60,8 +60,6 @@ class BotRequest(dict):
     async def sendMessage(self, msgChain):
         await self.getBot().sendMessage(self.getId(), msgChain.getData())
 
-    #dev-BotRequestUpdate
-
     def getData(self):
         return (self.data, dict(self))
 

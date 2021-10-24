@@ -68,7 +68,7 @@ class plugin(BotPlugin):
         await request.sendMessage(MessageChain().text("完成"))
 
     def blackListCheck(self, request):
-        if request.type == "GroupMessage":
+        if request.getType() == "GroupMessage":
             cookie = getCookie(request.getGroupId(), "blackList")
             if cookie is not None and request.getSenderId() in cookie:
                 return False

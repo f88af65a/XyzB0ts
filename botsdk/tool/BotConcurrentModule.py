@@ -29,30 +29,24 @@ async def workProcessRun(queue, threadList):
     while True:
         try:
             try:
-                event = queue.get_nowait()
+                data = queue.get_nowait()
             except Exception as e:
                 await asyncio.sleep(0.05)
                 continue
-            bot = Bot(*event[0])
-            request = BotRequest(event[1][0], bot)
-            module = importlib.reload(__import__(f"plugins.{event[2][0]}", fromlist=(event[2][0],)))
+            request = BotRequest(data[0]["bot"], data[1])
+            module = importlib.reload(__import__(f"plugins.{data[0]['pluginPath']}", fromlist=(data[0]["pluginPath"],)))
             plugin = getattr(module, "handle")()
-            if not plugin.initBySystem(bot):
+            if not plugin.initBySystem(request.getBot()):
                 continue
-            handle = None
-            for i in plugin.getListenTarget():
-                if i[1] == event[2][1]:
-                    handle = i[2]
-                    break
-            if handle is not None:
+            try:
                 debugPrint("添加到协程中")
-                asyncio.run_coroutine_threadsafe(asyncHandlePacket(handle, request), threadList[useThreadCount][1])
+                asyncio.run_coroutine_threadsafe(asyncHandlePacket(getattr(plugin, request.getTarget()), request), threadList[useThreadCount][1])
                 debugPrint("添加完成")
                 useThreadCount += 1
                 if useThreadCount == len(threadList):
                     useThreadCount = 0
-            else:
-                debugPrint("进程遇到错误的Target")
+            except Exception as e:
+                printTraceBack()
         except Exception as e:
             printTraceBack()
 

@@ -24,7 +24,7 @@ class plugin(BotPlugin):
 
     def deBugGroupCheck(self, request):
         if getConfig()["debug"]:
-            if request.type == "GroupMessage" and request.getGroupId() in getConfig()["deBugGroupId"]:
+            if request.getType() == "GroupMessage" and request.getGroupId() in getConfig()["deBugGroupId"]:
                 return True
             return False
         return True

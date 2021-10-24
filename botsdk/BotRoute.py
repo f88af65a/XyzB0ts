@@ -126,6 +126,11 @@ class BotRoute:
             return self.targetRoute[messageType][target].__self__
         return None
 
+    def getPluginPathByTarget(self, messageType: str, target: str):
+        if (re := self.getHandleByTarget(messageType, target)) is not None:
+            return self.pluginPath[re.getName()]
+        return None
+
     @asyncExceptTrace
     @asyncTimeTest
     async def route(self, request : BotRequest):
@@ -135,19 +140,19 @@ class BotRoute:
                 return
             await asyncio.sleep(0)
         #type路由
-        if request.type in self.typeRoute:
-            for i in self.typeRoute[request.type]:
+        if request.getType() in self.typeRoute:
+            for i in self.typeRoute[request.getType()]:
                 try:
                     await i(request)
                 except Exception as e:
                     debugPrint(f"typeRoute中{str(i)}异常")
                 await asyncio.sleep(0)
-        if request.type not in messageType:
+        if request.getType() not in messageType:
             return
         #命令分析
         target = request.getFirstTextSplit()
         #控制字段
-        controlData = {"size":1}
+        controlData = {"size": 1}
         if target is not None and len(target) >= 2 and len(target[0]) > 2 \
             and target[0][0] == "[" and target[0][-1] == "]":
             if not permissionCmp(str(getPermissionFromSystem(request.getSenderId())), "ADMINISTRATOR"):
@@ -163,6 +168,7 @@ class BotRoute:
                         controlData[controlLineSplit[0]] = json.loads(controlLineSplit[1])
             del target[0]
             request.getFirst("Plain")["text"] = " ".join(target)
+            request.setControlData(controlData)
         #target获取
         if target is None or len(target) == 0 or len(target[0]) == 0:
             return
@@ -175,21 +181,25 @@ class BotRoute:
                 break
         if not isTargetFlag:
             return
+        request.setTarget(target)
         #命令判断
-        if (re := self.getTarget(request.type, target)) is not None:
+        if (re := self.getTarget(request.getType(), target)) is not None:
             #权限判断
             if not permissionCheck(request, target):
                 await request.sendMessage(MessageChain().text("权限限制"))
                 return
+            request.setPluginPath(self.getPluginPathByTarget(request.getType(), target))
             #路由
             for i in range(controlData["size"]):
                 if self.concurrentModule is not None and re.__self__.getCanDetach():
                     #多线程方式
-                    bot = request.bot
+                    '''
                     self.concurrentModule.addTask( \
                         ((bot.path, bot.port, bot.sessionKey), \
                         [dict(request)], \
                         [self.pluginPath[re.__self__.getName()][:-3], target]) \
                         )
+                    '''
+                    self.concurrentModule.addTask(request.getData())
                 else:
                     await asyncHandlePacket(re, request)

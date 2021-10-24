@@ -23,7 +23,6 @@ def workThreadRun(loop):
 
 #进程循环函数
 async def workProcessRun(queue, threadList):
-    loop = asyncio.get_event_loop()
     debugPrint("进程进入循环")
     useThreadCount = 0
     while True:
@@ -33,8 +32,8 @@ async def workProcessRun(queue, threadList):
             except Exception as e:
                 await asyncio.sleep(0.05)
                 continue
-            request = BotRequest(data[0]["bot"], data[1])
-            module = importlib.reload(__import__(f"plugins.{data[0]['pluginPath']}", fromlist=(data[0]["pluginPath"],)))
+            request = BotRequest(*data)
+            module = importlib.reload(__import__(f"plugins.{data[0]['pluginPath'][:-3]}", fromlist=(data[0]["pluginPath"][:-3],)))
             plugin = getattr(module, "handle")()
             if not plugin.initBySystem(request.getBot()):
                 continue

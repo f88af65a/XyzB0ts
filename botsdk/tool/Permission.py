@@ -9,7 +9,7 @@ def permissionCheck(request : BotRequest, target : str):
     if GetSystemPermissionAndCheck(request.qq, "ADMINISTRATOR"):
         return True
     if request.getType() == "GroupMessage":
-        cookie = getCookieByDict(request.groupId)
+        cookie = getCookieByDict(request.getGroupId())
         if not (groupPermissionCheck(request, target, cookie) \
                 or groupMemberPermissionCheck(request, target, cookie)):
             return False
@@ -23,21 +23,21 @@ def permissionCmp(f, s):
     return helpDict[str(f)] > helpDict[str(s)]
 
 def groupPermissionCheck(request : BotRequest, target : str, cookie):
-    if request.permission == "OWNER":
+    if request.getPermission() == "OWNER":
         return True
     if "groupPermission" not in cookie:
         return False
     if target in cookie["groupPermission"]:
-        return markToInt(request.permission) >= markToInt(cookie["groupPermission"][target])
+        return markToInt(request.getPermission()) >= markToInt(cookie["groupPermission"][target])
     elif "*" in cookie["groupPermission"]:
-        return markToInt(request.permission) >= markToInt(cookie["groupPermission"]["*"])
+        return markToInt(request.getPermission()) >= markToInt(cookie["groupPermission"]["*"])
     return False
 
 #格式为cookie["groupMemberPermission"] ["QQ"][命令,命令]
 def groupMemberPermissionCheck(request : BotRequest, target : str, cookie):
     if "groupMemberPermission" in cookie \
-        and str(request.qq) in cookie["groupMemberPermission"] \
-            and target in cookie["groupMemberPermission"][str(request.qq)]:
+        and str(request.getSenderId()) in cookie["groupMemberPermission"] \
+            and target in cookie["groupMemberPermission"][str(request.getSenderId())]:
                 return True
     return False
 
@@ -45,8 +45,8 @@ def groupMemberPermissionCheck(request : BotRequest, target : str, cookie):
 #用户权限在cookie["user"]["用户"]="权限"
 def systemPermissionCheck(request : BotRequest, target : str, cookie):
     if "systemPermission" in cookie and target in cookie["systemPermission"]:
-        if "user" in  cookie and str(request.qq) in cookie["user"] \
-                and markToInt(cookie["user"][str(request.qq)]) >= markToInt(cookie["systemPermission"][target]):
+        if "user" in  cookie and str(request.getSenderId()) in cookie["user"] \
+                and markToInt(cookie["user"][str(request.getSenderId())]) >= markToInt(cookie["systemPermission"][target]):
             return True
         return False
     return None

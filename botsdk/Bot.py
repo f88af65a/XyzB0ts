@@ -10,6 +10,9 @@ class Bot:
         if sessionKey != None:
             self.sessionKey = sessionKey
 
+    def getData(self):
+        return (self.path, self.port, self.sessionKey)
+
     def getPath(self):
         return self.path
     

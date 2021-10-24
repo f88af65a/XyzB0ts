@@ -193,13 +193,6 @@ class BotRoute:
             for i in range(controlData["size"]):
                 if self.concurrentModule is not None and re.__self__.getCanDetach():
                     #多线程方式
-                    '''
-                    self.concurrentModule.addTask( \
-                        ((bot.path, bot.port, bot.sessionKey), \
-                        [dict(request)], \
-                        [self.pluginPath[re.__self__.getName()][:-3], target]) \
-                        )
-                    '''
                     self.concurrentModule.addTask(request.getData())
                 else:
                     await asyncHandlePacket(re, request)

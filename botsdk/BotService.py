@@ -1,3 +1,4 @@
+import uuid
 import asyncio
 import botsdk.Bot
 import botsdk.BotRequest
@@ -33,7 +34,7 @@ class BotService:
             for i in re["data"]:
                 asyncio.run_coroutine_threadsafe( \
                     self.botRoute.route(botsdk.BotRequest.BotRequest( \
-                        i, self.bot, self.botRoute)) \
+                        {"bot":self.bot.getData(),"uuid":uuid.uuid4()}, i, self.botRoute)) \
                     ,self.loop)
 
     def run(self):

@@ -6,7 +6,7 @@ from botsdk.tool.JsonConfig import getConfig
 def permissionCheck(request : BotRequest, target : str):
     if (re := systemPermissionCheck(request, target, getCookieByDict(-1))) is not None:
         return re
-    if GetSystemPermissionAndCheck(request.qq, "ADMINISTRATOR"):
+    if GetSystemPermissionAndCheck(request.getSenderId(), "ADMINISTRATOR"):
         return True
     if request.getType() == "GroupMessage":
         cookie = getCookieByDict(request.getGroupId())

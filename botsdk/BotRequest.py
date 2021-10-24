@@ -1,22 +1,19 @@
-from uuid import uuid4
 from botsdk.tool.MessageType import messageType
 from botsdk.tool.OutDated import OutDated
 from botsdk.Bot import Bot
 
 class BotRequest(dict):
-    def __init__(self, botData, responseChain, route = None):
+    def __init__(self, data, responseChain, route = None):
         '''
         BotRquest(dict)
         继承自dict，封装了部分处理消息的函数
         '''
         super().__init__(responseChain)
         self.route = route
-        self.data = {}
-        self.data["uuid"] = uuid4()
-        self.data["bot"] = botData
+        self.data=data
     
     def getBot(self):
-        return Bot(self.data["bot"])
+        return Bot(*self.data["bot"])
     
     def getRoute(self):
         return self.route
@@ -29,7 +26,7 @@ class BotRequest(dict):
 
     def getId(self):
         if self["type"] == "GroupMessage":
-            return f"""{self.sender["id"]}:{self.sender["group"]["id"]}"""
+            return f"""{self["sender"]["id"]}:{self["sender"]["group"]["id"]}"""
         elif self["type"] == "FriendMessage":
             return str(self["sender"]["id"])
         return None
@@ -61,7 +58,7 @@ class BotRequest(dict):
         return self["sender"]["group"]["permission"]
 
     async def sendMessage(self, msgChain):
-        await self.bot.sendMessage(self.id, msgChain.getData())
+        await self.getBot().sendMessage(self.getId(), msgChain.getData())
 
     #dev-BotRequestUpdate
 
@@ -78,10 +75,10 @@ class BotRequest(dict):
         self.data["target"] = target
 
     def getTarget(self):
-        return self["data"]["target"]
+        return self.data["target"]
     
     def setPluginPath(self, path):
         self.data["pluginPath"] = path
     
-    def getPluginPath(self, path):
+    def getPluginPath(self):
         return self.data["pluginPath"]

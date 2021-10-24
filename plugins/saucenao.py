@@ -34,7 +34,7 @@ class plugin(BotPlugin):
                 await request.sendMessage(re)
                 return
             if i["type"] == "Quote":
-                bot = request.bot
+                bot = request.getBot()
                 quoteMessageId = i["id"]
                 quoteMessageChain = await bot.messageFromId(quoteMessageId)
                 if quoteMessageChain["code"] != 0:

@@ -4,6 +4,7 @@ import botsdk.BotRequest
 from botsdk.tool.MessageChain import MessageChain
 from botsdk.tool.BotPlugin import BotPlugin
 from botsdk.tool.Cookie import *
+
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
@@ -22,8 +23,8 @@ class plugin(BotPlugin):
 
     async def kongtiao(self, request):
         bot = request.bot
-        groupid = request.groupId
-        await bot.sendGroupMessage(request.groupId, MessageChain().text("https://ac.yunyoujun.cn/#/").getData())
+        groupid = request.getGroupId()
+        await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("https://ac.yunyoujun.cn/#/").getData())
 
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

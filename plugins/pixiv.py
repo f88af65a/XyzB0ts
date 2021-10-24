@@ -37,11 +37,10 @@ class plugin(BotPlugin):
         self.proxy = self.getConfig()["pixivProxy"]
 
     async def search(self, request):
-        bot = request.bot
-        groupid = request.groupId
+        bot = request.getBot()
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            await bot.sendGroupMessage(request.groupId, MessageChain().text("/pixiv.search 关键字").getData())
+            request.sendMessage(MessageChain().text("/pixiv.search 关键字"))
             return
         response = []
         #startMark = random.randint(1,30)
@@ -70,7 +69,7 @@ class plugin(BotPlugin):
                 if safeFlag:
                     response += [j]
         if len(response) == 0:
-            await bot.sendGroupMessage(request.groupId, MessageChain().text("没有图捏").getData())
+            await request.sendMessage(MessageChain().text("这哪有图啊，这都大棚的图，你嫌少我还嫌少呢"))
             return
         await self.getImgFromList(data, response, request)
 

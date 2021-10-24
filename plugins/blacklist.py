@@ -24,7 +24,7 @@ class plugin(BotPlugin):
 
     async def blacklist(self, request):
         data = request.getFirstTextSplit()
-        bot = request.bot
+        bot = request.getBot()
         groupid = request.getGroupId()
         cookie = getCookie(groupid, "blackList")
         if cookie is None:

@@ -20,8 +20,8 @@ class plugin(BotPlugin):
         self.reChatDict = {}
 
     async def rechat(self, request):
-        bot = request.bot
-        groupid = request.groupId
+        bot = request.getBot()
+        groupid = request.getGroupId()
         cookie = getCookieByDict(groupid)
         if "rechatState" in cookie and cookie["rechatState"] == "开启":
             chain = []
@@ -42,7 +42,7 @@ class plugin(BotPlugin):
         if len(data) < 2:
             await request.sendMessage(MessageChain().text("/复读机 [开启/关闭]"))
             return
-        groupid = request.groupId
+        groupid = request.getGroupId()
         cookie = getCookieByDict(groupid)
         if "rechatState" not in cookie:
             cookie["rechatState"] = "关闭"

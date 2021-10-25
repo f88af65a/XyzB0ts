@@ -34,6 +34,10 @@ class BotRoute:
     def init(self):
         self.loadAllPlugin()
 
+    def __del__(self):
+        for i in [i for i in self.plugins]:
+            self.unLoadPlugin(i)
+
     def loadAllPlugin(self):
         for i in os.listdir(self.pluginsPath):
             self.loadPlugin(i)

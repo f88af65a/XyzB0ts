@@ -11,13 +11,15 @@ class BotService:
     def __init__(self):
         pass
 
-    async def runInEventLoop(self):
+    async def runInEventLoop(self, accountMark):
         #初始化Bot
-        self.bot = botsdk.Bot.Bot(getConfig()["api"]["path"], getConfig()["api"]["port"])
+        self.bot = botsdk.Bot.Bot(getConfig()["account"][accountMark]["path"]
+            , getConfig()["account"][accountMark]["api"]["port"])
         #登录
-        re = await self.bot.login(getConfig()["account"]["qq"], getConfig()["account"]["passwd"])
+        re = await self.bot.login(getConfig()["account"][accountMark]["qq"]
+            , getConfig()["account"][accountMark]["passwd"])
         if re != 0:
-            exceptionExit("BotService", "登录出错")
+            debugPrint(f'''账号{getConfig()["account"][accountMark]["qq"]}''', fromName="登录")
         #初始化BotRoute
         self.botRoute = botsdk.BotRoute.BotRoute( self.bot, \
             defaultBotConcurrentModule(int(getConfig()["workProcess"]) \
@@ -40,4 +42,6 @@ class BotService:
     def run(self):
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
-        self.loop.run_until_complete(self.runInEventLoop())
+        for i in len(getConfig()["account"]):
+            asyncio.run_coroutine_threadsafe(self.runInEventLoop(i), self.loop)
+        self.loop.run_forever()

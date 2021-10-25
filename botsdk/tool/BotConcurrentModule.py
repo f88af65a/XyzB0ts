@@ -9,6 +9,7 @@ from botsdk.tool.JsonConfig import getConfig
 from botsdk.tool.TimeTest import *
 from botsdk.tool.Error import printTraceBack,debugPrint
 from botsdk.tool.HandlePacket import *
+from botsdk.BotRequest import BotRequest
 
 #线程默认运行函数
 def workThreadRun(loop):
@@ -39,7 +40,8 @@ async def workProcessRun(queue, threadList):
                 continue
             try:
                 debugPrint("添加到协程中")
-                asyncio.run_coroutine_threadsafe(asyncHandlePacket(getattr(plugin, request.getTarget()), request), threadList[useThreadCount][1])
+
+                asyncio.run_coroutine_threadsafe(asyncHandlePacket(plugin.getTargetDict()[request.type][request.target], threadList[useThreadCount][1]))
                 debugPrint("添加完成")
                 useThreadCount += 1
                 if useThreadCount == len(threadList):

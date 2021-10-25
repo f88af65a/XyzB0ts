@@ -59,12 +59,20 @@ class BotPlugin:
     def initBySystem(self, bot):
         try:
             self.initPluginConfig()
+            self.initTargetDict()
             self.init(bot)
         except Exception as e:
             self.clear()
             printTraceBack()
             return False
         return True
+
+    def initTargetDict(self):
+        self.targetDict = dict()
+        for i in self.listenTarget:
+            if i[0] not in self.targetDict:
+                self.targetDict[i[0]] = dict()
+            self.targetDict[i[0]][i[1]] = i[2]
 
     #配置文件初始化
     def initPluginConfig(self):
@@ -127,3 +135,6 @@ class BotPlugin:
 
     def getConfig(self):
         return self.config
+
+    def getTargetDict(self):
+        return self.targetDict

@@ -21,18 +21,22 @@ class MessageChain:
         self.data += [{"type": "Plain", "text": data}]
         return self
 
-    def quote(self, messageId, groupId, senderId, taretId, origin):
+    def quote(self, messageId, groupId, senderId, targetId, origin):
         self.data += [{"type": "Quote", "id": messageId, "groupId": groupId
-            , "senderId": senderId, "taretId": taretId, "origin": origin}]
+            , "senderId": senderId, "targetId": targetId, "origin": origin}]
         return self
     
     def quoteByRequest(self, request):
+        messageChain = []
+        for i in request["messageChain"][1:]:
+            if i["type"] != "Quote":
+                messageChain += [i]
         if request.getType() == "GroupMessage":
-            self.data += [{"type": "Quote", "id": request.getMessageId(), "groupId": request.getGroupId()
-                , "senderId": request.getSenderId(), "taretId": request.getGroupId(), "origin": dict(request)}]
+            self.data += [{"type": "Quote", "id": int(request.getMessageId()), "groupId": int(request.getGroupId())
+                , "senderId": int(request.getSenderId()), "targetId": int(request.getGroupId()), "origin": messageChain}]
         elif request.getType() == "FriendMessage":
-            self.data += [{"type": "Quote", "id": request.getMessageId(), "groupId": "0"
-                , "senderId": request.getSenderId(), "taretId": request.myQq(), "origin": dict(request)}]
+            self.data += [{"type": "Quote", "id": int(request.getMessageId()), "groupId": 0
+                , "senderId": int(request.getSenderId()), "targetId": int(request.myQq()), "origin": messageChain}]
         return self
 
     def image(self, imageId: str=None, url: str=None, path: str=None, type: str="GroupMessage"):
@@ -49,7 +53,7 @@ class MessageChain:
         return self
 
     def flashImage(self, imageId: str=None, url: str=None, path: str=None, type: str="GroupMessage"):
-        imgData = [{"type": "Image"}]
+        imgData = [{"type": "FlashImage"}]
         if imageId is not None:
             imgData[0]["imageId"] = imageId
         if url is not None:

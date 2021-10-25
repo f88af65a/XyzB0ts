@@ -5,8 +5,8 @@ from botsdk.tool.JsonConfig import getConfig
 
 def debugPrint(msg: str, fromName=None, exception=None, level=5):
     if level <= getConfig()["debugPrint"]:
-        print(f"[{str(fromName)}]" if fromName is not None else "" \
-                + f"[{str(exception)}]" if exception is not None else "" \
+        print((f"[{str(fromName)}]" if fromName is not None else "") \
+                + (f"[{str(exception)}]" if exception is not None else "") \
                 + str(msg))
 
 def exceptionExit(msg):

@@ -39,7 +39,7 @@ class BotService:
                         debugPrint(f'''账号{qq}获取消息失败重试:{retrySize + 1}'''
                             , fromName="BotService")
                         await asyncio.sleep(retrySize * 5)
-                if re["data"] != 0:
+                if re["code"] != 0:
                     debugPrint(f'账号{qq}返回了一个错误的code:{re["code"]} {re["msg"]}')
                     break
                 _readList = []

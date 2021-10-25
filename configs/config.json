@@ -1,9 +1,4 @@
 {
-	"api":
-	{
-		"path":"localhost",
-		"port":"8080"
-	},
 	"appPath":"",
 	"pluginsPath":"./plugins/",
 	"sqlPath":"./botsql.sql",
@@ -15,7 +10,7 @@
 	"debugPrint":5,
 	"deBugGroupId":[],
 	"commandTarget":["/","#","."],
-	"account":{"qq":"","passwd":""},
+	"account":[{"path":"localhost", "port":"", "qq":"","passwd":""}],
 	"systemCookie":{
 		"systemPermission":{
 			"load":"ADMINISTRATOR",

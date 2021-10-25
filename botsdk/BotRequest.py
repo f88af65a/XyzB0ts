@@ -12,6 +12,7 @@ class BotRequest(dict):
         self.route = route
         self.data=data
     
+    #Route辅助函数
     def getBot(self):
         return Bot(*self.data["bot"])
     
@@ -21,6 +22,37 @@ class BotRequest(dict):
     def getUuid(self):
         return self.data["uuid"]
 
+    def getMessageId(self):
+        return self["messageChain"][0]["id"]
+    
+    def getMessageTime(self):
+        return self["messageChain"][0]["time"]
+
+    def getData(self):
+        return (self.data, dict(self))
+
+    def setControlData(self, controlData):
+        self.data["controlData"] = controlData
+    
+    def getControlData(self):
+        return self.data["controlData"]
+
+    def setTarget(self, target):
+        self.data["target"] = target
+
+    def getTarget(self):
+        return self.data["target"]
+    
+    def setPluginPath(self, path):
+        self.data["pluginPath"] = path
+    
+    def getPluginPath(self):
+        return self.data["pluginPath"]
+    
+    def getMyQq(self):
+        return self.data["qq"]
+
+    #消息辅助函数
     def getType(self):
         return self["type"]
 
@@ -59,24 +91,3 @@ class BotRequest(dict):
 
     async def sendMessage(self, msgChain):
         await self.getBot().sendMessage(self.getId(), msgChain.getData())
-
-    def getData(self):
-        return (self.data, dict(self))
-
-    def setControlData(self, controlData):
-        self.data["controlData"] = controlData
-    
-    def getControlData(self):
-        return self.data["controlData"]
-
-    def setTarget(self, target):
-        self.data["target"] = target
-
-    def getTarget(self):
-        return self.data["target"]
-    
-    def setPluginPath(self, path):
-        self.data["pluginPath"] = path
-    
-    def getPluginPath(self):
-        return self.data["pluginPath"]

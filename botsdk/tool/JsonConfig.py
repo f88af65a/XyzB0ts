@@ -13,7 +13,6 @@ def load():
     except Exception as e:
         print("Config.json读取出错")
         raise BotException("配置文件读取出错")
-        return False
     return True
 load()
 

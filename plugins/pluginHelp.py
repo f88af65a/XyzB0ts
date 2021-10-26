@@ -56,6 +56,7 @@ class plugin(BotPlugin):
     async def load(self, request):
         data = request.getFirstTextSplit()
         bot = request.getBot()
+        route = request.getRoute()
         if len(data) < 2:
             await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("缺少参数").getData())
             return

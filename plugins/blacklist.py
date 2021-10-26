@@ -23,6 +23,7 @@ class plugin(BotPlugin):
         #"插件帮助"
 
     async def blacklist(self, request):
+        '''/blacklist [add/remove] qq'''
         data = request.getFirstTextSplit()
         bot = request.getBot()
         groupid = request.getGroupId()

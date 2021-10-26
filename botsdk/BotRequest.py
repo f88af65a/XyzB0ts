@@ -89,5 +89,5 @@ class BotRequest(dict):
     def getMyPermission(self):
         return self["sender"]["group"]["permission"]
 
-    async def sendMessage(self, msgChain):
-        await self.getBot().sendMessage(self.getId(), msgChain.getData())
+    async def sendMessage(self, msgChain, quote = None):
+        await self.getBot().sendMessage(self.getId(), msgChain.getData(), quote)

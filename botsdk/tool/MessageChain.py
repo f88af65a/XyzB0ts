@@ -1,6 +1,7 @@
 import copy
 from botsdk.BotRequest import BotRequest
 from botsdk.tool.BotException import BotException
+from botsdk.tool.OutDated import OutDated
 
 class MessageChain:
     def __init__(self, rhs = None):
@@ -19,24 +20,6 @@ class MessageChain:
 
     def plain(self, data):
         self.data += [{"type": "Plain", "text": data}]
-        return self
-
-    def quote(self, messageId, groupId, senderId, targetId, origin):
-        self.data += [{"type": "Quote", "id": messageId, "groupId": groupId
-            , "senderId": senderId, "targetId": targetId, "origin": origin}]
-        return self
-    
-    def quoteByRequest(self, request):
-        messageChain = []
-        for i in request["messageChain"][1:]:
-            if i["type"] != "Quote":
-                messageChain += [i]
-        if request.getType() == "GroupMessage":
-            self.data += [{"type": "Quote", "id": int(request.getMessageId()), "groupId": int(request.getGroupId())
-                , "senderId": int(request.getSenderId()), "targetId": int(request.getGroupId()), "origin": messageChain}]
-        elif request.getType() == "FriendMessage":
-            self.data += [{"type": "Quote", "id": int(request.getMessageId()), "groupId": 0
-                , "senderId": int(request.getSenderId()), "targetId": int(request.myQq()), "origin": messageChain}]
         return self
 
     def image(self, imageId: str=None, url: str=None, path: str=None, type: str="GroupMessage"):

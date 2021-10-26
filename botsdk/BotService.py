@@ -51,7 +51,8 @@ class BotService:
                 for i in re["data"]:
                     asyncio.run_coroutine_threadsafe( \
                         self.botRoute.route(botsdk.BotRequest.BotRequest( \
-                            {"bot":self.bot.getData(),"uuid":uuid.uuid4(), "qq": qq}, i, self.botRoute)) \
+                            {"bot":self.bot.getData(),"uuid":uuid.uuid4(), "qq": qq} \
+                            , i, self.botRoute)) \
                         ,self.loop)
 
     def run(self):
@@ -60,5 +61,6 @@ class BotService:
         concurrentModule = defaultBotConcurrentModule(int(getConfig()["workProcess"]) \
             if getConfig()["multi"] else None, int(getConfig()["workThread"]))
         for i in range(len(getConfig()["account"])):
-            asyncio.run_coroutine_threadsafe(self.runInEventLoop(i, concurrentModule), self.loop)
+            asyncio.run_coroutine_threadsafe( \
+                self.runInEventLoop(i, concurrentModule), self.loop)
         self.loop.run_forever()

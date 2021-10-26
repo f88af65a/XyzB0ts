@@ -64,17 +64,21 @@ class Bot:
         re = await self.post("/release", kv)
         return re
 
-    async def sendMessage(self, uid, messageChain: list):
+    async def sendMessage(self, uid, messageChain: list, quote = None):
         if ":" in uid:
-            await self.sendGroupMessage(int(uid.split(":")[1]), messageChain)
+            await self.sendGroupMessage(int(uid.split(":")[1]), messageChain, quote)
         else:
-            await self.sendGroupMessage(int(uid), messageChain)
+            await self.sendFriendMessage(int(uid), messageChain, quote)
 
-    async def sendGroupMessage(self, target:int, messageChain:list):
-        return await self.post("/sendGroupMessage", {"sessionKey":self.sessionKey, "target":target, "messageChain":messageChain})
+    async def sendGroupMessage(self, target:int, messageChain:list, quote = None):
+        return await self.post("/sendGroupMessage" \
+            , {"sessionKey":self.sessionKey, "target":target, "messageChain":messageChain} \
+                | ({"quote":int(quote)} if quote is not None else {}))
 
-    async def sendFriendMessage(self, target:int, messageChain:list):
-        return await self.post("/sendFriendMessage", {"sessionKey":self.sessionKey, "target":target, "messageChain":messageChain})
+    async def sendFriendMessage(self, target:int, messageChain:list, quote = None):
+        return await self.post("/sendFriendMessage" \
+            ,{"sessionKey":self.sessionKey, "target":target, "messageChain":messageChain} \
+                | ({"quote":int(quote)} if quote is not None else {}))
 
     async def fetchMessage(self, count:int):
         return await self.get("/fetchMessage?sessionKey=" + self.sessionKey + "&count=" + str(count))

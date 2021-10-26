@@ -71,12 +71,14 @@ class Bot:
             await self.sendFriendMessage(int(uid), messageChain, quote)
 
     async def sendGroupMessage(self, target:int, messageChain:list, quote = None):
-        return await self.post("/sendGroupMessage", {"sessionKey":self.sessionKey, "target":target, "messageChain":messageChain} \
-            | {"quote":int(quote)} if quote is not None else {})
+        return await self.post("/sendGroupMessage" \
+            , {"sessionKey":self.sessionKey, "target":target, "messageChain":messageChain} \
+                | ({"quote":int(quote)} if quote is not None else {}))
 
     async def sendFriendMessage(self, target:int, messageChain:list, quote = None):
-        return await self.post("/sendFriendMessage", {"sessionKey":self.sessionKey, "target":target, "messageChain":messageChain} \
-            | {"quote":int(quote)} if quote is not None else {})
+        return await self.post("/sendFriendMessage" \
+            ,{"sessionKey":self.sessionKey, "target":target, "messageChain":messageChain} \
+                | ({"quote":int(quote)} if quote is not None else {}))
 
     async def fetchMessage(self, count:int):
         return await self.get("/fetchMessage?sessionKey=" + self.sessionKey + "&count=" + str(count))

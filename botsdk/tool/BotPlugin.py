@@ -7,18 +7,6 @@ from botsdk.tool.JsonConfig import getConfig
 
 class BotPlugin:
     def __init__(self):
-        '''
-        在load中实例化，确认name和target不重复后会调用init()
-        在unload中析构
-        listenType用于监听某一类型消息
-        listenTarget用于监听关键字，具体处理方法见BotRoute.route
-        filterList用于自定义过滤，返回bool，若为False则不再处理该消息
-        在继承BotPlugin后可以通过addType/addTarget/addFilter函数进行注册或者直接重载相关list
-        addFuture用于在init时向eventLoop中添加future
-        listenType/listenTarget/filterList/futures在unload时会由BotRoute清理
-        clean用于在init出错时手动清理相关资源
-        canDetach用于标记可跨进程插件，会在route时交由其它进程处理
-        '''
         #[["type1",func],["type2",func],...,["typen",func]]
         self.listenType = []
         #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
@@ -30,10 +18,6 @@ class BotPlugin:
         self.formatList = []
         #"插件名称"
         self.name = ""
-        #"插件信息"
-        self.info = ""
-        #"插件帮助"
-        self.help = ""
         #插件所定义的任务
         self.futures = dict()
         #是否可以分离到线程中安全执行
@@ -42,21 +26,32 @@ class BotPlugin:
         self.uuid = uuid.uuid4()
         #配置文件,在pluginInit中初始化
         self.config = None
+        #listener
+        self.listener = {}
+        #generalList
+        self.generalList = []
 
     def __del__(self):
         pass
 
     def addType(self, typeName: str, func):
-        self.getListenType().append([typeName, func])
+        if typeName not in self.getListener():
+            self.getListener()[typeName] = {"typeListener": set(), "targetListener":{}}
+        self.getListener()[typeName]["typeListener"].add(func)
 
     def addTarget(self, typeName: str, targetName: str, func):
-        self.getListenTarget().append([typeName, targetName, func])
+        if typeName not in self.getListener():
+            self.getListener()[typeName] = {"typeListener": set(), "targetListener":{}}
+        self.getListener()[typeName]["targetListener"][targetName] = func
+    
+    def addGeneral(self, priority, func):
+        self.getGeneralList().append((priority, func))
     
     def addFilter(self, func):
-        self.getFilterList().append(func)
+        self.addGeneral(5, func)
     
     def addFormat(self, func):
-        self.getFormatList().append(func)
+        self.addGeneral(6, func)
 
     #系统调用的初始化函数
     def initBySystem(self, bot):
@@ -88,7 +83,7 @@ class BotPlugin:
     def init(self, bot):
         pass
 
-    #初始化失败调用
+    #手动清理bot使用的资源
     def clear(self):
         pass
 
@@ -106,12 +101,6 @@ class BotPlugin:
 
     def getName(self):
         return self.name
-
-    def getInfo(self):
-        return self.info
-
-    def getHelp(self):
-        return self.help
 
     def getFutureDict(self):
         return self.futures
@@ -142,5 +131,8 @@ class BotPlugin:
     def getConfig(self):
         return self.config
 
-    def getTargetDict(self):
-        return self.targetDict
+    def getListener(self):
+        return self.listener
+    
+    def getGeneralList(self):
+        return self.generalList

@@ -6,17 +6,13 @@ class plugin(BotPlugin):
     '''/[help/info/load/reload/unload] 插件名'''
     def __init__(self):
         super().__init__()
-        #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "help", self.helper], \
-                             ["GroupMessage", "load", self.load], \
-                             ["GroupMessage", "reload", self.reload], \
-                             ["GroupMessage", "unload", self.unload], \
-                             ["GroupMessage", "plugins", self.plugins], \
-                             ["GroupMessage", "targets", self.targets], \
-                ]
-        #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "pluginHelp"
-        #"插件名称"
+        self.addTarget("GroupMessage", "help", self.helper)
+        self.addTarget("GroupMessage", "load", self.load)
+        self.addTarget("GroupMessage", "reload", self.reload)
+        self.addTarget("GroupMessage", "unload", self.unload)
+        self.addTarget("GroupMessage", "plugins", self.plugins)
+        self.addTarget("GroupMessage", "targets", self.plugins)
 
     async def helper(self, request):
         """/help [plugin/target] [插件名/命令名]"""

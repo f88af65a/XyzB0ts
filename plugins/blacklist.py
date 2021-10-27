@@ -9,18 +9,9 @@ from botsdk.tool.Permission import GetSystemPermissionAndCheck
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
-        self.listenType = []
-        #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "blacklist", self.blacklist], \
-                ]
-        #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
-        self.filterList = [self.blackListCheck]
         self.name = "blacklist"
-        #"插件名称"
-        self.info = "黑名单管理"
-        #"插件信息"
-        self.help = "/blacklist [add/remove] qq"
-        #"插件帮助"
+        self.addFilter(self.blackListCheck)
+        self.addTarget("TargetRouter", "TargetRouter", self.blacklist)
 
     async def blacklist(self, request):
         '''/blacklist [add/remove] qq'''

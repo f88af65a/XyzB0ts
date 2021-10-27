@@ -6,18 +6,9 @@ from botsdk.tool.Cookie import *
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
-        self.listenType = []
-        #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "权限", self.quanxian], \
-                             ["GroupMessage", "群友权限", self.qunyouquanxian] \
-                             ]
-        #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "permission"
-        #"插件名称"
-        self.info = "权限管理"
-        #"插件信息"
-        self.help = "/权限 命令 [OWNER/ADMINISTRATOR/MEMBER]\n/群友权限 群友qq [add/remove] 命令"
-        #"插件帮助"
+        self.addTarget("GroupMessage", "权限", self.quanxian)
+        self.addTarget("GroupMessage", "群友权限", self.qunyouquanxian)
         self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
 
     async def quanxian(self, request):

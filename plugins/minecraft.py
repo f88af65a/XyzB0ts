@@ -20,7 +20,7 @@ def getVarInt(b):
         ans |= (i & 127)
     return ans
 
-class handle(BotPlugin):
+class plugin(BotPlugin):
     "/[mcbe/mcpe] ip [端口]"
 
     def __init__(self):
@@ -167,3 +167,6 @@ class handle(BotPlugin):
             except Exception as e:
                 await request.sendMessage(MessageChain().plain("解析过程中出错"))
                 printTraceBack()
+
+def handle(*args, **kwargs):
+    return plugin(*args, **kwargs)

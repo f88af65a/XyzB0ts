@@ -82,14 +82,14 @@ from botsdk.tool.BotPlugin import BotPlugin
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
-        self.name = "hello"
+        self.name = "hello
+        self.addTarget("GroupMessage", "hello", self.hello)"
 
     async def hello(self, request):
         await request.sendMessage(MessageChain().text("hello"))
 
 def handle():
     p = plugin()
-    p.addTarget("GroupMessage", "hello", p.hello)
     return p
 ```
 

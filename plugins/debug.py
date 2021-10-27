@@ -1,7 +1,5 @@
 import botsdk.Bot
 import botsdk.BotRequest
-from botsdk.tool.MessageChain import MessageChain
-from botsdk.tool.Cookie import getCookie, setCookie
 from botsdk.tool.BotPlugin import BotPlugin
 from botsdk.tool.Permission import permissionCmp
 from botsdk.tool.JsonConfig import getConfig

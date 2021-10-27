@@ -3,16 +3,16 @@ import os
 import asyncio
 import json
 from botsdk.tool.MessageType import messageType
-from botsdk.BotRequest import BotRequest
 from botsdk.tool.Error import *
 from botsdk.tool.JsonConfig import getConfig
 from botsdk.tool.Permission import permissionCheck
 from botsdk.tool.Permission import getPermissionFromSystem
 from botsdk.tool.Permission import permissionCmp
-from botsdk.tool.BotException import BotException
-from botsdk.tool.MessageChain import MessageChain
 from botsdk.tool.TimeTest import asyncTimeTest
 from botsdk.tool.HandlePacket import asyncHandlePacket
+from botsdk.BotRequest import BotRequest
+from botsdk.tool.BotException import BotException
+from botsdk.tool.MessageChain import MessageChain
 
 class BotRoute:
     def __init__(self, bot, concurrentModule = None):
@@ -29,6 +29,8 @@ class BotRoute:
         self.pluginPath = dict()
         #{func}
         self.filterSet = set()
+        #{func}
+        self.formatSet = set()
         self.concurrentModule = concurrentModule
 
     def init(self):
@@ -75,6 +77,10 @@ class BotRoute:
             self.addTarget(i[0], i[1], i[2])
         for i in handle.getFilterList():
             self.filterSet.add(i)
+        for i in handle.getFilterList():
+            self.filterSet.add(i)
+        for i in handle.getFormatList():
+            self.formatSet.add(i)
         self.pluginPath[handle.getName()] = path + ".py"
         self.plugins[handle.getName()] = handle
         return True
@@ -89,6 +95,8 @@ class BotRoute:
                 self.plugins[pluginName].removeFuture(i)
             for i in self.plugins[pluginName].getFilterList():
                 self.filterSet.remove(i)
+            for i in self.plugins[pluginName].getFormatList():
+                self.formatSet.remove(i)
             del self.plugins[pluginName]
             del self.pluginPath[pluginName]
 
@@ -142,6 +150,10 @@ class BotRoute:
         for i in self.filterSet:
             if not i(request):
                 return
+            await asyncio.sleep(0)
+        #format路由
+        for i in self.formatSet:
+            i(request)
             await asyncio.sleep(0)
         #type路由
         if request.getType() in self.typeRoute:

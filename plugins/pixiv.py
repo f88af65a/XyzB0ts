@@ -15,6 +15,7 @@ from botsdk.tool.JsonConfig import getConfig
 from botsdk.tool.TimeTest import *
 
 class plugin(BotPlugin):
+    '''p站相关功能\n/pixiv.[search/rank] [关键字/无] [on]'''
     def __init__(self):
         super().__init__()
         self.listenType = []
@@ -24,10 +25,6 @@ class plugin(BotPlugin):
         #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "pixiv"
         #"插件名称"
-        self.info = "p站相关"
-        #"插件信息"
-        self.help = "/pixiv.[search/rank] [关键字/无] [on]"
-        #"插件帮助"
         self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
         self.canDetach = True
         self.limitTags = {"R18","R-18","R18G","R-18G","R18-G"}
@@ -56,6 +53,8 @@ class plugin(BotPlugin):
             searchMark = markList[random.randint(0, len(markList) - 1)]
             url = self.url + f"/api/pixiv/search?word={data[1]}{usersOn}&page={searchMark}&size=50"
             searchData = json.loads(await get(url))
+            if searchData is None:
+                continue
             if "illusts" not in searchData or len(searchData["illusts"]) == 0:
                 del markList[markList.index(searchMark):]
                 continue
@@ -69,7 +68,7 @@ class plugin(BotPlugin):
                 if safeFlag:
                     response += [j]
         if len(response) == 0:
-            await request.sendMessage(MessageChain().text("这哪有图啊，这都大棚的图，你嫌少我还嫌少呢"))
+            await request.sendMessage(MessageChain().text("没有搜到图或者响应超时"))
             return
         await self.getImgFromList(data, response, request)
 
@@ -77,6 +76,8 @@ class plugin(BotPlugin):
         rankType=["day","week","month","rookie","original","male"]
         url = f'''{self.url}/api/pixiv/rank?RankingType={rankType[random.randint(0,len(rankType) - 1)]}&date={time.strftime("%Y-%m-%d", time.localtime(time.time() - random.randint(1,14) * (60 * 60 * 24)))}'''
         response = json.loads(await get(url))["illusts"]
+        if response is None:
+            await request.sendMessage(MessageChain().plain("响应超时"))
         await self.getImgFromList(["on"], response, request)
 
     async def getImgFromList(self, data, response, request):

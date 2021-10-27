@@ -24,7 +24,7 @@ class plugin(BotPlugin):
     async def quanxian(self, request):
         data = request.getFirstTextSplit()
         groupid = request.getGroupId()
-        if len(data) < 3 or data[2] not in self.permissionSet:
+        if len(data) < 3:
             await request.sendMessage(MessageChain().text("缺少参数"))
             return
         if data[2] not in self.permissionSet:

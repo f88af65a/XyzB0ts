@@ -151,10 +151,6 @@ class BotRoute:
             if not await i(request):
                 return
             await asyncio.sleep(0)
-        #format路由
-        for i in self.formatSet:
-            await i(request)
-            await asyncio.sleep(0)
         #type路由
         if request.getType() in self.typeRoute:
             for i in self.typeRoute[request.getType()]:
@@ -165,6 +161,10 @@ class BotRoute:
                 await asyncio.sleep(0)
         if request.getType() not in messageType:
             return
+        #format路由
+        for i in self.formatSet:
+            await i(request)
+            await asyncio.sleep(0)
         #命令分析
         target = request.getFirstTextSplit()
         #控制字段

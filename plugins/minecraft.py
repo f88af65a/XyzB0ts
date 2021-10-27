@@ -20,7 +20,7 @@ def getVarInt(b):
         ans |= (i & 127)
     return ans
 
-class plugin(BotPlugin):
+class handle(BotPlugin):
     "/[mcbe/mcpe] ip [端口]"
 
     def __init__(self):
@@ -50,9 +50,9 @@ class plugin(BotPlugin):
             loop = asyncio.get_event_loop()
             #连接
             try:
-                loop.sock_connect(sock,(serverIp, serverPort))
+                await loop.sock_connect(sock,(serverIp, serverPort))
             except Exception as e:
-                await request.sendMessage(MessageChain().plain("连接超时"))
+                await request.sendMessage(MessageChain().plain("连接失败"))
                 return
             requestData = getMcRequestData(serverIp, serverPort)
             #发送
@@ -128,9 +128,9 @@ class plugin(BotPlugin):
             loop = asyncio.get_event_loop()
             #连接
             try:
-                loop.sock_connect(sock,(serverIp, serverPort))
+                await loop.sock_connect(sock,(serverIp, serverPort))
             except Exception as e:
-                await request.sendMessage(MessageChain().plain("连接超时"))
+                await request.sendMessage(MessageChain().plain("连接失败"))
                 return
             requestData = requestData = b"\x01" + b"\x00" * 8 + b"\x00\xff\xff\x00\xfe\xfe\xfe\xfe\xfd\xfd\xfd\xfd\x12\x34\x56\x78" + b"\x00" * 8
             #发送
@@ -144,7 +144,7 @@ class plugin(BotPlugin):
             breakFlag = True
             dataSize = 10000000
             stime = time.time()
-            while time.time() - stime <= 2 and sflag:
+            while time.time() - stime <= 2 and breakFlag:
                 try:
                     responseData = await loop.sock_recv(sock, 10240)
                 except Exception as e:
@@ -153,7 +153,7 @@ class plugin(BotPlugin):
                     sock.close()
                     await request.sendMessage(MessageChain().plain("接收过程中连接断开"))
                     return
-                sflag = False
+                breakFlag = False
                 await asyncio.sleep(0)
             responseData = responseData[35:].decode()
             responseData = responseData.split(";")

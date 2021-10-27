@@ -54,15 +54,9 @@ def getCookie(groupid : str, key : str):
         return None
     return cookie[key]
     
-def setCookie(groupid : str, key : str, value : str):
+def setCookie(groupid : str, key : str, value):
     if key == "":
         return None
     cookie = getCookieByDict(groupid)
-    if value == "":
-        if key in cookie:
-            del cookie[key]
-        else:
-            return None
-    else:
-        cookie[key] = value
+    cookie[key] = value
     setCookieByDict(groupid, cookie)

@@ -26,6 +26,8 @@ class BotPlugin:
         #[function1, ..., functionN]
         #return bool
         self.filterList = []
+        #[function1, ..., f]
+        self.formatList = []
         #"插件名称"
         self.name = ""
         #"插件信息"
@@ -45,15 +47,16 @@ class BotPlugin:
         pass
 
     def addType(self, typeName: str, func):
-        self.listenType.append([typeName, func])
+        self.getListenType().append([typeName, func])
 
     def addTarget(self, typeName: str, targetName: str, func):
-        self.listenTarget.append([typeName, targetName, func])
+        self.getListenTarget().append([typeName, targetName, func])
     
     def addFilter(self, func):
-        self.filterList.append(func)
+        self.getFilterList().append(func)
     
-    #初始化相关函数
+    def addFormat(self, func):
+        self.getFormatList().append(func)
 
     #系统调用的初始化函数
     def initBySystem(self, bot):
@@ -97,6 +100,9 @@ class BotPlugin:
 
     def getFilterList(self):
         return self.filterList
+    
+    def getFormatList(self):
+        return self.formatList
 
     def getName(self):
         return self.name
@@ -111,14 +117,14 @@ class BotPlugin:
         return self.futures
 
     def getFutureByName(self, name):
-        if name in self.futures:
+        if name in self.getFutureDict():
             return self.futures[name]
         return None
 
     def addFuture(self, name, func):
         if name in self.futures:
             return None
-        self.futures[name] = asyncio.run_coroutine_threadsafe(func, asyncio.get_event_loop())
+        self.getFutureDict()[name] = asyncio.run_coroutine_threadsafe(func, asyncio.get_event_loop())
 
     def removeFuture(self, name):
         if name in self.futures:

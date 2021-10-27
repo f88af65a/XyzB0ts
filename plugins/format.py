@@ -13,8 +13,11 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "format", self.setFormat)
         self.addFormat(self.doFormat)
 
-    async def doFormat(request: BotRequest):
-        request.getFirst("Plain")["text"] = request.getFirst("Plain")["text"].format(**getCookie("format"))
+    async def doFormat(self, request: BotRequest):
+        cookie = getCookie(request.getGroupId(), "format")
+        if cookie is None:
+            return
+        request.getFirst("Plain")["text"] = request.getFirst("Plain")["text"].format(**cookie)
 
     async def setFormat(self, request: BotRequest):
         "/format [key=word]"
@@ -34,9 +37,9 @@ class plugin(BotPlugin):
         if cookie is None:
             cookie = {}
         for i in data:
-            cookie[data[0]] = data[1]
+            cookie[i[0]] = i[1]
         setCookie(request.getGroupId(), "format", cookie)
-        
+        request.sendMessage(MessageChain().plain("修改完成"))
 
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

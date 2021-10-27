@@ -34,14 +34,18 @@ class plugin(BotPlugin):
             if data[i] == "":
                 await request.sendMessage(MessageChain().plain("格式有误"))
             data[i] = data[i].split("=")
-            if len(data[i]) != 2:
+            if len(data[i]) != 2 or data[i][0] == "":
                 await request.sendMessage(MessageChain().plain("格式有误"))
                 return
         cookie = getCookie(request.getGroupId(), "format")
         if cookie is None:
             cookie = {}
         for i in data:
-            cookie[i[0]] = i[1]
+            if i[1] == "":
+                if i[0] in cookie:
+                    del i[0]
+            else:
+                cookie[i[0]] = i[1]
         setCookie(request.getGroupId(), "format", cookie)
         await request.sendMessage(MessageChain().plain("修改完成"))
 

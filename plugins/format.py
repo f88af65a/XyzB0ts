@@ -4,6 +4,10 @@ from botsdk.tool.BotPlugin import BotPlugin
 from botsdk.tool.Error import *
 from botsdk.tool.Cookie import *
 
+class formatDict(dict):
+    def __missing__(self, key):
+        return f"{{{key}}}"
+
 class plugin(BotPlugin):
     "/format [key=word]"
 
@@ -17,7 +21,7 @@ class plugin(BotPlugin):
         cookie = getCookie(request.getGroupId(), "format")
         if cookie is None:
             return
-        request.getFirst("Plain")["text"] = request.getFirst("Plain")["text"].format(**cookie)
+        request.getFirst("Plain")["text"] = request.getFirst("Plain")["text"].format_map(cookie)
 
     async def setFormat(self, request: BotRequest):
         "/format [key=word]"

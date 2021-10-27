@@ -89,8 +89,7 @@ class plugin(BotPlugin):
         await request.sendMessage(MessageChain().text("hello"))
 
 def handle():
-    p = plugin()
-    return p
+    return plugin()
 ```
 
 

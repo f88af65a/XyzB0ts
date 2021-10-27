@@ -1,4 +1,3 @@
-import botsdk.Bot
 import botsdk.BotRequest
 from botsdk.tool.MessageChain import MessageChain
 from botsdk.tool.BotPlugin import BotPlugin

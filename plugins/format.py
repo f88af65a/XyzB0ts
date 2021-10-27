@@ -21,7 +21,7 @@ class plugin(BotPlugin):
         cookie = getCookie(request.getGroupId(), "format")
         if cookie is None:
             return
-        request.getFirst("Plain")["text"] = request.getFirst("Plain")["text"].format_map(formagtDict(cookie))
+        request.getFirst("Plain")["text"] = request.getFirst("Plain")["text"].format_map(formatDict(cookie))
 
     async def setFormat(self, request: BotRequest):
         "/format [key=word]"

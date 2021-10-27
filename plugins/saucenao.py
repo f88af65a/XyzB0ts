@@ -8,19 +8,11 @@ from botsdk.tool.HttpRequest import *
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
-        self.listenType = []
-        #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "saucenao", self.saucenao]]
-        #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "saucenao"
-        #"插件名称"
-        self.info = "saucenao识图"
-        #"插件信息"
-        self.help = "/saucenao [图片]"
-        #"插件帮助"
-        self.canDetach = True
+        self.addTarget("GroupMessage", "saucenao", self.saucenao)
         self.saucenaoUrl = "https://saucenao.com/search.php?db=999&output_type=2&numres=16&api_key={key}&url={url}"
         self.key = None
+        self.canDetach = True
 
     def init(self, bot):
         self.key = self.getConfig()["saucenaoKey"]

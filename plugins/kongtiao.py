@@ -18,7 +18,6 @@ class plugin(BotPlugin):
         #"插件信息"
         self.help = "/空调"
         #"插件帮助"
-        self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
         self.canDetach = True
 
     async def kongtiao(self, request):

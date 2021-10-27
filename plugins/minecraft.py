@@ -28,6 +28,7 @@ class plugin(BotPlugin):
         self.name = "minecraft"
         self.addTarget("GroupMessage", "mc", self.getMc)
         self.addTarget("GroupMessage", "mcbe", self.getBe)
+        self.canDetach = True
 
     async def getMc(self, request: BotRequest):
         "/mc ip [端口]不写默认25565"

@@ -18,13 +18,12 @@ class plugin(BotPlugin):
     '''p站相关功能\n/pixiv.[search/rank] [关键字/无] [on]'''
     def __init__(self):
         super().__init__()
+        self.name = "pixiv"
         self.addTarget("GroupMessage", "pixiv.search", self.search)
         self.addTarget("GroupMessage", "pixiv.rank", self.rank)
-        self.name = "pixiv"
-        #"插件名称"
         self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
-        self.canDetach = True
         self.limitTags = {"R18","R-18","R18G","R-18G","R18-G"}
+        self.canDetach = True
 
     def init(self, bot):
         self.url = self.getConfig()["hibiapiUrl"]

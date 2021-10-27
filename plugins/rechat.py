@@ -6,17 +6,10 @@ from botsdk.tool.Cookie import *
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
-        self.listenType = [["GroupMessage", self.rechat]]
-        #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "复读机", self.fuduji],["GroupMessage","say",self.say]]
-        #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "rechat"
-        #"插件名称"
-        self.info = "复读机谁不爱啊"
-        #"插件信息"
-        self.help = "/复读机 [开启/关闭]"
-        #"插件帮助"
-        self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
+        self.addType("GroupMessage", self.rechat)
+        self.addTarget("GroupMessage", "复读机", self.fuduji)
+        self.addTarget("GroupMessage", "say", self.say)
         self.reChatDict = {}
 
     async def rechat(self, request):

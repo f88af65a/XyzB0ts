@@ -7,18 +7,8 @@ from botsdk.tool.JsonConfig import getConfig
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
-        self.listenType = []
-        #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [
-                ]
-        #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
-        self.filterList = [self.deBugGroupCheck]
         self.name = "debug"
-        #"插件名称"
-        self.info = "debug过滤"
-        #"插件信息"
-        self.help = "没有help"
-        #"插件帮助"
+        self.addFilter(self.deBugGroupCheck)
 
     async def deBugGroupCheck(self, request):
         if getConfig()["debug"]:

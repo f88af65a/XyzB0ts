@@ -8,16 +8,8 @@ from botsdk.tool.Cookie import *
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
-        self.listenType = []
-        #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "cookie", self.cookie]]
-        #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "cookie"
-        #"插件名称"
-        self.info = "cookie管理"
-        #"插件信息"
-        self.help = "/cookie"
-        #"插件帮助"
+        self.addTarget("GroupMessage", "cookie", self.cookie)
         self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
 
     async def cookie(self, request):

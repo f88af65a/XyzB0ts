@@ -43,7 +43,7 @@ class plugin(BotPlugin):
         for i in data:
             if i[1] == "":
                 if i[0] in cookie:
-                    del i[0]
+                    del cookie[i[0]]
             else:
                 cookie[i[0]] = i[1]
         setCookie(request.getGroupId(), "format", cookie)

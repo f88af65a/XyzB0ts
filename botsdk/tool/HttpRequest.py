@@ -2,7 +2,7 @@ import aiohttp
 import json
 from botsdk.tool.Error import printTraceBack
 
-async def get(url, proxy = None, headers = None, byte = None, timeout: int=5):
+async def get(url, proxy = None, headers = None, byte = None, timeout: int=15):
     try:
         timeout = aiohttp.ClientTimeout(total = timeout)
         async with aiohttp.ClientSession(headers = (headers if headers is not None else None)
@@ -15,7 +15,7 @@ async def get(url, proxy = None, headers = None, byte = None, timeout: int=5):
         printTraceBack()
         return None
 
-async def post(url, data, byte = None, timeout: int=5):
+async def post(url, data, byte = None, timeout: int=15):
     try:
         timeout = aiohttp.ClientTimeout(total = timeout)
         async with aiohttp.ClientSession(timeout = timeout) as session:

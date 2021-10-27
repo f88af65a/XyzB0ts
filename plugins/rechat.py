@@ -1,4 +1,4 @@
-import botsdk.BotRequest
+from botsdk.BotRequest import BotRequest
 from botsdk.tool.MessageChain import MessageChain
 from botsdk.tool.BotPlugin import BotPlugin
 from botsdk.tool.Cookie import *
@@ -8,7 +8,7 @@ class plugin(BotPlugin):
         super().__init__()
         self.listenType = [["GroupMessage", self.rechat]]
         #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "复读机", self.fuduji]]
+        self.listenTarget = [["GroupMessage", "复读机", self.fuduji],["GroupMessage","say",self.say]]
         #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "rechat"
         #"插件名称"
@@ -55,6 +55,15 @@ class plugin(BotPlugin):
             cookie["rechatState"] = newState
             setCookieByDict(groupid, cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
+    
+    async def say(self, request: BotRequest):
+        chain = []
+        for i in request.getMessageChain()[1:]:
+                chain.append(dict())
+                for j in i:
+                    if not (i["type"] == "Image" and j == "url"):
+                        chain[-1][j] = i[j]
+        await request.getBot().sendMessage(request.getId(), chain)
 
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

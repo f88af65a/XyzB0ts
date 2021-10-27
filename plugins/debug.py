@@ -20,7 +20,7 @@ class plugin(BotPlugin):
         self.help = "没有help"
         #"插件帮助"
 
-    def deBugGroupCheck(self, request):
+    async def deBugGroupCheck(self, request):
         if getConfig()["debug"]:
             if request.getType() == "GroupMessage" and request.getGroupId() in getConfig()["deBugGroupId"]:
                 return True

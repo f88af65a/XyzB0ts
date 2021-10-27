@@ -148,12 +148,12 @@ class BotRoute:
     async def route(self, request : BotRequest):
         #filter路由
         for i in self.filterSet:
-            if not i(request):
+            if not await i(request):
                 return
             await asyncio.sleep(0)
         #format路由
         for i in self.formatSet:
-            i(request)
+            await i(request)
             await asyncio.sleep(0)
         #type路由
         if request.getType() in self.typeRoute:

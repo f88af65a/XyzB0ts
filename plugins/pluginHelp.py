@@ -3,12 +3,11 @@ import botsdk.BotRequest
 from botsdk.tool.MessageChain import MessageChain
 from botsdk.tool.BotPlugin import BotPlugin
 class plugin(BotPlugin):
+    '''/[help/info/load/reload/unload] 插件名'''
     def __init__(self):
         super().__init__()
-        self.listenType = []
         #[["type1",func],["type2",func],...,["typen",func]]
         self.listenTarget = [["GroupMessage", "help", self.helper], \
-                             ["GroupMessage", "info", self.infoFunc], \
                              ["GroupMessage", "load", self.load], \
                              ["GroupMessage", "reload", self.reload], \
                              ["GroupMessage", "unload", self.unload], \
@@ -18,10 +17,6 @@ class plugin(BotPlugin):
         #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "pluginHelp"
         #"插件名称"
-        self.info = "管理插件的插件"
-        #"插件信息"
-        self.help = "/[help/info/load/reload/unload] 插件名"
-        #"插件帮助"
 
     async def helper(self, request):
         """/help [plugin/target] [插件名/命令名]"""
@@ -32,26 +27,16 @@ class plugin(BotPlugin):
         route = request.getRoute()
         if data[1] == "plugin":
             if (re := route.getPlugin(data[2])) is not None:
-                await request.sendMessage(MessageChain().text(str(re.__doc__)))
+                await request.sendMessage(MessageChain().text(re.__doc__))
+                return
         elif data[1] == "target":
             if (re := route.getTarget(request.getType(), data[2])) is not None:
-                await request.sendMessage(MessageChain().text(str(re.__doc__)))
+                await request.sendMessage(MessageChain().text(re.__doc__))
+                return
         else:
             await request.sendMessage(MessageChain().text("参数错误"))
-
-    async def infoFunc(self, request):
-        data = request.getFirstTextSplit()
-        bot = request.getBot()
-        route = request.getRoute()
-        if len(data) < 2:
-            await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("缺少参数").getData())
             return
-        targetPlugin = data[1]
-        allName = route.getAllPluginName()
-        if targetPlugin not in allName:
-            await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("插件不存在").getData())
-            return
-        await bot.sendGroupMessage(request.getGroupId(), MessageChain().text(route.getPlugin(targetPlugin).getInfo()).getData())
+        await request.sendMessage(MessageChain().text("不存在"))
 
     async def load(self, request):
         data = request.getFirstTextSplit()

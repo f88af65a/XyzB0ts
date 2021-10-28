@@ -7,16 +7,6 @@ from botsdk.tool.JsonConfig import getConfig
 
 class BotPlugin:
     def __init__(self):
-        #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenType = []
-        #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
-        self.listenTarget = []
-        #[function1, ..., functionN]
-        #return bool
-        self.filterList = []
-        #[function1, ..., f]
-        self.formatList = []
-        #"插件名称"
         self.name = ""
         #插件所定义的任务
         self.futures = dict()
@@ -31,17 +21,14 @@ class BotPlugin:
         #generalList
         self.generalList = []
 
-    def __del__(self):
-        pass
-
     def addType(self, typeName: str, func):
         if typeName not in self.getListener():
-            self.getListener()[typeName] = {"typeListener": set(), "targetListener":{}}
+            self.getListener()[typeName] = {"typeListener": set(), "targetListener": dict()}
         self.getListener()[typeName]["typeListener"].add(func)
 
     def addTarget(self, typeName: str, targetName: str, func):
         if typeName not in self.getListener():
-            self.getListener()[typeName] = {"typeListener": set(), "targetListener":{}}
+            self.getListener()[typeName] = {"typeListener": set(), "targetListener": dict()}
         self.getListener()[typeName]["targetListener"][targetName] = func
     
     def addGeneral(self, priority, func):
@@ -57,20 +44,12 @@ class BotPlugin:
     def initBySystem(self, bot):
         try:
             self.initPluginConfig()
-            self.initTargetDict()
             self.init(bot)
         except Exception as e:
             self.clear()
             printTraceBack()
             return False
         return True
-
-    def initTargetDict(self):
-        self.targetDict = dict()
-        for i in self.listenTarget:
-            if i[0] not in self.targetDict:
-                self.targetDict[i[0]] = dict()
-            self.targetDict[i[0]][i[1]] = i[2]
 
     #配置文件初始化
     def initPluginConfig(self):
@@ -86,18 +65,6 @@ class BotPlugin:
     #手动清理bot使用的资源
     def clear(self):
         pass
-
-    def getListenType(self):
-        return self.listenType
-
-    def getListenTarget(self):
-        return self.listenTarget
-
-    def getFilterList(self):
-        return self.filterList
-    
-    def getFormatList(self):
-        return self.formatList
 
     def getName(self):
         return self.name

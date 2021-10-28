@@ -11,7 +11,7 @@ class BotRoute:
         self.concurrentModule = concurrentModule
         self.pluginsManager = BotPluginsManager(self.bot)
         self.pluginsManager.init()
-        self.router = [FilterAndFormatRouter(), TypeRouter(), TargetRouter()]
+        self.router = [GeneralRouter(), TypeRouter(), TargetRouter()]
 
     @asyncExceptTrace
     @asyncTimeTest

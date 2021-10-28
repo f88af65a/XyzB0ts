@@ -18,7 +18,7 @@ class BotRouter:
         , concurrentModule: defaultBotConcurrentModule=None):
         pass
 
-class FilterAndFormatRouter(BotRouter):
+class GeneralRouter(BotRouter):
     async def route(self, pluginsManager: BotPluginsManager, request: BotRequest \
         , concurrentModule: defaultBotConcurrentModule=None):
         for i in pluginsManager.getGeneralList():

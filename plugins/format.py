@@ -3,13 +3,14 @@ from botsdk.BotRequest import BotRequest
 from botsdk.tool.BotPlugin import BotPlugin
 from botsdk.tool.Error import *
 from botsdk.tool.Cookie import *
+from botsdk.tool.MessageType import messageType
 
 class formatDict(dict):
     def __missing__(self, key):
         return f"{{{key}}}"
 
 class plugin(BotPlugin):
-    "/format [key=word]"
+    "/format key=word;key=word..."
 
     def __init__(self):
         super().__init__()
@@ -18,10 +19,11 @@ class plugin(BotPlugin):
         self.addFormat(self.doFormat)
 
     async def doFormat(self, request: BotRequest):
-        cookie = getCookie(request.getGroupId(), "format")
-        if cookie is None:
-            return
-        request.getFirst("Plain")["text"] = request.getFirst("Plain")["text"].format_map(formatDict(cookie))
+        if request.getType() == "GroupMessage":
+            cookie = getCookie(request.getGroupId(), "format")
+            if cookie is None:
+                return
+            request.getFirst("Plain")["text"] = request.getFirst("Plain")["text"].format_map(formatDict(cookie))
 
     async def setFormat(self, request: BotRequest):
         "/format [key=word]"

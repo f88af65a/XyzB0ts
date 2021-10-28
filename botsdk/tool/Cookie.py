@@ -1,6 +1,7 @@
 import sqlite3
 import base64
 import json
+from botsdk.tool.BotException import BotException
 from botsdk.tool.JsonConfig import getConfig
 
 '''
@@ -48,7 +49,7 @@ def setCookieByDict(groupid : str, cookie: dict):
 
 def getCookie(groupid : str, key : str):
     if key == "":
-        return None
+        raise BotException("getCookie遇到了错误的key")
     cookie = getCookieByDict(groupid)
     if key not in cookie:
         return None

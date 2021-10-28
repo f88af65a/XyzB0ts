@@ -9,7 +9,7 @@ def permissionCheck(request : BotRequest, target : str):
     if GetSystemPermissionAndCheck(request.getSenderId(), "ADMINISTRATOR"):
         return True
     if request.getType() == "GroupMessage":
-        cookie = getCookieByDict(request.getGroupId())
+        cookie = getCookieByDict(request.getId())
         if not (groupPermissionCheck(request, target, cookie) \
                 or groupMemberPermissionCheck(request, target, cookie)):
             return False

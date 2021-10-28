@@ -1,5 +1,3 @@
-from botsdk.tool.MessageType import messageType
-from botsdk.tool.OutDated import OutDated
 from botsdk.Bot import Bot
 
 class BotRequest(dict):
@@ -18,6 +16,9 @@ class BotRequest(dict):
     
     def getRoute(self):
         return self.route
+    
+    def getPluginsManager(self):
+        return self.route.getPluginsManager()
 
     def getUuid(self):
         return self.data["uuid"]

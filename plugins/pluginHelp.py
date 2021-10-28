@@ -20,7 +20,7 @@ class plugin(BotPlugin):
         if len(data) < 3:
             await request.sendMessage(MessageChain().text("缺少参数"))
             return
-        route = request.getRoute()
+        route = request.getPluginsManager()
         if data[1] == "plugin":
             if (re := route.getPlugin(data[2])) is not None:
                 await request.sendMessage(MessageChain().text(re.__doc__))
@@ -37,7 +37,7 @@ class plugin(BotPlugin):
     async def load(self, request):
         data = request.getFirstTextSplit()
         bot = request.getBot()
-        route = request.getRoute()
+        route = request.getPluginsManager()
         if len(data) < 2:
             await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("缺少参数").getData())
             return
@@ -48,7 +48,7 @@ class plugin(BotPlugin):
     async def reload(self, request):
         data = request.getFirstTextSplit()
         bot = request.getBot()
-        route = request.getRoute()
+        route = request.getPluginsManager()
         if len(data) < 2:
             await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("缺少参数").getData())
             return
@@ -63,7 +63,7 @@ class plugin(BotPlugin):
     async def unload(self, request):
         data = request.getFirstTextSplit()
         bot = request.getBot()
-        route = request.getRoute()
+        route = request.getPluginsManager()
         if len(data) < 2:
             await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("缺少参数").getData())
             return
@@ -77,12 +77,12 @@ class plugin(BotPlugin):
 
     async def plugins(self, request):
         bot = request.getBot()
-        route = request.getRoute()
+        route = request.getPluginsManager()
         await bot.sendGroupMessage(request.getGroupId(), MessageChain().text(str(route.getAllPluginName())).getData())
 
     async def targets(self, request):
         bot = request.getBot()
-        route = request.getRoute()
+        route = request.getPluginsManager()
         allName = route.getAllPluginName()
         re = []
         for i in allName:

@@ -6,13 +6,14 @@ from botsdk.tool.JsonConfig import getConfig
 from botsdk.tool.BotException import BotException
 
 class BotPluginsManager:
-    def __init__(self):
+    def __init__(self, bot):
+        self.bot = bot
         #插件路径
-        self.pluginPath = getConfig()["pluginsPath"]
+        self.pluginsPath = getConfig()["pluginsPath"]
         #{插件名: 插件对象}
         self.plugins = dict()
         #{插件名:插件地址}
-        self.pluginsPath = dict()
+        self.pluginPath = dict()
         #{消息类型:{"typeListener":{func...}, "targetListener":{target:func...}}}
         self.listener = dict()
         #[(优先级,函数)]
@@ -37,13 +38,13 @@ class BotPluginsManager:
 
     def loadPlugin(self, path: str):
         #检查是否存在以及是否是文件
-        if not (os.path.exists(getConfig()["pluginsPath"] + path) \
-            and os.path.isfile(getConfig()["pluginsPath"] + path)):
+        if not (os.path.exists(f"{self.pluginsPath}{path}") \
+            and os.path.isfile(f"{self.pluginsPath}{path}")):
             return False
         path = path.replace(".py","")
         #加载
         try:
-            module = importlib.reload(__import__("plugins.{0}".format(path), fromlist=(path,)))
+            module = importlib.reload(__import__(f"plugins.{path}", fromlist=(path,)))
             handle = getattr(module, "handle")()
         except Exception as e:
             printTraceBack()
@@ -62,9 +63,13 @@ class BotPluginsManager:
         if not handle.initBySystem(self.bot):
             return False
         #添加信息
-        self.setListener(self.getListener() | handleListener)
-        self.setGeneralList(self.getGeneralList() + handle.getGeneralList())
-        self.getGeneralList().sort()
+        for i in handleListener:
+            if i not in self.listener:
+                self.listener[i] = {"typeListener":set(), "targetListener":dict()}
+            self.listener[i]["typeListener"] |= handleListener[i]["typeListener"]
+            self.listener[i]["targetListener"] |= handleListener[i]["targetListener"]
+        self.generalList += handle.getGeneralList()
+        self.generalList.sort(key = lambda i : i[0])
         self.pluginPath[handle.getName()] = path + ".py"
         self.plugins[handle.getName()] = handle
         return True
@@ -104,8 +109,8 @@ class BotPluginsManager:
         return None
 
     def getTarget(self, messageType: str, target: str):
-        if messageType in self.targetRoute and target in self.targetRoute[messageType]:
-            return self.targetRoute[messageType][target]
+        if messageType in self.listener and target in self.listener[messageType]["targetListener"]:
+            return self.listener[messageType]["targetListener"][target]
         return None
 
     def getHandleByTarget(self, messageType: str, target: str):

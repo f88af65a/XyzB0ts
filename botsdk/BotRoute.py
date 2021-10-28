@@ -9,15 +9,18 @@ class BotRoute:
     def __init__(self, bot, concurrentModule = None):
         self.bot = bot
         self.concurrentModule = concurrentModule
-        self.pluginManage = BotPluginsManager()
+        self.pluginsManager = BotPluginsManager(self.bot)
+        self.pluginsManager.init()
         self.router = [FilterAndFormatRouter(), TypeRouter(), TargetRouter()]
 
     @asyncExceptTrace
     @asyncTimeTest
     async def route(self, request : BotRequest):
         for i in range(len(self.router)):
-            if not await self.router[i].route(self, self.pluginManage, request):
+            if (re := await self.router[i].route( \
+                self, self.pluginsManager, request, self.concurrentModule)) \
+                is not None and re is False:
                 return
     
-    def getPluginsManage(self):
-        return self.getPluginsManage
+    def getPluginsManager(self):
+        return self.pluginsManager()

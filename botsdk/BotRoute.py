@@ -18,9 +18,9 @@ class BotRoute:
     async def route(self, request : BotRequest):
         for i in range(len(self.router)):
             if (re := await self.router[i].route( \
-                self, self.pluginsManager, request, self.concurrentModule)) \
+                self.pluginsManager, request, self.concurrentModule)) \
                 is not None and re is False:
                 return
     
     def getPluginsManager(self):
-        return self.pluginsManager()
+        return self.pluginsManager

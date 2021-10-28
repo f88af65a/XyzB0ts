@@ -56,7 +56,7 @@ class plugin(BotPlugin):
                 for j in i:
                     if not (i["type"] == "Image" and j == "url"):
                         chain[-1][j] = i[j]
-        await request.getBot().sendMessage(request.getId(), chain)
+        await request.sendMessage(MessageChain(chain))
 
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

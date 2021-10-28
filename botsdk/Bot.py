@@ -3,15 +3,19 @@ from botsdk.tool.Error import debugPrint,exceptionExit
 import json
 
 class Bot:
-    def __init__(self, path, port, sessionKey = None):
+    def __init__(self, path, port, qq, sessionKey = None):
         self.url = f"http://{path}:{port}"
         self.path = path
         self.port = port
+        self.qq = qq
         if sessionKey != None:
             self.sessionKey = sessionKey
 
     def getData(self):
-        return (self.path, self.port, self.sessionKey)
+        return (self.path, self.port, self.qq, self.sessionKey)
+    
+    def getQq(self):
+        return self.qq
 
     def getPath(self):
         return self.path
@@ -64,12 +68,6 @@ class Bot:
         re = await self.post("/release", kv)
         return re
 
-    async def sendMessage(self, uid, messageChain: list, quote = None):
-        if ":" in uid:
-            await self.sendGroupMessage(int(uid.split(":")[1]), messageChain, quote)
-        else:
-            await self.sendFriendMessage(int(uid), messageChain, quote)
-
     async def sendGroupMessage(self, target:int, messageChain:list, quote = None):
         return await self.post("/sendGroupMessage" \
             , {"sessionKey":self.sessionKey, "target":target, "messageChain":messageChain} \
@@ -79,6 +77,19 @@ class Bot:
         return await self.post("/sendFriendMessage" \
             ,{"sessionKey":self.sessionKey, "target":target, "messageChain":messageChain} \
                 | ({"quote":int(quote)} if quote is not None else {}))
+    
+    async def sendTempMessage(self, targetGroup:int, targetQq:int, messageChain:list, quote = None):
+        return await self.post("/sendFriendMessage" \
+            ,{"sessionKey":self.sessionKey, "qq":targetQq, "group":targetGroup, "messageChain":messageChain} \
+                | ({"quote":int(quote)} if quote is not None else {}))
+    
+    async def sendNudge(self, target:int, subject:int, kind:str):
+        return await self.post("/sendNudge", {"sessionKey":self.sessionKey \
+            , "target": target, "subject": subject, "kind": kind})
+    
+    async def recall(self, target: int):
+        return await self.post("/recall", {"sessionKey":self.sessionKey \
+            , "target": target})
 
     async def fetchMessage(self, count:int):
         return await self.get("/fetchMessage?sessionKey=" + self.sessionKey + "&count=" + str(count))

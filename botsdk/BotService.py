@@ -17,7 +17,7 @@ class BotService:
             qq = getConfig()["account"][accountMark]["qq"]
             #初始化Bot
             self.bot = botsdk.Bot.Bot(getConfig()["account"][accountMark]["path"]
-                , getConfig()["account"][accountMark]["port"])
+                , getConfig()["account"][accountMark]["port"], qq)
             #登录
             re = await self.bot.login(qq
                 , getConfig()["account"][accountMark]["passwd"])

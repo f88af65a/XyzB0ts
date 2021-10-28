@@ -77,14 +77,14 @@ class BotPluginsManager:
     def unLoadPlugin(self, pluginName: str):
         if (re := self.getPlugin(pluginName)) is not None:
             for i in re.getListener():
-                for j in i["typeListener"]:
-                    if i in self.getListener() and j in self.getListener()[i]["typeListener"]:
-                        del self.getListener()[i]["typeListener"][j]
-                for j in i["targetListener"]:
-                    if i in self.getListener() and j in self.getListener()[i]["targetListener"]:
-                        del self.getListener()[i]["targetListener"][j]
+                for j in re.getListener()[i]["typeListener"]:
+                    if i in self.listener and j in self.listener[i]["typeListener"]:
+                        del self.listener[i]["typeListener"][j]
+                for j in re.getListener()[i]["targetListener"]:
+                    if i in self.listener and j in self.listener[i]["targetListener"]:
+                        del self.listener[i]["targetListener"][j]
             for i in re.getGeneralList():
-                self.getGeneralList().remove(i)
+                self.generalList.remove(i)
             del self.plugins[pluginName]
             del self.pluginPath[pluginName]
 

@@ -4,7 +4,7 @@ from botsdk.tool.JsonConfig import getConfig
 #返回真为有权限,假为没权限
 
 def permissionCheck(request : BotRequest, target : str):
-    if (re := systemPermissionCheck(request, target, getConfig()["SystemCookie"])) is not None:
+    if (re := systemPermissionCheck(request, target, getConfig()["systemCookie"])) is not None:
         return re
     if getSystemPermissionAndCheck(request.getSenderId(), "ADMINISTRATOR"):
         return True

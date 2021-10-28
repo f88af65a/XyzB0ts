@@ -4,9 +4,9 @@ from botsdk.tool.JsonConfig import getConfig
 #返回真为有权限,假为没权限
 
 def permissionCheck(request : BotRequest, target : str):
-    if (re := systemPermissionCheck(request, target, getCookieByDict(-1))) is not None:
+    if (re := systemPermissionCheck(request, target, getConfig()["SystemCookie"])) is not None:
         return re
-    if GetSystemPermissionAndCheck(request.getSenderId(), "ADMINISTRATOR"):
+    if getSystemPermissionAndCheck(request.getSenderId(), "ADMINISTRATOR"):
         return True
     if request.getType() == "GroupMessage":
         cookie = getCookieByDict(request.getId())
@@ -59,7 +59,7 @@ def getPermissionFromSystem(qq):
     return None
 
 
-def GetSystemPermissionAndCheck(qq, permission):
+def getSystemPermissionAndCheck(qq, permission):
     if (re := getPermissionFromSystem(qq)) != None:
         return permissionCmp(re, permission)
     return False

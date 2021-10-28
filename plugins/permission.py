@@ -22,7 +22,7 @@ class plugin(BotPlugin):
         cookie = request.getCookie("groupPermission")
         if cookie is None:
             cookie = dict()
-        cookie["groupPermission"][data[1]] = data[2]
+        cookie[data[1]] = data[2]
         request.setCookie("groupPermission", cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
 

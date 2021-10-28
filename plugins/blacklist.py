@@ -11,7 +11,7 @@ class plugin(BotPlugin):
         super().__init__()
         self.name = "blacklist"
         self.addFilter(self.blackListCheck)
-        self.addTarget("TargetRouter", "TargetRouter", self.blacklist)
+        self.addTarget("GroupMessage", "blacklist", self.blacklist)
 
     async def blacklist(self, request: BotRequest):
         '''/blacklist [add/remove] qq'''

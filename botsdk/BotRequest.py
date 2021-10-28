@@ -13,7 +13,6 @@ class BotRequest(dict):
         super().__init__(responseChain)
         self.route = route
         self.data=data
-        self.sendMessageDict = None
         self.bot = None
     
     #Route辅助函数
@@ -104,16 +103,15 @@ class BotRequest(dict):
         return self["sender"]["group"]["permission"]
 
     async def sendMessage(self, msgChain:MessageChain , quote = None):
-        if self.sendMessageDict is None:
-            self.sendMessageDict = {
-                "FriendMessage": self.getBot().sendFriendMessage(
-                    int(self.getSenderId()), msgChain.getData(), quote),
-                "GroupMessage": self.getBot().sendGroupMessage(
-                    int(self.getGroupId()), msgChain.getData(), quote),
-                "TempMessage": self.getBot().sendGroupMessage(
-                    int(self.getGroupId()), int(self.getSenderId()), msgChain.getData(), quote)
-            }
-        self.sendMessageDict[self.getType()]()
+        if self.getType() == "FriendMessage":
+            await self.getBot().sendFriendMessage(int(self.getSenderId()) \
+                , msgChain.getData(), quote),
+        elif self.getType() == "GroupMessage":
+            await self.getBot().sendGroupMessage(int(self.getGroupId()) \
+                , msgChain.getData(), quote),
+        elif self.getType() == "TempMessage":
+            await self.getBot().sendTempMessage(int(self.getGroupId()) \
+                , int(self.getSenderId()), msgChain.getData(), quote)
     
     async def sendNudge(self, target):
         nudgeType = None

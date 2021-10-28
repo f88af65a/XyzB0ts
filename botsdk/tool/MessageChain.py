@@ -1,5 +1,5 @@
 import copy
-from botsdk.BotRequest import BotRequest
+import botsdk.BotRequest
 from botsdk.tool.BotException import BotException
 from botsdk.tool.OutDated import OutDated
 

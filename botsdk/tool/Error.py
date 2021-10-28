@@ -18,7 +18,7 @@ def printTraceBack(msg = None):
     if msg is not None:
         debugPrint(msg)
 
-def exceptTrace(func):
+def traceBack(func):
     def warp(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -27,7 +27,7 @@ def exceptTrace(func):
             return None
     return warp
 
-def asyncExceptTrace(func):
+def asyncTraceBack(func):
     async def warp(*args, **kwargs):
         try:
             return await func(*args, **kwargs)

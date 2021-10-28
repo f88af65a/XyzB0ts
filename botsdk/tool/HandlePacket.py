@@ -1,6 +1,6 @@
 import time
 from botsdk.tool.Error import printTraceBack
-from botsdk.tool.Error import asyncExceptTrace
+from botsdk.tool.Error import asyncTraceBack
 from botsdk.tool.Error import debugPrint
 from botsdk.tool.TimeTest import *
 from botsdk.BotRequest import BotRequest
@@ -36,7 +36,7 @@ def getEndCallBackTask():
     global endCallBackTask
     return endCallBackTask
 
-@asyncExceptTrace
+@asyncTraceBack
 @asyncTimeTest
 async def asyncHandlePacket(fn, *args, **kwargs):
     try:

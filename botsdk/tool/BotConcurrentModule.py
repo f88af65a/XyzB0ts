@@ -42,7 +42,7 @@ async def workProcessRun(queue, threadList):
             try:
                 debugPrint("添加到协程中")
                 asyncio.run_coroutine_threadsafe(
-                    asyncHandlePacket(plugin.getListener()[request.getType()][request.getTarget()], request)
+                    asyncHandlePacket(plugin.getListener()[request.getType()]["targetListener"][request.getTarget()], request)
                     , threadList[useThreadCount][1])
                 debugPrint("添加完成")
                 useThreadCount += 1

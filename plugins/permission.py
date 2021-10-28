@@ -39,14 +39,14 @@ class plugin(BotPlugin):
             return
         cookie = request.getCookie("groupMemberPermission")
         if cookie is None:
-            cookie = {"groupMemberPermission":dict()}
-        if target not in cookie["groupMemberPermission"]:
-            cookie["groupMemberPermission"][target] = []
+            cookie = {}
+        if target not in cookie:
+            cookie[target] = []
         if data[2] == "add":
-            cookie["groupMemberPermission"][target].append(data[3])
+            cookie[target].append(data[3])
         elif data[2] == "remove":
-            if data[3] in cookie["groupMemberPermission"][target]:
-                cookie["groupMemberPermission"][target].remove(data[3])
+            if data[3] in cookie[target]:
+                cookie[target].remove(data[3])
         else:
             await request.sendMessage(MessageChain().text("错误操作"))
             return

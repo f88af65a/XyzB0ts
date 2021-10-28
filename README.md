@@ -8,24 +8,27 @@
 
 
 ### plugins中的样例
- plugins中有实现好的插件可以作为参考  
+ plugins中有实现好的插件可以作为参考(但是没几句注释)
 
 
 ## 插件何时被调用
- 插件被调用有三种方式:监听某一类型消息、监听某一关键字、过滤器  
+ 参考botsdk.tool.BotRouter  
+ 插件被调用有三种方式:监听某一类型消息、监听某一关键字、通用处理  
  当收到符合条件的消息时会调用注册的回调函数
 
 
 ### 通过类型
- 参考plugins.rechat  
- 通过listenType直接赋值、listenType.append或者addType函数在listenType中添加监听信息  
+ 实现见botsdk.tool.BotRouter.TypeRouter  
+ 插件参考plugins.rechat  
+ 通过plugin.addType("消息类型", 回调函数)监听某一类型消息  
  具体格式请参考注释，消息类型请参考[mirai-api-http 消息类型说明](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/MessageType.md)
 
 
 ### 通过关键字
+ 实现见botsdk.tool.BotRouter.TargetRouter  
  参考plugins.saucenao  
- 通过listenTarget直接赋值、listenTarget.append或者addTarget函数在listenTarget中添加监听信息  
- 具体格式请参考注释
+ 通过plugin.addType("消息类型","关键字", 回调函数)监听某一关键字  
+ 具体格式请参考注释，消息类型请参考[mirai-api-http 消息类型说明](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/MessageType.md)
 
 
 #### 关键字如何判定
@@ -35,10 +38,10 @@
  具体判定方式请参考实现
 
 
-### 过滤器
- 参考plugins.blacklist  
- 通过filterList直接赋值、filterList.append或者addFilter函数在filterList中添加监听信息  
- filter在调用后需要返回一个bool，若返回False则会直接结束route不再传递
+### 通用处理
+ 实现见botsdk.tool.BotRouter.GeneralRouter  
+ 插件参考见plugins.format  
+ 通过plugin.addFilter(回调函数)或plugin.addFormat(回调函数)监听所有消息
 
 
 ### 对消息的封装BotRequest类
@@ -59,21 +62,6 @@
 
 ## 一个简单的插件实现
  在群中输入/hello时bot将发送hello  
-```python
-from botsdk.BotRequest import BotRequest
-from botsdk.tool.MessageChain import MessageChain
-from botsdk.tool.BotPlugin import BotPlugin
-
-class handle(BotPlugin):
-    def __init__(self):
-        super().__init__()
-        self.listenTarget = [["GroupMessage", "hello", self.hello]]
-        self.name = "hello"
-
-    async def hello(self, request):
-        await request.sendMessage(MessageChain().text("hello"))
-```
-或者
 ```python
 from botsdk.BotRequest import BotRequest
 from botsdk.tool.MessageChain import MessageChain

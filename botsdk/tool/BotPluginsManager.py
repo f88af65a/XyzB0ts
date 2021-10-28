@@ -62,8 +62,8 @@ class BotPluginsManager:
         if not handle.initBySystem(self.bot):
             return False
         #添加信息
-        self.getListener() |= handleListener
-        self.getGeneralList() += handle.getGeneralList()
+        self.setListener(self.getListener() | handleListener)
+        self.setGeneralList(self.getGeneralList() + handle.getGeneralList())
         self.getGeneralList().sort()
         self.pluginPath[handle.getName()] = path + ".py"
         self.plugins[handle.getName()] = handle
@@ -86,8 +86,14 @@ class BotPluginsManager:
     def getListener(self):
         return self.listener
 
+    def setListener(self, listener):
+        self.listener = listener
+
     def getGeneralList(self):
         return self.generalList
+    
+    def setGeneralList(self, general):
+        self.generalList = general
 
     def getAllPluginName(self):
         return list(self.plugins.keys())
@@ -116,6 +122,7 @@ class BotPluginsManager:
         if messageType in self.getListener():
             return self.getListener()[messageType]["typeListener"]
         return []
+    
     
     def getTargetListener(self, messageType: str, target: str):
         if messageType in self.getListener() and target in self.getListener()["targetListener"]:

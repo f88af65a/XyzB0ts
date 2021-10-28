@@ -11,11 +11,11 @@ endCallBackTask = []
 
 def asyncStartHandleNotify(func, *args, **kwargs):
     request = args[0]
-    debugPrint(f"[asyncHandleTimeTest][{func.__name__}][{request.getFirstTextSplit()[0]}][{request.getUuid()}][START] time={time.time()}")
+    debugPrint(f"[asyncHandleTimeTest][{func.__name__}][{request.getFirstTextSplit()[0]}][{request.getUuid()}][{request.getId()}][START] time={time.time()}")
 
 def asyncEndHandleNotify(func, *args, **kwargs):
     request = args[0]
-    debugPrint(f"[asyncHandleTimeTest][{func.__name__}][{request.getFirstTextSplit()[0]}][{request.getUuid()}][END] time={time.time()}")
+    debugPrint(f"[asyncHandleTimeTest][{func.__name__}][{request.getFirstTextSplit()[0]}][{request.getUuid()}][{request.getId()}][END] time={time.time()}")
 
 def addToStartCallBack(func):
     global startCallBackTask

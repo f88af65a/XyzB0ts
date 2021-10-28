@@ -27,7 +27,6 @@ class BotService:
             debugPrint(f'''账号{qq}登陆成功''', fromName="BotService")
             #初始化BotRoute
             self.botRoute = botsdk.BotRoute.BotRoute(self.bot, concurrentModule)
-            self.botRoute.init()
             while True:
                 retrySize = 0
                 while True:

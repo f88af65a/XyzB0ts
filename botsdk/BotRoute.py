@@ -13,7 +13,7 @@ class BotRoute:
         self.pluginsManager.init()
         self.router = [GeneralRouter(), TypeRouter(), TargetRouter()]
 
-    @asyncExceptTrace
+    @asyncTraceBack
     @asyncTimeTest
     async def route(self, request : BotRequest):
         for i in range(len(self.router)):

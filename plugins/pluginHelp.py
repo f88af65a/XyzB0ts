@@ -6,17 +6,13 @@ class plugin(BotPlugin):
     '''/[help/info/load/reload/unload] 插件名'''
     def __init__(self):
         super().__init__()
-        #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "help", self.helper], \
-                             ["GroupMessage", "load", self.load], \
-                             ["GroupMessage", "reload", self.reload], \
-                             ["GroupMessage", "unload", self.unload], \
-                             ["GroupMessage", "plugins", self.plugins], \
-                             ["GroupMessage", "targets", self.targets], \
-                ]
-        #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "pluginHelp"
-        #"插件名称"
+        self.addTarget("GroupMessage", "help", self.helper)
+        self.addTarget("GroupMessage", "load", self.load)
+        self.addTarget("GroupMessage", "reload", self.reload)
+        self.addTarget("GroupMessage", "unload", self.unload)
+        self.addTarget("GroupMessage", "plugins", self.plugins)
+        self.addTarget("GroupMessage", "targets", self.plugins)
 
     async def helper(self, request):
         """/help [plugin/target] [插件名/命令名]"""
@@ -24,7 +20,7 @@ class plugin(BotPlugin):
         if len(data) < 3:
             await request.sendMessage(MessageChain().text("缺少参数"))
             return
-        route = request.getRoute()
+        route = request.getPluginsManager()
         if data[1] == "plugin":
             if (re := route.getPlugin(data[2])) is not None:
                 await request.sendMessage(MessageChain().text(re.__doc__))
@@ -41,7 +37,7 @@ class plugin(BotPlugin):
     async def load(self, request):
         data = request.getFirstTextSplit()
         bot = request.getBot()
-        route = request.getRoute()
+        route = request.getPluginsManager()
         if len(data) < 2:
             await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("缺少参数").getData())
             return
@@ -52,7 +48,7 @@ class plugin(BotPlugin):
     async def reload(self, request):
         data = request.getFirstTextSplit()
         bot = request.getBot()
-        route = request.getRoute()
+        route = request.getPluginsManager()
         if len(data) < 2:
             await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("缺少参数").getData())
             return
@@ -67,7 +63,7 @@ class plugin(BotPlugin):
     async def unload(self, request):
         data = request.getFirstTextSplit()
         bot = request.getBot()
-        route = request.getRoute()
+        route = request.getPluginsManager()
         if len(data) < 2:
             await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("缺少参数").getData())
             return
@@ -76,17 +72,17 @@ class plugin(BotPlugin):
         if targetPlugin not in allName:
             await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("插件不存在").getData())
             return
-        request.route.unLoadPlugin(targetPlugin)
+        route.unLoadPlugin(targetPlugin)
         await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("卸载成功").getData())
 
     async def plugins(self, request):
         bot = request.getBot()
-        route = request.getRoute()
+        route = request.getPluginsManager()
         await bot.sendGroupMessage(request.getGroupId(), MessageChain().text(str(route.getAllPluginName())).getData())
 
     async def targets(self, request):
         bot = request.getBot()
-        route = request.getRoute()
+        route = request.getPluginsManager()
         allName = route.getAllPluginName()
         re = []
         for i in allName:

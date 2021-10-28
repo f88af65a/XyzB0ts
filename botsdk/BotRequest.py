@@ -1,6 +1,8 @@
-from botsdk.tool.MessageType import messageType
-from botsdk.tool.OutDated import OutDated
 from botsdk.Bot import Bot
+from botsdk.tool.BotException import BotException
+from botsdk.tool.Cookie import getCookie
+from botsdk.tool.Cookie import setCookie
+from botsdk.tool.MessageChain import MessageChain
 
 class BotRequest(dict):
     def __init__(self, data, responseChain, route = None):
@@ -11,13 +13,19 @@ class BotRequest(dict):
         super().__init__(responseChain)
         self.route = route
         self.data=data
+        self.bot = None
     
     #Route辅助函数
     def getBot(self):
-        return Bot(*self.data["bot"])
+        if self.bot is None:
+            self.bot = Bot(*self.data["bot"])
+        return self.bot
     
     def getRoute(self):
         return self.route
+    
+    def getPluginsManager(self):
+        return self.route.getPluginsManager()
 
     def getUuid(self):
         return self.data["uuid"]
@@ -58,10 +66,15 @@ class BotRequest(dict):
 
     def getId(self):
         if self["type"] == "GroupMessage":
-            return f"""{self["sender"]["id"]}:{self["sender"]["group"]["id"]}"""
-        elif self["type"] == "FriendMessage":
-            return str(self["sender"]["id"])
-        return None
+            return f"""Group:{self["sender"]["group"]["id"]}"""
+        else:
+            return f'''User:{self["sender"]["id"]}'''
+
+    def getCookie(self, target: str=None):
+        return getCookie(self.getId(), target)
+
+    def setCookie(self, target: str, cookie):
+        setCookie(self.getId(), target, cookie)
 
     def getSenderId(self):
         return str(self["sender"]["id"])
@@ -89,5 +102,26 @@ class BotRequest(dict):
     def getMyPermission(self):
         return self["sender"]["group"]["permission"]
 
-    async def sendMessage(self, msgChain, quote = None):
-        await self.getBot().sendMessage(self.getId(), msgChain.getData(), quote)
+    async def sendMessage(self, msgChain:MessageChain , quote = None):
+        if self.getType() == "FriendMessage":
+            await self.getBot().sendFriendMessage(int(self.getSenderId()) \
+                , msgChain.getData(), quote),
+        elif self.getType() == "GroupMessage":
+            await self.getBot().sendGroupMessage(int(self.getGroupId()) \
+                , msgChain.getData(), quote),
+        elif self.getType() == "TempMessage":
+            await self.getBot().sendTempMessage(int(self.getGroupId()) \
+                , int(self.getSenderId()), msgChain.getData(), quote)
+    
+    async def sendNudge(self, target):
+        nudgeType = None
+        if self["type"] == "GroupMessage":
+            nudgeType = "Group"
+        elif self["type"] == "FriendMessage":
+            nudgeType = "Friend"
+        else:
+            raise BotException("sendNudge遇到了错误的消息类型")
+        self.getBot().sendNudge(int(self.getBot().getQq()), int(target), nudgeType)
+    
+    async def recall(self, target):
+        self.getBot().recall(int(target))

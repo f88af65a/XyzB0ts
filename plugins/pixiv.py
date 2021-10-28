@@ -18,16 +18,12 @@ class plugin(BotPlugin):
     '''p站相关功能\n/pixiv.[search/rank] [关键字/无] [on]'''
     def __init__(self):
         super().__init__()
-        self.listenType = []
-        #[["type1",func],["type2",func],...,["typen",func]]
-        self.listenTarget = [["GroupMessage", "pixiv.search", self.search],
-                              ["GroupMessage", "pixiv.rank", self.rank]]
-        #[["type1","target",func],["type2","target",func],...,["typen","target",func]]
         self.name = "pixiv"
-        #"插件名称"
+        self.addTarget("GroupMessage", "pixiv.search", self.search)
+        self.addTarget("GroupMessage", "pixiv.rank", self.rank)
         self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
-        self.canDetach = True
         self.limitTags = {"R18","R-18","R18G","R-18G","R18-G"}
+        self.canDetach = True
 
     def init(self, bot):
         self.url = self.getConfig()["hibiapiUrl"]
@@ -40,7 +36,6 @@ class plugin(BotPlugin):
             request.sendMessage(MessageChain().text("/pixiv.search 关键字"))
             return
         response = []
-        #startMark = random.randint(1,30)
         startMark = 1
         randomMark = startMark
         useMark = set()
@@ -75,9 +70,14 @@ class plugin(BotPlugin):
     async def rank(self, request):
         rankType=["day","week","month","rookie","original","male"]
         url = f'''{self.url}/api/pixiv/rank?RankingType={rankType[random.randint(0,len(rankType) - 1)]}&date={time.strftime("%Y-%m-%d", time.localtime(time.time() - random.randint(1,14) * (60 * 60 * 24)))}'''
-        response = json.loads(await get(url))["illusts"]
+        response = await get(url)
         if response is None:
             await request.sendMessage(MessageChain().plain("响应超时"))
+            return
+        response = json.loads(response)["illusts"]
+        if len(response) == 0:
+            await request.sendMessage(MessageChain().plain("怎么会没有图太怪了"))
+            return
         await self.getImgFromList(["on"], response, request)
 
     async def getImgFromList(self, data, response, request):

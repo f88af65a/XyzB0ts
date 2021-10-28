@@ -14,10 +14,10 @@ class plugin(BotPlugin):
 
     async def rechat(self, request):
         bot = request.getBot()
-        groupid = request.getGroupId()
-        cookie = getCookieByDict(groupid)
-        if "rechatState" in cookie and cookie["rechatState"] == "开启":
+        cookie = request.getCookie("rechatState")
+        if cookie is not None and cookie["rechatState"] == "开启":
             chain = []
+            groupid = request.getGroupId()
             for i in request.getMessageChain()[1:]:
                 chain.append(dict())
                 for j in i:
@@ -35,9 +35,8 @@ class plugin(BotPlugin):
         if len(data) < 2:
             await request.sendMessage(MessageChain().text("/复读机 [开启/关闭]"))
             return
-        groupid = request.getGroupId()
-        cookie = getCookieByDict(groupid)
-        if "rechatState" not in cookie:
+        cookie = request.getCookie("rechatState")
+        if cookie is None:
             cookie["rechatState"] = "关闭"
         oldState = cookie["rechatState"]
         newState = data[1]
@@ -46,7 +45,7 @@ class plugin(BotPlugin):
             return
         if oldState != newState:
             cookie["rechatState"] = newState
-            setCookieByDict(groupid, cookie)
+            request.setCookie("rechatState", cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
     
     async def say(self, request: BotRequest):

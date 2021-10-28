@@ -13,18 +13,17 @@ class plugin(BotPlugin):
 
     async def quanxian(self, request):
         data = request.getFirstTextSplit()
-        groupid = request.getGroupId()
         if len(data) < 3:
             await request.sendMessage(MessageChain().text("缺少参数"))
             return
         if data[2] not in self.permissionSet:
             await request.sendMessage(MessageChain().text("权限类型错误"))
             return
-        cookie = getCookieByDict(groupid)
-        if "groupPermission" not in cookie:
-            cookie["groupPermission"] = {}
+        cookie = request.getCookie("groupPermission")
+        if cookie is None:
+            cookie = dict()
         cookie["groupPermission"][data[1]] = data[2]
-        setCookieByDict(groupid, cookie)
+        request.setCookie("groupPermission", cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
 
     async def qunyouquanxian(self, request):
@@ -38,9 +37,9 @@ class plugin(BotPlugin):
         if len(data) < 4:
             await request.sendMessage(MessageChain().text("缺少参数"))
             return
-        cookie = getCookieByDict(groupid)
-        if "groupMemberPermission" not in cookie:
-            cookie["groupMemberPermission"] = {}
+        cookie = request.getCookie("groupMemberPermission")
+        if cookie is None:
+            cookie = {"groupMemberPermission":dict()}
         if target not in cookie["groupMemberPermission"]:
             cookie["groupMemberPermission"][target] = []
         if data[2] == "add":
@@ -51,7 +50,7 @@ class plugin(BotPlugin):
         else:
             await request.sendMessage(MessageChain().text("错误操作"))
             return
-        setCookieByDict(groupid, cookie)
+        request.setCookie("groupMemberPermission", cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
 
 def handle(*args, **kwargs):

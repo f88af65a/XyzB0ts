@@ -16,48 +16,48 @@ conn.commit()
 
 cookieDict = dict()
 
-def updateCookie(groupid : str, cookie : str = None):
+def updateCookie(id : str, cookie : str = None):
     if cookie is None:
-        if groupid in cookieDict:
-            del cookieDict[groupid]
+        if id in cookieDict:
+            del cookieDict[id]
         return ""
-    cookieDict[groupid] = cookie
+    cookieDict[id] = cookie
     return cookie
 
-def getCookieByStr(groupid : str):
-    if groupid in cookieDict:
-        return cookieDict[groupid]
-    cur.execute('''SELECT * FROM GroupCookie WHERE groupid="{0}"'''.format(groupid))
+def getCookieByStr(id : str):
+    if id in cookieDict:
+        return cookieDict[id]
+    cur.execute('''SELECT * FROM GroupCookie WHERE groupid="{0}"'''.format(id))
     re = cur.fetchall()
     if len(re) == 0:
-        setCookieByStr(groupid, "{}")
-        return updateCookie(groupid, "{}")
-    return updateCookie(groupid, base64.b64decode(re[0][1]).decode("utf8"))
+        setCookieByStr(id, "{}")
+        return updateCookie(id, "{}")
+    return updateCookie(id, base64.b64decode(re[0][1]).decode("utf8"))
 
-def getCookieByDict(groupid: str):
-    if groupid == "-1":
+def getCookieByDict(id: str):
+    if id == "-1":
         return getConfig()["systemCookie"]
-    return json.loads(getCookieByStr(groupid))
+    return json.loads(getCookieByStr(id))
 
-def setCookieByStr(groupid : str, cookie : str):
-    cookieDict[groupid] = cookie
-    cur.execute('''REPLACE INTO GroupCookie VALUES("{0}","{1}")'''.format(groupid, base64.b64encode(cookie.encode()).decode()))
+def setCookieByStr(id : str, cookie : str):
+    cookieDict[id] = cookie
+    cur.execute('''REPLACE INTO GroupCookie VALUES("{0}","{1}")'''.format(id, base64.b64encode(cookie.encode()).decode()))
     conn.commit()
 
-def setCookieByDict(groupid : str, cookie: dict):
-    setCookieByStr(groupid, json.dumps(cookie))
+def setCookieByDict(id : str, cookie: dict):
+    setCookieByStr(id, json.dumps(cookie))
 
-def getCookie(groupid : str, key : str):
-    if key == "":
-        raise BotException("getCookie遇到了错误的key")
-    cookie = getCookieByDict(groupid)
+def getCookie(id : str, key : str=None):
+    if key is None:
+        return getCookieByDict(id)
+    cookie = getCookieByDict(id)
     if key not in cookie:
         return None
     return cookie[key]
     
-def setCookie(groupid : str, key : str, value):
+def setCookie(id : str, key : str, value):
     if key == "":
         return None
-    cookie = getCookieByDict(groupid)
+    cookie = getCookieByDict(id)
     cookie[key] = value
-    setCookieByDict(groupid, cookie)
+    setCookieByDict(id, cookie)

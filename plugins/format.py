@@ -20,7 +20,7 @@ class plugin(BotPlugin):
 
     async def doFormat(self, request: BotRequest):
         if request.getType() == "GroupMessage":
-            cookie = getCookie(request.getGroupId(), "format")
+            cookie = request.getCookie("format")
             if cookie is None:
                 return
             request.getFirst("Plain")["text"] = request.getFirst("Plain")["text"].format_map(formatDict(cookie))
@@ -39,7 +39,7 @@ class plugin(BotPlugin):
             if len(data[i]) != 2 or data[i][0] == "":
                 await request.sendMessage(MessageChain().plain("格式有误"))
                 return
-        cookie = getCookie(request.getGroupId(), "format")
+        cookie = request.getCookie("format")
         if cookie is None:
             cookie = {}
         for i in data:
@@ -48,7 +48,7 @@ class plugin(BotPlugin):
                     del cookie[i[0]]
             else:
                 cookie[i[0]] = i[1]
-        setCookie(request.getGroupId(), "format", cookie)
+        request.setCookie("format", cookie)
         await request.sendMessage(MessageChain().plain("修改完成"))
 
 def handle(*args, **kwargs):

@@ -27,7 +27,7 @@
 ### 通过关键字
  实现见botsdk.tool.BotRouter.TargetRouter  
  参考plugins.saucenao  
- 通过plugin.addType("消息类型","关键字", 回调函数)监听某一关键字  
+ 通过plugin.addTarget("消息类型","关键字", 回调函数)监听某一关键字  
  具体格式请参考注释，消息类型请参考[mirai-api-http 消息类型说明](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/MessageType.md)
 
 

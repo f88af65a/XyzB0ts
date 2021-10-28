@@ -13,8 +13,7 @@ class plugin(BotPlugin):
         self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
 
     async def cookie(self, request):
-        groupid = request.getGroupId()
-        cookie = getCookieByDict(groupid)
+        cookie = request.getCookie("")
         await request.sendMessage(MessageChain().text(json.dumps(cookie)))
 
 def handle(*args, **kwargs):

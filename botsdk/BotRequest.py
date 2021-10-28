@@ -71,11 +71,11 @@ class BotRequest(dict):
         else:
             return f'''User:{self["sender"]["id"]}'''
 
-    def getCookie(self, target):
-        pass
+    def getCookie(self, target: str):
+        return getCookie(self.getId(), target)
 
     def setCookie(self, target: str, cookie):
-        pass
+        setCookie(self.getId(), target, cookie)
 
     def getSenderId(self):
         return str(self["sender"]["id"])

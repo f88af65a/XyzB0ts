@@ -72,7 +72,7 @@ class plugin(BotPlugin):
         if targetPlugin not in allName:
             await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("插件不存在").getData())
             return
-        request.route.unLoadPlugin(targetPlugin)
+        route.unLoadPlugin(targetPlugin)
         await bot.sendGroupMessage(request.getGroupId(), MessageChain().text("卸载成功").getData())
 
     async def plugins(self, request):

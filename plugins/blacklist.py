@@ -4,7 +4,7 @@ from botsdk.tool.MessageChain import MessageChain
 from botsdk.tool.Cookie import getCookie, setCookie
 from botsdk.tool.BotPlugin import BotPlugin
 from botsdk.tool.Permission import permissionCmp
-from botsdk.tool.Permission import GetSystemPermissionAndCheck
+from botsdk.tool.Permission import getSystemPermissionAndCheck
 
 class plugin(BotPlugin):
     def __init__(self):
@@ -30,7 +30,7 @@ class plugin(BotPlugin):
         target = data[2]
         try:
             target = str(int(target))
-            if target != data[2] or GetSystemPermissionAndCheck(target, "ADMINISTRATOR"):
+            if target != data[2] or getSystemPermissionAndCheck(target, "ADMINISTRATOR"):
                 raise
         except Exception as e:
                 await request.sendMessage(MessageChain().text("???"))
@@ -38,7 +38,7 @@ class plugin(BotPlugin):
         groupMemberList = await bot.memberList(groupid)
         groupMemberList = groupMemberList["data"]
         checkFlag = True
-        if GetSystemPermissionAndCheck(request.getSenderId(), "ADMINISTRATOR"):
+        if getSystemPermissionAndCheck(request.getSenderId(), "ADMINISTRATOR"):
             checkFlag = False
         else:
             for i in groupMemberList:

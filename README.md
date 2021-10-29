@@ -93,11 +93,13 @@ def handle():
  Cookie封装了操作SQLite3的方式保存经过base64编码的Json用于保存数据
 
 
-### 获取群cookie
- 获取方式为getCookieByDict(groupid)或getCookie(groupid, keyName)  
+### 获取cookie
+ 推荐的使用方式为getCookie(request.getId(), key)
+ 其中request.getId()对群消息返回值为"Group:群号",对好友消息返回值为"User:Q号"
 
 
-### 设置群cookie
+### 设置cookie
+ 推荐的使用方式为setCookie(request.getId(), key, value)
  修改方式为setCookieByDict(groupid, cookie)或setCookie(groupid, cookie)  
 
 

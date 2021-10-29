@@ -34,17 +34,15 @@ async def workProcessRun(queue, threadList):
                 await asyncio.sleep(0.05)
                 continue
             request = BotRequest(*data)
-            module = importlib.reload(__import__(f"plugins.{data[0]['pluginPath'][:-3]}"
-                , fromlist=(data[0]["pluginPath"][:-3],)))
+            module = importlib.reload(__import__(data[0]['pluginPath']
+                , fromlist=(data[0]["pluginPath"],)))
             plugin = getattr(module, "handle")()
             if not plugin.initBySystem(request.getBot()):
                 continue
             try:
-                debugPrint("添加到协程中")
                 asyncio.run_coroutine_threadsafe(
                     asyncHandlePacket(plugin.getListener()[request.getType()]["targetListener"][request.getTarget()], request)
                     , threadList[useThreadCount][1])
-                debugPrint("添加完成")
                 useThreadCount += 1
                 if useThreadCount == len(threadList):
                     useThreadCount = 0

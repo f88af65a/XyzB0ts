@@ -35,8 +35,6 @@ def getCookieByStr(id : str):
     return updateCookie(id, base64.b64decode(re[0][1]).decode("utf8"))
 
 def getCookieByDict(id: str):
-    if id == "-1":
-        return getConfig()["systemCookie"]
     return json.loads(getCookieByStr(id))
 
 def setCookieByStr(id : str, cookie : str):

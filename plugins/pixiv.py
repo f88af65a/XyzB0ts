@@ -47,9 +47,10 @@ class plugin(BotPlugin):
         while len(markList) > 0 and len(response) < 150:
             searchMark = markList[random.randint(0, len(markList) - 1)]
             url = self.url + f"/api/pixiv/search?word={data[1]}{usersOn}&page={searchMark}&size=50"
-            searchData = json.loads(await get(url))
+            searchData = await get(url)
             if searchData is None:
                 continue
+            searchData = json.loads(searchData)
             if "illusts" not in searchData or len(searchData["illusts"]) == 0:
                 del markList[markList.index(searchMark):]
                 continue

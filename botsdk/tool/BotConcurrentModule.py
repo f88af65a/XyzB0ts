@@ -40,11 +40,9 @@ async def workProcessRun(queue, threadList):
             if not plugin.initBySystem(request.getBot()):
                 continue
             try:
-                debugPrint("添加到协程中")
                 asyncio.run_coroutine_threadsafe(
                     asyncHandlePacket(plugin.getListener()[request.getType()]["targetListener"][request.getTarget()], request)
                     , threadList[useThreadCount][1])
-                debugPrint("添加完成")
                 useThreadCount += 1
                 if useThreadCount == len(threadList):
                     useThreadCount = 0

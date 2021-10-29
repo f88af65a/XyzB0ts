@@ -58,7 +58,6 @@ def getPermissionFromSystem(qq):
         return config["systemCookie"]["user"][qq]
     return None
 
-
 def getSystemPermissionAndCheck(qq, permission):
     if (re := getPermissionFromSystem(qq)) != None:
         return permissionCmp(re, permission)

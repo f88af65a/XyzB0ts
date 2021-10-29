@@ -1,4 +1,5 @@
 import os
+import sys
 import importlib
 from botsdk.tool.Error import *
 from botsdk.tool.BotPlugin import BotPlugin
@@ -12,8 +13,6 @@ class BotPluginsManager:
         self.pluginsPath = getConfig()["pluginsPath"]
         #{插件名: 插件对象}
         self.plugins = dict()
-        #{插件名:插件地址}
-        self.pluginPath = dict()
         #{消息类型:{"typeListener":{func...}, "targetListener":{target:func...}}}
         self.listener = dict()
         #[(优先级,函数)]
@@ -32,7 +31,7 @@ class BotPluginsManager:
 
     def reLoadPlugin(self, pluginName: str):
         if pluginName in self.plugins:
-            path = self.pluginPath[pluginName]
+            path = f"{sys.modules[self.plugins[pluginName].__module__].__name__}.py"
             self.unLoadPlugin(pluginName)
             return self.loadPlugin(path)
 
@@ -70,7 +69,6 @@ class BotPluginsManager:
             self.listener[i]["targetListener"] |= handleListener[i]["targetListener"]
         self.generalList += handle.getGeneralList()
         self.generalList.sort(key = lambda i : i[0])
-        self.pluginPath[handle.getName()] = path + ".py"
         self.plugins[handle.getName()] = handle
         return True
 
@@ -86,7 +84,6 @@ class BotPluginsManager:
             for i in re.getGeneralList():
                 self.generalList.remove(i)
             del self.plugins[pluginName]
-            del self.pluginPath[pluginName]
 
     def getListener(self):
         return self.listener
@@ -120,14 +117,13 @@ class BotPluginsManager:
 
     def getPluginPathByTarget(self, messageType: str, target: str):
         if (re := self.getHandleByTarget(messageType, target)) is not None:
-            return self.pluginPath[re.getName()]
+            return sys.modules[re.__module__].__name__
         return None
     
     def getTypeListener(self, messageType: str):
         if messageType in self.getListener():
             return self.getListener()[messageType]["typeListener"]
         return []
-    
     
     def getTargetListener(self, messageType: str, target: str):
         if messageType in self.getListener() and target in self.getListener()["targetListener"]:

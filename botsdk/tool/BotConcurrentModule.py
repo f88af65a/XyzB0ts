@@ -34,7 +34,7 @@ async def workProcessRun(queue, threadList):
                 await asyncio.sleep(0.05)
                 continue
             request = BotRequest(*data)
-            module = importlib.reload(__import__(f"plugins.{data[0]['pluginPath']}"
+            module = importlib.reload(__import__(data[0]['pluginPath']
                 , fromlist=(data[0]["pluginPath"],)))
             plugin = getattr(module, "handle")()
             if not plugin.initBySystem(request.getBot()):

@@ -105,7 +105,7 @@ class plugin(BotPlugin):
         imgType = imgType.replace("https","http")
         imgType = imgType.replace("i.pximg.net",self.proxy)
         img = await get(imgType.replace("https","http"), headers={"user-agent":"Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36", 'Referer': 'https://www.pixiv.net/'}, byte = True)
-        if img is not None:
+        if img is not None and len(img) != 0:
             fPath = getConfig()["localFilePath"] + str(re["id"]) + str(random.randint(0,65535)) + ".jpg"
             f = open(fPath, "bw")
             f.write(img)

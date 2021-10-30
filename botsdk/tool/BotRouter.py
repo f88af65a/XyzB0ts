@@ -80,7 +80,7 @@ class TargetRouter(BotRouter):
             if not permissionCheck(request, target):
                 await request.sendMessage(MessageChain().plain("权限限制"))
                 return
-            request.setPluginPath(pluginsManager.getPluginPathByTarget(request.getType(), target))
+            request.setHandleModuleName(pluginsManager.getHandleByTarget(request.getType, target).__module__)
             #路由
             for i in range(controlData["size"]):
                 if concurrentModule is not None and re.__self__.getCanDetach():

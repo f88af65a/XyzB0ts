@@ -51,12 +51,12 @@ class BotRequest(dict):
     def getTarget(self):
         return self.data["target"]
     
-    def setPluginPath(self, path):
-        self.data["pluginPath"] = path
+    def setHandleModuleName(self, name):
+        self.data["handleModuleName"] = name
     
-    def getPluginPath(self):
-        return self.data["pluginPath"]
-    
+    def getHandleModuleName(self):
+        return self.data["handleModuleName"]
+
     def getMyQq(self):
         return self.data["qq"]
 

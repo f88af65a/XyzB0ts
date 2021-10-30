@@ -2,7 +2,7 @@
 	"appPath":"",
 	"pluginsPath":"plugins/",
 	"sqlPath":"botsql.sql",
-	"localFilePath":"localFile/",
+	"localFilePath":"./localFile/",
 	"workProcess":"4",
 	"workThread":"4",
 	"multi":true,

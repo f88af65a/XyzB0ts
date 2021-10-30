@@ -94,13 +94,12 @@ def handle():
 
 
 ### 获取cookie
- 推荐的使用方式为getCookie(request.getId(), key)
+ 推荐的使用方式为getCookie(request.getId(), key)  
  其中request.getId()对群消息返回值为"Group:群号",对好友消息返回值为"User:Q号"
 
 
 ### 设置cookie
  推荐的使用方式为setCookie(request.getId(), key, value)
- 修改方式为setCookieByDict(groupid, cookie)或setCookie(groupid, cookie)  
 
 
 # 权限系统

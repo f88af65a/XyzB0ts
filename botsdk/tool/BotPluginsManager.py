@@ -27,23 +27,22 @@ class BotPluginsManager:
 
     def loadAllPlugin(self):
         for i in os.listdir(self.pluginsPath):
-            self.loadPlugin(i)
+            if os.path.isfile(f"{self.pluginsPath}{i}"):
+                self.loadPlugin(i)
 
     def reLoadPlugin(self, pluginName: str):
         if pluginName in self.plugins:
-            path = f"{sys.modules[self.plugins[pluginName].__module__].__name__}.py"
+            moduleName = self.plugins[pluginName].__module__
             self.unLoadPlugin(pluginName)
-            return self.loadPlugin(path)
+            return self.loadPlugin(moduleName)
 
     def loadPlugin(self, path: str):
-        #检查是否存在以及是否是文件
-        if not (os.path.exists(f"{self.pluginsPath}{path}") \
-            and os.path.isfile(f"{self.pluginsPath}{path}")):
-            return False
-        path = path.replace(".py","")
+        path = path.replace("/", ".")
+        if path[-3:] == ".py":
+            path = path[:-3]
         #加载
         try:
-            module = importlib.reload(__import__(f"plugins.{path}", fromlist=(path,)))
+            module = importlib.reload(importlib.import_module(path))
             handle = getattr(module, "handle")()
         except Exception as e:
             printTraceBack()
@@ -115,11 +114,6 @@ class BotPluginsManager:
             return re.__self__
         return None
 
-    def getPluginPathByTarget(self, messageType: str, target: str):
-        if (re := self.getHandleByTarget(messageType, target)) is not None:
-            return sys.modules[re.__module__].__name__
-        return None
-    
     def getTypeListener(self, messageType: str):
         if messageType in self.getListener():
             return self.getListener()[messageType]["typeListener"]

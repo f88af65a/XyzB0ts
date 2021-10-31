@@ -37,8 +37,7 @@ class plugin(BotPlugin):
             return
         cookie = request.getCookie("rechatState")
         if cookie is None:
-            cookie = dict()
-            cookie["rechatState"] = "关闭"
+            cookie = {"rechatState": "关闭"}
         oldState = cookie["rechatState"]
         newState = data[1]
         if newState != "开启" and newState != "关闭":

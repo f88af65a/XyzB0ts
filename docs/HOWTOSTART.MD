@@ -1,11 +1,11 @@
 # 插件开发
 ### botsdk.util.BotPlugin
- 实现见[botsdk.util.BotPlugin](botsdk/util.BotPlugin.py)
+ 实现见[botsdk.util.BotPlugin](/botsdk/util.BotPlugin.py)  
  所有插件应该先继承botsdk.util.BotPlugin以能够让框架能正常调用  
 
 
 ### 插件如何被初始化
- 实现见[botsdk.util.BotPluginsManager](botsdk/util/BotPluginsManager.py)  
+ 实现见[botsdk.util.BotPluginsManager](/botsdk/util/BotPluginsManager.py)  
  插件的初始化在BotPluginsManager.loadPlugin中
 
 
@@ -14,22 +14,22 @@
 
 
 ## 插件如何被调用
- 实现见[botsdk.util.BotRouter](botsdk/util/BotRouter.py)  
+ 实现见[botsdk.util.BotRouter](/botsdk/util/BotRouter.py)  
  插件被调用有三种方式:监听某一类型消息、监听某一关键字、通用处理  
  以下将监听消息的回调函数称之为处理函数  
  当收到符合条件的消息时会调用注册的回调函数
 
 
 ### 监听类型
- 实现见[botsdk.util.BotRouter.TypeRouter](botsdk/util/BotRouter.py)  
- 参考见[plugins.rechat](plugins/rechat.py)  
+ 实现见[botsdk.util.BotRouter.TypeRouter](/botsdk/util/BotRouter.py)  
+ 参考见[plugins.rechat](/plugins/rechat.py)  
  通过plugin.addType("消息类型", 回调函数)监听某一类型消息  
  具体格式请参考注释，消息类型请参考[mirai-api-http 消息类型说明](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/MessageType.md)
 
 
 ### 监听关键字
- 实现见[botsdk.util.BotRouter.TargetRouter](botsdk/util/BotRouter.py)  
- 参考见[plugins.saucenao](plugins/saucenao.py)  
+ 实现见[botsdk.util.BotRouter.TargetRouter](/botsdk/util/BotRouter.py)  
+ 参考见[plugins.saucenao](/plugins/saucenao.py)  
  通过plugin.addTarget("消息类型","关键字", 回调函数)监听某一关键字  
  具体格式请参考注释，消息类型请参考[mirai-api-http 消息类型说明](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/MessageType.md)
 
@@ -41,13 +41,13 @@
 
 
 ### 通用处理
- 实现见[botsdk.util.BotRouter.GeneralRouter](botsdk/util/BotRouter.py)  
+ 实现见[botsdk.util.BotRouter.GeneralRouter](/botsdk/util/BotRouter.py)  
  参考见plugins.format  
  通过plugin.addFilter(回调函数)或plugin.addFormat(回调函数)监听所有消息
 
 
 ### BotRequest类
- 实现见[botsdk.BotRequest](botsdk/BotRequest.py)  
+ 实现见[botsdk.BotRequest](/botsdk/BotRequest.py)  
  botsdk.BotRequest是一个功能众多的类，继承自dict，其内容为fetchMessage获取的消息,是处理函数处self外的唯一参数  
  除了继承自dict外，还实现了部分辅助函数提供便捷的使用    
  常用的有sendMessage、getCookie与setCookie  
@@ -57,12 +57,12 @@
 
 
 ### MessageChain的封装
- 实现见[botsdk.util.MessageChain](botsdk/uitl/MessageChain.py)  
+ 实现见[botsdk.util.MessageChain](/botsdk/uitl/MessageChain.py)  
  一个提供对需要发送的消息进行封装的类，支持链式调用
 
 
 ### 与mirai-api-http交互
- 实现见[botsdk.Bot](botsdk/Bot.py)  
+ 实现见[botsdk.Bot](/botsdk/Bot.py)  
  该类对mirai-api-http进行了一定的封装，不够用就自己加吧
 
 
@@ -74,7 +74,7 @@
 
 
 # 数据持久化
- 实现见botsdk.util.Cookie  
+ 实现见[botsdk.util.Cookie](/botsdk/util/Cookie.py)  
  Cookie封装了操作SQLite3的方式保存经过base64编码的Json用于保存数据
 
 
@@ -89,7 +89,7 @@
 
 
 # 权限系统
- 实现见botsdk.util.Permission  
+ 实现见[botsdk.util.Permission](/botsdk/util/Permission.py)  
  权限管理插件可以参考plugins.permission  
  内置权限共有系统权限与群内权限两种，可能会做好友消息的权限
 

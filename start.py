@@ -1,6 +1,6 @@
 import botsdk.BotService
 import multiprocessing
-from botsdk.tool.JsonConfig import getConfig
+from botsdk.util.JsonConfig import getConfig
 
 def start():
     if "startMethod" in getConfig():

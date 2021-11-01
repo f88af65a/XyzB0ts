@@ -1,5 +1,5 @@
 import time
-from botsdk.tool.Error import debugPrint
+from botsdk.util.Error import debugPrint
 
 def timeTest(func):
     def warp(*args, **kwargs):

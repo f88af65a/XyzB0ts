@@ -1,7 +1,7 @@
 import sys
 import traceback
-from botsdk.tool.BotException import BotException
-from botsdk.tool.JsonConfig import getConfig
+from botsdk.util.BotException import BotException
+from botsdk.util.JsonConfig import getConfig
 
 def debugPrint(msg: str, fromName=None, exception=None, level=5):
     if level <= getConfig()["debugPrint"]:

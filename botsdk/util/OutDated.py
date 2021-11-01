@@ -1,4 +1,4 @@
-from botsdk.tool.Error import debugPrint
+from botsdk.util.Error import debugPrint
 
 def OutDated(func):
     def warp(*args, **kwargs):

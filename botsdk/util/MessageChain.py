@@ -1,7 +1,7 @@
 import copy
 import botsdk.BotRequest
-from botsdk.tool.BotException import BotException
-from botsdk.tool.OutDated import OutDated
+from botsdk.util.BotException import BotException
+from botsdk.util.OutDated import OutDated
 
 class MessageChain:
     def __init__(self, rhs = None):

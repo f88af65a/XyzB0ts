@@ -1,10 +1,10 @@
 import time
-from botsdk.tool.Error import printTraceBack
-from botsdk.tool.Error import asyncTraceBack
-from botsdk.tool.Error import debugPrint
-from botsdk.tool.TimeTest import *
+from botsdk.util.Error import printTraceBack
+from botsdk.util.Error import asyncTraceBack
+from botsdk.util.Error import debugPrint
+from botsdk.util.TimeTest import *
 from botsdk.BotRequest import BotRequest
-from botsdk.tool.MessageChain import MessageChain
+from botsdk.util.MessageChain import MessageChain
 
 startCallBackTask = []
 endCallBackTask = []

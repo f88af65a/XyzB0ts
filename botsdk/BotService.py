@@ -3,9 +3,9 @@ import asyncio
 import botsdk.Bot
 import botsdk.BotRequest
 import botsdk.BotRoute
-from botsdk.tool.JsonConfig import *
-from botsdk.tool.Error import *
-from botsdk.tool.BotConcurrentModule import defaultBotConcurrentModule
+from botsdk.util.JsonConfig import *
+from botsdk.util.Error import *
+from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 
 class BotService:
     def __init__(self):

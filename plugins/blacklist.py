@@ -1,10 +1,10 @@
 import botsdk.Bot
 from botsdk.BotRequest import BotRequest
-from botsdk.tool.MessageChain import MessageChain
-from botsdk.tool.Cookie import getCookie, setCookie
-from botsdk.tool.BotPlugin import BotPlugin
-from botsdk.tool.Permission import permissionCmp
-from botsdk.tool.Permission import getSystemPermissionAndCheck
+from botsdk.util.MessageChain import MessageChain
+from botsdk.util.Cookie import getCookie, setCookie
+from botsdk.util.BotPlugin import BotPlugin
+from botsdk.util.Permission import permissionCmp
+from botsdk.util.Permission import getSystemPermissionAndCheck
 
 class plugin(BotPlugin):
     def __init__(self):

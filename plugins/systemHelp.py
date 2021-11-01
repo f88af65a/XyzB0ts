@@ -1,8 +1,8 @@
 import botsdk.Bot
 import botsdk.BotRequest
-import botsdk.tool.JsonConfig
-from botsdk.tool.MessageChain import MessageChain
-from botsdk.tool.BotPlugin import BotPlugin
+import botsdk.util.JsonConfig
+from botsdk.util.MessageChain import MessageChain
+from botsdk.util.BotPlugin import BotPlugin
 
 class plugin(BotPlugin):
     def __init__(self):
@@ -16,7 +16,7 @@ class plugin(BotPlugin):
             await request.sendMessage(MessageChain().text("缺少参数"))
             return
         if data[1] == "reload":
-            botsdk.tool.JsonConfig.reload()
+            botsdk.util.JsonConfig.reload()
             await request.sendMessage(MessageChain().text("重新加载完成"))
 
 def handle(*args, **kwargs):

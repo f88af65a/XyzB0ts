@@ -2,10 +2,10 @@ import asyncio
 import socket
 import time
 import json
-from botsdk.tool.MessageChain import MessageChain
+from botsdk.util.MessageChain import MessageChain
 from botsdk.BotRequest import BotRequest
-from botsdk.tool.BotPlugin import BotPlugin
-from botsdk.tool.Error import *
+from botsdk.util.BotPlugin import BotPlugin
+from botsdk.util.Error import *
 
 def getMcRequestData(ip, port):
     data = b"\x00\xff\xff\xff\xff\x0f" + bytes([len(ip.encode("utf8"))]) + ip.encode("utf8") + int.to_bytes(port,2,byteorder="big") + b"\x01\x01\x00"

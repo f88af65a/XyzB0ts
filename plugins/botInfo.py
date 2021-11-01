@@ -1,6 +1,6 @@
-from botsdk.tool.BotPlugin import BotPlugin
+from botsdk.util.BotPlugin import BotPlugin
 from botsdk.BotRequest import BotRequest
-from botsdk.tool.MessageChain import MessageChain
+from botsdk.util.MessageChain import MessageChain
 
 class plugin(BotPlugin):
     "来自XyzB0ts\n项目地址https://github.com/f88af65a/XyzB0ts"

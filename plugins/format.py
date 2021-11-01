@@ -1,9 +1,9 @@
-from botsdk.tool.MessageChain import MessageChain
+from botsdk.util.MessageChain import MessageChain
 from botsdk.BotRequest import BotRequest
-from botsdk.tool.BotPlugin import BotPlugin
-from botsdk.tool.Error import *
-from botsdk.tool.Cookie import *
-from botsdk.tool.MessageType import messageType
+from botsdk.util.BotPlugin import BotPlugin
+from botsdk.util.Error import *
+from botsdk.util.Cookie import *
+from botsdk.util.MessageType import messageType
 
 class formatDict(dict):
     def __missing__(self, key):

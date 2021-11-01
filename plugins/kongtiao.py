@@ -1,9 +1,9 @@
 import json
 import botsdk.Bot
 import botsdk.BotRequest
-from botsdk.tool.MessageChain import MessageChain
-from botsdk.tool.BotPlugin import BotPlugin
-from botsdk.tool.Cookie import *
+from botsdk.util.MessageChain import MessageChain
+from botsdk.util.BotPlugin import BotPlugin
+from botsdk.util.Cookie import *
 
 class plugin(BotPlugin):
     def __init__(self):

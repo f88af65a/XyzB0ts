@@ -3,7 +3,7 @@
 
 
 # 插件开发
-### botsdk.tool.BotPlugin
+### botsdk.util.BotPlugin
  BotPlugin中的注释非常详细  
 
 
@@ -12,20 +12,20 @@
 
 
 ## 插件何时被调用
- 参考botsdk.tool.BotRouter  
+ 参考botsdk.util.BotRouter  
  插件被调用有三种方式:监听某一类型消息、监听某一关键字、通用处理  
  当收到符合条件的消息时会调用注册的回调函数
 
 
 ### 通过类型
- 实现见botsdk.tool.BotRouter.TypeRouter  
+ 实现见botsdk.util.BotRouter.TypeRouter  
  插件参考plugins.rechat  
  通过plugin.addType("消息类型", 回调函数)监听某一类型消息  
  具体格式请参考注释，消息类型请参考[mirai-api-http 消息类型说明](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/MessageType.md)
 
 
 ### 通过关键字
- 实现见botsdk.tool.BotRouter.TargetRouter  
+ 实现见botsdk.util.BotRouter.TargetRouter  
  参考plugins.saucenao  
  通过plugin.addTarget("消息类型","关键字", 回调函数)监听某一关键字  
  具体格式请参考注释，消息类型请参考[mirai-api-http 消息类型说明](https://github.com/project-mirai/mirai-api-http/blob/master/docs/api/MessageType.md)
@@ -39,7 +39,7 @@
 
 
 ### 通用处理
- 实现见botsdk.tool.BotRouter.GeneralRouter  
+ 实现见botsdk.util.BotRouter.GeneralRouter  
  插件参考见plugins.format  
  通过plugin.addFilter(回调函数)或plugin.addFormat(回调函数)监听所有消息
 
@@ -51,7 +51,7 @@
 
 
 ### MessageChain的封装
- 实现见botsdk.tool.MessageChain  
+ 实现见botsdk.util.MessageChain  
  支持链式调用
 
 
@@ -64,8 +64,8 @@
  在群中输入/hello时bot将发送hello  
 ```python
 from botsdk.BotRequest import BotRequest
-from botsdk.tool.MessageChain import MessageChain
-from botsdk.tool.BotPlugin import BotPlugin
+from botsdk.util.MessageChain import MessageChain
+from botsdk.util.BotPlugin import BotPlugin
 
 class plugin(BotPlugin):
     def __init__(self):
@@ -89,7 +89,7 @@ def handle():
 
 
 # 数据持久化
- 实现见botsdk.tool.Cookie  
+ 实现见botsdk.util.Cookie  
  Cookie封装了操作SQLite3的方式保存经过base64编码的Json用于保存数据
 
 
@@ -104,7 +104,7 @@ def handle():
 
 
 # 权限系统
- 实现见botsdk.tool.Permission  
+ 实现见botsdk.util.Permission  
  权限管理插件可以参考plugins.permission  
  内置权限共有系统权限与群内权限两种，可能会做好友消息的权限
 

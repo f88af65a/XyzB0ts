@@ -1,6 +1,6 @@
-from botsdk.tool.Cookie import getCookieByDict
+from botsdk.util.Cookie import getCookieByDict
 from botsdk.BotRequest import BotRequest
-from botsdk.tool.JsonConfig import getConfig
+from botsdk.util.JsonConfig import getConfig
 #返回真为有权限,假为没权限
 
 def permissionCheck(request : BotRequest, target : str):

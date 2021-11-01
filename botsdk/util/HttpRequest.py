@@ -1,6 +1,6 @@
 import aiohttp
 import json
-from botsdk.tool.Error import printTraceBack
+from botsdk.util.Error import printTraceBack
 
 async def get(url, proxy = None, headers = None, byte = None, timeout: int=15):
     try:

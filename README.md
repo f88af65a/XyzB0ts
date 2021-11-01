@@ -1,7 +1,7 @@
 # XyzB0ts
  基于[mirai-api-http](https://github.com/project-mirai/mirai-api-http)的bot框架  
  提供了对mirai-api-http的封装、消息分发与一些辅助功能  
- 能够更快的上手bot功能的开发
+ 能够简单快速的上手bot功能的开发
 
 
 # 快速开始

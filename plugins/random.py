@@ -24,3 +24,6 @@ class plugin(BotPlugin):
             await request.sendMessage(MessageChain().plain(self.random.__doc__))
             return
         await request.sendMessage(MessageChain().plain(str(random.randint(l, r))))
+
+def handle():
+    return plugin()

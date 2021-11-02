@@ -22,4 +22,5 @@ class plugin(BotPlugin):
                 raise
         except Exception:
             request.sendMessage(MessageChain().plain(self.random.__doc__))
+            return
         request.sendMessage(MessageChain().plain(str(random.randint(l, r))))

@@ -82,7 +82,7 @@ class plugin(BotPlugin):
             except Exception as e:
                 await request.sendMessage(MessageChain().plain("解析出错"))
                 return 
-            await request.sendMessage(MessageChain.plain("服务器名:{0}\n服务器地图:{1}\n服务器人数:{2}/{3}".format(serName, serMap, serSize, serMaxSize)))
+            await request.sendMessage(MessageChain().plain("服务器名:{0}\n服务器地图:{1}\n服务器人数:{2}/{3}".format(serName, serMap, serSize, serMaxSize)))
 
 def handle():
     return plugin()

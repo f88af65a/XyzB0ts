@@ -1,9 +1,9 @@
-from botsdk.tool.Error import *
-from botsdk.tool.JsonConfig import getConfig
-from botsdk.tool.TimeTest import asyncTimeTest
+from botsdk.util.Error import *
+from botsdk.util.JsonConfig import getConfig
+from botsdk.util.TimeTest import asyncTimeTest
 from botsdk.BotRequest import BotRequest
-from botsdk.tool.BotPluginsManager import BotPluginsManager
-from botsdk.tool.BotRouter import *
+from botsdk.util.BotPluginsManager import BotPluginsManager
+from botsdk.util.BotRouter import *
 
 class BotRoute:
     def __init__(self, bot, concurrentModule = None):

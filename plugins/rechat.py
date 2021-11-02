@@ -1,7 +1,7 @@
 from botsdk.BotRequest import BotRequest
-from botsdk.tool.MessageChain import MessageChain
-from botsdk.tool.BotPlugin import BotPlugin
-from botsdk.tool.Cookie import *
+from botsdk.util.MessageChain import MessageChain
+from botsdk.util.BotPlugin import BotPlugin
+from botsdk.util.Cookie import *
 
 class plugin(BotPlugin):
     def __init__(self):
@@ -37,7 +37,7 @@ class plugin(BotPlugin):
             return
         cookie = request.getCookie("rechatState")
         if cookie is None:
-            cookie["rechatState"] = "关闭"
+            cookie = {"rechatState": "关闭"}
         oldState = cookie["rechatState"]
         newState = data[1]
         if newState != "开启" and newState != "关闭":

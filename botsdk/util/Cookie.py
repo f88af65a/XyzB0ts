@@ -1,8 +1,8 @@
 import sqlite3
 import base64
 import json
-from botsdk.tool.BotException import BotException
-from botsdk.tool.JsonConfig import getConfig
+from botsdk.util.BotException import BotException
+from botsdk.util.JsonConfig import getConfig
 
 '''
 -1表示config

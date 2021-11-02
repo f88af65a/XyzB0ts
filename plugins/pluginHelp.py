@@ -1,7 +1,7 @@
 import botsdk.Bot
 import botsdk.BotRequest
-from botsdk.tool.MessageChain import MessageChain
-from botsdk.tool.BotPlugin import BotPlugin
+from botsdk.util.MessageChain import MessageChain
+from botsdk.util.BotPlugin import BotPlugin
 class plugin(BotPlugin):
     '''/[help/info/load/reload/unload] 插件名'''
     def __init__(self):

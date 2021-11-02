@@ -1,8 +1,8 @@
 import botsdk.Bot
 import botsdk.BotRequest
-from botsdk.tool.BotPlugin import BotPlugin
-from botsdk.tool.Permission import permissionCmp
-from botsdk.tool.JsonConfig import getConfig
+from botsdk.util.BotPlugin import BotPlugin
+from botsdk.util.Permission import permissionCmp
+from botsdk.util.JsonConfig import getConfig
 
 class plugin(BotPlugin):
     def __init__(self):

@@ -4,11 +4,11 @@ import importlib
 from multiprocessing import Process, Queue
 from botsdk.Bot import Bot
 from botsdk.BotRequest import BotRequest
-from botsdk.tool.BotException import BotException
-from botsdk.tool.JsonConfig import getConfig
-from botsdk.tool.TimeTest import *
-from botsdk.tool.Error import printTraceBack,debugPrint
-from botsdk.tool.HandlePacket import *
+from botsdk.util.BotException import BotException
+from botsdk.util.JsonConfig import getConfig
+from botsdk.util.TimeTest import *
+from botsdk.util.Error import printTraceBack,debugPrint
+from botsdk.util.HandlePacket import *
 from botsdk.BotRequest import BotRequest
 
 #线程默认运行函数

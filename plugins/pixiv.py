@@ -7,12 +7,12 @@ import os
 import base64
 import math
 from PIL import Image
-from botsdk.tool.MessageChain import MessageChain
-from botsdk.tool.BotPlugin import BotPlugin
-from botsdk.tool.Cookie import *
-from botsdk.tool.HttpRequest import *
-from botsdk.tool.JsonConfig import getConfig
-from botsdk.tool.TimeTest import *
+from botsdk.util.MessageChain import MessageChain
+from botsdk.util.BotPlugin import BotPlugin
+from botsdk.util.Cookie import *
+from botsdk.util.HttpRequest import *
+from botsdk.util.JsonConfig import getConfig
+from botsdk.util.TimeTest import *
 
 class plugin(BotPlugin):
     '''p站相关功能\n/pixiv.[search/rank] [关键字/无] [on]'''

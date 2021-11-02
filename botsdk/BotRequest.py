@@ -1,8 +1,8 @@
 from botsdk.Bot import Bot
-from botsdk.tool.BotException import BotException
-from botsdk.tool.Cookie import getCookie
-from botsdk.tool.Cookie import setCookie
-from botsdk.tool.MessageChain import MessageChain
+from botsdk.util.BotException import BotException
+from botsdk.util.Cookie import getCookie
+from botsdk.util.Cookie import setCookie
+from botsdk.util.MessageChain import MessageChain
 
 class BotRequest(dict):
     def __init__(self, data, responseChain, route = None):

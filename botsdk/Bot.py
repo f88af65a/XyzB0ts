@@ -1,5 +1,5 @@
-import botsdk.tool.HttpRequest
-from botsdk.tool.Error import debugPrint,exceptionExit
+import botsdk.util.HttpRequest
+from botsdk.util.Error import debugPrint,exceptionExit
 import json
 
 class Bot:
@@ -24,10 +24,10 @@ class Bot:
         return self.port
 
     async def post(self, path, data):
-        return json.loads(await botsdk.tool.HttpRequest.post(self.url + path, data))
+        return json.loads(await botsdk.util.HttpRequest.post(self.url + path, data))
 
     async def get(self, path):
-        return json.loads(await botsdk.tool.HttpRequest.get(self.url + path))
+        return json.loads(await botsdk.util.HttpRequest.get(self.url + path))
 
     async def login(self, qq:int, authkey:str):
         if await self.verify(authkey) is None:

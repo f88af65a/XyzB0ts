@@ -19,7 +19,7 @@ class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
         self.name = "hello
-        self.addTarget("GroupMessage", "hello", self.hello)"
+        self.addTarget("GroupMessage", "hello", self.hello)
 
     async def hello(self, request):
         await request.sendMessage(MessageChain().text("hello"))

@@ -39,7 +39,11 @@ class plugin(BotPlugin):
                 await request.sendMessage(MessageChain().plain("发送失败"))
                 return
             re = None
-            re = await loop.sock_recv(sock, 1501)
+            try:
+                re = await loop.sock_recv(sock, 1501)
+            except Exception as e:
+                await request.sendMessage(MessageChain().plain("获取失败"))
+                return
             if re[0:5] == b"\xff\xff\xff\xff\x41":
                 key = re[5:len(re)]
                 await loop.sock_sendall(sock,searchData + key)

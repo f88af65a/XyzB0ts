@@ -18,7 +18,7 @@ from botsdk.util.BotPlugin import BotPlugin
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
-        self.name = "hello
+        self.name = "hello"
         self.addTarget("GroupMessage", "hello", self.hello)
 
     async def hello(self, request):

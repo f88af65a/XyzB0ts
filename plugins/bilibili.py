@@ -5,6 +5,7 @@ import asyncio
 from botsdk.Bot import Bot
 from botsdk.util.Error import *
 from botsdk.util.HttpRequest import *
+from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.MessageChain import MessageChain
 from botsdk.util.BotNotifyModule import getNotifyModule
@@ -13,6 +14,8 @@ class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
         self.name = "bilibili"
+        self.addTarget("GroupMessage", "anime", self.anime)
+        self.addTarget("GroupMessage", "follower", self.follower)
     
     def init(self, bot):
         for i in self.getConfig()["listen"]:
@@ -80,8 +83,12 @@ class plugin(BotPlugin):
             await asyncio.sleep(30)
     
     async def anime(self, request):
-        response = await post("https://bangumi.bilibili.com/web_api/timeline_global?")
-        if response is None or response["code"] != 0:
+        response = await get("https://bangumi.bilibili.com/web_api/timeline_global")
+        if response is None:
+            await request.sendMessage("请求失败")
+            return
+        response = json.loads(response)
+        if response["code"] != 0:
             await request.sendMessage("叔叔返回了一个错误")
             return
         response = response["result"]
@@ -94,8 +101,23 @@ class plugin(BotPlugin):
                     if "pub_index" not in j or "pub_time" not in j:
                         continue
                     printData += "\n" + j["title"] + " " +j["pub_index"] + " " + j["pub_time"]
-                request.sendMessage(printData)
+                await request.sendMessage(printData)
                 return 
+    
+    async def follower(self, request: BotRequest):
+        data = request.getFirstTextSplit()
+        if len(data) < 2:
+            request.sendMessage("uid呢，uid在哪里")
+            return
+        response = await get(f"https://api.bilibili.com/x/relation/stat?vmid={data[1]}")
+        if response is None:
+            await request.sendMessage("请求失败")
+            return
+        response = json.loads(response)
+        if response["code"] != 0:
+            await request.sendMessage("叔叔返回了一个错误")
+            return
+        request.sendMessage(f'''现有粉丝{response["data"]["follower"]}''')
 
 def handle():
     return plugin()

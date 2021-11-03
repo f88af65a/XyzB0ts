@@ -5,7 +5,6 @@ import botsdk.BotRequest
 import botsdk.BotRoute
 from botsdk.util.JsonConfig import *
 from botsdk.util.Error import *
-from botsdk.util.BotNotifyModule import BotNotifyModule
 from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 

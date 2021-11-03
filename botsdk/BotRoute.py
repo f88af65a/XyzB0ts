@@ -2,7 +2,6 @@ from botsdk.util.Error import *
 from botsdk.util.JsonConfig import getConfig
 from botsdk.util.TimeTest import asyncTimeTest
 from botsdk.BotRequest import BotRequest
-from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.BotRouter import *
 
 class BotRoute:

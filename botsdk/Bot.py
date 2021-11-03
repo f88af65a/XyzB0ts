@@ -1,8 +1,7 @@
-from botsdk.util.BotException import BotException
-import botsdk.util.HttpRequest
-from botsdk.util.Error import debugPrint,exceptionExit
 import json
-
+import botsdk.util.HttpRequest
+from botsdk.util.BotException import BotException
+from botsdk.util.Error import debugPrint,exceptionExit
 from botsdk.util.MessageChain import MessageChain
 
 class Bot:

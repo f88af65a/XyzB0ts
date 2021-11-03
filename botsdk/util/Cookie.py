@@ -19,7 +19,7 @@ def getAllCookie():
     sqlData = cur.fetchall()
     re = dict()
     for i in sqlData:
-        re[i[0]] = json.loads(base64.decode(i[1]).decode("utf8"))
+        re[i[0]] = json.loads(base64.b64decode(i[1]).decode("utf8"))
     return re
 
 def updateCookie(id : str, cookie : str = None):

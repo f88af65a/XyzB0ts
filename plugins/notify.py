@@ -9,6 +9,7 @@ class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
         self.name = "notify"
+        self.addTarget("GroupMessage", "notify", self.manageNotify)
     
     def init(self, bot):
         allCookie = getAllCookie()
@@ -29,7 +30,7 @@ class plugin(BotPlugin):
         if data[1] == "add":
             if data[2] not in cookie:
                 cookie.append(data[2])
-                getNotifyModule().addListen(data[2])
+                getNotifyModule().addListen(request.getId(), data[2])
                 request.setCookie("notify", cookie)
         elif data[1] == "remove":
             if data[2] in cookie:

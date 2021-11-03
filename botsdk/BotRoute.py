@@ -6,9 +6,8 @@ from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.BotRouter import *
 
 class BotRoute:
-    def __init__(self, bot, pluginsManager, notifyModule, concurrentModule = None):
+    def __init__(self, bot, pluginsManager, concurrentModule = None):
         self.bot = bot
-        self.notifyModule = notifyModule
         self.concurrentModule = concurrentModule
         self.pluginsManager = pluginsManager
         self.router = [GeneralRouter(), TypeRouter(), TargetRouter()]

@@ -81,3 +81,7 @@ class BotNotifyModule:
 
     def notify(self, notifyName: str):
         return self.notifyTree.get(notifyName)
+
+notifyModule = BotNotifyModule()
+def getNotifyModule():
+    return notifyModule

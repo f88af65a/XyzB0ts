@@ -1,4 +1,6 @@
 import copy
+import json
+import asyncio
 from botsdk.Bot import Bot
 from botsdk.util.Error import *
 from botsdk.util.HttpRequest import *
@@ -9,7 +11,7 @@ from botsdk.util.BotNotifyModule import getNotifyModule
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
-        self.name = "bilibiliData"
+        self.name = "bilibili"
     
     def init(self, bot):
         for i in self.getConfig()["listen"]:
@@ -51,25 +53,30 @@ class plugin(BotPlugin):
         dynamicId = set()
         maxDynamicId = 0
         notifyName = f"bilibili.dynamic.{uid}"
-        try:
-            data = await get(f"https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?host_uid={uid}&offset_dynamic_id=0&need_top=1&platform=web")
-            if data is None or data["code"] != 0:
-                raise
-            datas = data["data"]["cards"]
-            if len(dynamicId) == 0:
-                for i in datas:
-                    dynamicId.add(i["desc"]["dynamic_id"])
-            else:
-                localId = []
-                for i in datas:
-                    localId.append(i["desc"]["dynamic_id"])
-                    if i["desc"]["dynamic_id"] not in dynamicId and i["desc"]["dynamic_id"] > maxDynamicId:
-                        await self.toNotify(notifyName, bot, MessageChain().text("[是新动态捏]") + self.dynamicCardAnlysis(json.loads(i["card"])))
+        while True:
+            try:
+                data = await get(f"https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?host_uid={uid}&offset_dynamic_id=0&need_top=1&platform=web")
+                if data is None:
+                    raise
+                data = json.loads(data)
+                if data["code"] != 0:
+                    raise
+                datas = data["data"]["cards"]
+                if len(dynamicId) == 0:
+                    for i in datas:
                         dynamicId.add(i["desc"]["dynamic_id"])
-                maxDynamicId = max(maxDynamicId,max(localId))
-                dynamicId = set(localId)
-        except Exception as e:
-            printTraceBack()
+                else:
+                    localId = []
+                    for i in datas:
+                        localId.append(i["desc"]["dynamic_id"])
+                        if i["desc"]["dynamic_id"] not in dynamicId and i["desc"]["dynamic_id"] > maxDynamicId:
+                            await self.toNotify(notifyName, bot, MessageChain().text("[是新动态捏]") + self.dynamicCardAnlysis(json.loads(i["card"])))
+                            dynamicId.add(i["desc"]["dynamic_id"])
+                    maxDynamicId = max(maxDynamicId,max(localId))
+                    dynamicId = set(localId)
+            except Exception as e:
+                printTraceBack()
+            await asyncio.sleep(30)
 
 def handle():
     return plugin()

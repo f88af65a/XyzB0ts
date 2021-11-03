@@ -45,7 +45,7 @@ def getCookieByDict(id: str):
 
 def setCookieByStr(id : str, cookie : str):
     cookieDict[id] = cookie
-    cur.execute('''REPLACE INTO GroupCookie VALUES("{0}","{1}")'''.format(id, base64.b64encode(cookie.encode()).decode()))
+    cur.execute('''REPLACE INTO Cookie VALUES("{0}","{1}")'''.format(id, base64.b64encode(cookie.encode()).decode()))
     conn.commit()
 
 def setCookieByDict(id : str, cookie: dict):

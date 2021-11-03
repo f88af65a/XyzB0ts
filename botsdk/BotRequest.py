@@ -97,7 +97,9 @@ class BotRequest(dict):
     def getMyPermission(self):
         return self["sender"]["group"]["permission"]
 
-    async def sendMessage(self, msgChain:MessageChain , quote = None):
+    async def sendMessage(self, msgChain, quote = None):
+        if type(msgChain) is str:
+            msgChain = MessageChain().plain(msgChain)
         if self.getType() == "FriendMessage":
             await self.getBot().sendFriendMessage(int(self.getSenderId()) \
                 , msgChain.getData(), quote),

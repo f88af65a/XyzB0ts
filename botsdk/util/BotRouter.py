@@ -3,7 +3,6 @@ import asyncio
 from botsdk.util.Error import *
 from botsdk.util.Permission import *
 from botsdk.BotRequest import BotRequest
-from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.MessageType import messageType
 from botsdk.util.MessageChain import MessageChain
 from botsdk.util.HandlePacket import asyncHandlePacket

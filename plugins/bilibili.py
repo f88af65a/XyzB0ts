@@ -70,3 +70,6 @@ class plugin(BotPlugin):
                 dynamicId = set(localId)
         except Exception as e:
             printTraceBack()
+
+def handle():
+    return plugin()

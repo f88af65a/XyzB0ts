@@ -1,20 +1,26 @@
 import sqlite3
 import base64
 import json
-from botsdk.util.BotException import BotException
 from botsdk.util.JsonConfig import getConfig
 
 '''
--1表示config
-0表示持久化的设置
+id为0表示持久化的设置
 '''
 sqlPath = getConfig()["sqlPath"]
 conn = sqlite3.connect(sqlPath)
 cur = conn.cursor()
-cur.execute('''CREATE TABLE IF NOT EXISTS GroupCookie(groupid TEXT PRIMARYKEY UNIQUE NOT NULL, cookie TEXT NOT NULL)''')
+cur.execute('''CREATE TABLE IF NOT EXISTS Cookie(id TEXT PRIMARYKEY UNIQUE NOT NULL, cookie TEXT NOT NULL)''')
 conn.commit()
 
 cookieDict = dict()
+
+def getAllCookie():
+    cur.execute('''SELECT * FROM Cookie''')
+    sqlData = cur.fetchall()
+    re = dict()
+    for i in sqlData:
+        re[i[0]] = json.loads(base64.decode(i[1]).decode("utf8"))
+    return re
 
 def updateCookie(id : str, cookie : str = None):
     if cookie is None:
@@ -27,7 +33,7 @@ def updateCookie(id : str, cookie : str = None):
 def getCookieByStr(id : str):
     if id in cookieDict:
         return cookieDict[id]
-    cur.execute('''SELECT * FROM GroupCookie WHERE groupid="{0}"'''.format(id))
+    cur.execute('''SELECT * FROM Cookie WHERE id="{0}"'''.format(id))
     re = cur.fetchall()
     if len(re) == 0:
         setCookieByStr(id, "{}")

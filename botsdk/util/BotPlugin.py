@@ -3,7 +3,6 @@ import uuid
 import json
 import asyncio
 from botsdk.util.Error import printTraceBack
-from botsdk.util.JsonConfig import getConfig
 
 class BotPlugin:
     def __init__(self):

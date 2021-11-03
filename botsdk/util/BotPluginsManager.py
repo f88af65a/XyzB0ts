@@ -1,10 +1,7 @@
 import os
-import sys
 import importlib
 from botsdk.util.Error import *
-from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.BotException import BotException
 
 class BotPluginsManager:
     def __init__(self, bot):

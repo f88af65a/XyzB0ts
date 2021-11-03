@@ -117,7 +117,7 @@ class plugin(BotPlugin):
         if response["code"] != 0:
             await request.sendMessage("叔叔返回了一个错误")
             return
-        request.sendMessage(f'''现有粉丝{response["data"]["follower"]}''')
+        await request.sendMessage(f'''现有粉丝{response["data"]["follower"]}''')
 
 def handle():
     return plugin()

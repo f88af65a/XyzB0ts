@@ -1,21 +1,16 @@
 from botsdk.Bot import Bot
-from botsdk.util.BotException import BotException
 from botsdk.util.Cookie import getCookie
 from botsdk.util.Cookie import setCookie
+from botsdk.util.BotException import BotException
 from botsdk.util.MessageChain import MessageChain
 
 class BotRequest(dict):
     def __init__(self, data, responseChain, route = None):
-        '''
-        BotRquest(dict)
-        继承自dict，封装了部分处理消息的函数
-        '''
         super().__init__(responseChain)
-        self.route = route
         self.data=data
+        self.route = route
         self.bot = None
     
-    #Route辅助函数
     def getBot(self):
         if self.bot is None:
             self.bot = Bot(*self.data["bot"])
@@ -102,7 +97,9 @@ class BotRequest(dict):
     def getMyPermission(self):
         return self["sender"]["group"]["permission"]
 
-    async def sendMessage(self, msgChain:MessageChain , quote = None):
+    async def sendMessage(self, msgChain, quote = None):
+        if type(msgChain) is str:
+            msgChain = MessageChain().plain(msgChain)
         if self.getType() == "FriendMessage":
             await self.getBot().sendFriendMessage(int(self.getSenderId()) \
                 , msgChain.getData(), quote),

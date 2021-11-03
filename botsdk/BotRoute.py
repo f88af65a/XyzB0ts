@@ -2,15 +2,13 @@ from botsdk.util.Error import *
 from botsdk.util.JsonConfig import getConfig
 from botsdk.util.TimeTest import asyncTimeTest
 from botsdk.BotRequest import BotRequest
-from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.BotRouter import *
 
 class BotRoute:
-    def __init__(self, bot, concurrentModule = None):
+    def __init__(self, bot, pluginsManager, concurrentModule = None):
         self.bot = bot
         self.concurrentModule = concurrentModule
-        self.pluginsManager = BotPluginsManager(self.bot)
-        self.pluginsManager.init()
+        self.pluginsManager = pluginsManager
         self.router = [GeneralRouter(), TypeRouter(), TargetRouter()]
 
     @asyncTraceBack
@@ -22,5 +20,8 @@ class BotRoute:
                 is not None and re is False:
                 return
     
+    def getNotifyModule(self):
+        return self.notifyModule
+
     def getPluginsManager(self):
         return self.pluginsManager

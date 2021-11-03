@@ -5,6 +5,7 @@ import botsdk.BotRequest
 import botsdk.BotRoute
 from botsdk.util.JsonConfig import *
 from botsdk.util.Error import *
+from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 
 class BotService:
@@ -26,7 +27,8 @@ class BotService:
                 return
             debugPrint(f'''账号{qq}登陆成功''', fromName="BotService")
             #初始化BotRoute
-            self.botRoute = botsdk.BotRoute.BotRoute(self.bot, concurrentModule)
+            self.botRoute = botsdk.BotRoute.BotRoute(self.bot, BotPluginsManager(self.bot)
+                , concurrentModule)
             while True:
                 retrySize = 0
                 while True:

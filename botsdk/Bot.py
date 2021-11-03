@@ -1,6 +1,8 @@
-import botsdk.util.HttpRequest
-from botsdk.util.Error import debugPrint,exceptionExit
 import json
+import botsdk.util.HttpRequest
+from botsdk.util.BotException import BotException
+from botsdk.util.Error import debugPrint,exceptionExit
+from botsdk.util.MessageChain import MessageChain
 
 class Bot:
     def __init__(self, path, port, qq, sessionKey = None):
@@ -83,6 +85,16 @@ class Bot:
             ,{"sessionKey":self.sessionKey, "qq":targetQq, "group":targetGroup, "messageChain":messageChain} \
                 | ({"quote":int(quote)} if quote is not None else {}))
     
+    async def sendMessageById(self, id: str, messageChain: MessageChain, quote = None):
+        messageType, target = id.split(":")
+        target = int(target)
+        if messageType == "User":
+            await self.sendFriendMessage(target, messageChain.getData(), quote)
+        elif messageType == "Group":
+            await self.sendGroupMessage(target, messageChain.getData(), quote)
+        else:
+            raise BotException("Bot.sendMessageById遇到了不支持的类型")
+
     async def sendNudge(self, target:int, subject:int, kind:str):
         return await self.post("/sendNudge", {"sessionKey":self.sessionKey \
             , "target": target, "subject": subject, "kind": kind})

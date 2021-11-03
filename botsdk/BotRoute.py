@@ -6,11 +6,11 @@ from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.BotRouter import *
 
 class BotRoute:
-    def __init__(self, bot, concurrentModule = None):
+    def __init__(self, bot, pluginsManager, notifyModule, concurrentModule = None):
         self.bot = bot
+        self.notifyModule = notifyModule
         self.concurrentModule = concurrentModule
-        self.pluginsManager = BotPluginsManager(self.bot)
-        self.pluginsManager.init()
+        self.pluginsManager = pluginsManager
         self.router = [GeneralRouter(), TypeRouter(), TargetRouter()]
 
     @asyncTraceBack
@@ -22,5 +22,8 @@ class BotRoute:
                 is not None and re is False:
                 return
     
+    def getNotifyModule(self):
+        return self.notifyModule
+
     def getPluginsManager(self):
         return self.pluginsManager

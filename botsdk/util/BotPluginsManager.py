@@ -17,13 +17,12 @@ class BotPluginsManager:
         self.listener = dict()
         #[(优先级,函数)]
         self.generalList = list()
+        #初始化
+        self.loadAllPlugin()
     
     def __del__(self):
         for i in [i for i in self.plugins]:
             self.unLoadPlugin(i)
-
-    def init(self):
-        self.loadAllPlugin()
 
     def loadAllPlugin(self):
         for i in os.listdir(self.pluginsPath):

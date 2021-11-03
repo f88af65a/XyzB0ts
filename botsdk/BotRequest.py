@@ -6,16 +6,11 @@ from botsdk.util.MessageChain import MessageChain
 
 class BotRequest(dict):
     def __init__(self, data, responseChain, route = None):
-        '''
-        BotRquest(dict)
-        继承自dict，封装了部分处理消息的函数
-        '''
         super().__init__(responseChain)
-        self.route = route
         self.data=data
+        self.route = route
         self.bot = None
     
-    #Route辅助函数
     def getBot(self):
         if self.bot is None:
             self.bot = Bot(*self.data["bot"])

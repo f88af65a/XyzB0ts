@@ -10,6 +10,7 @@ class plugin(BotPlugin):
         super().__init__()
         self.name = "unturnedPlayerSize"
         self.addTarget("GroupMessage", "un", self.unSearch)
+        self.canDetach = True
     
     async def unSearch(self, request: BotRequest):
         "/un 服务器ip [端口默认27015]"

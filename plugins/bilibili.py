@@ -1,4 +1,5 @@
 import copy
+import time
 import json
 import asyncio
 from botsdk.Bot import Bot
@@ -77,6 +78,24 @@ class plugin(BotPlugin):
             except Exception as e:
                 printTraceBack()
             await asyncio.sleep(30)
+    
+    async def anime(self, request):
+        response = await post("https://bangumi.bilibili.com/web_api/timeline_global?")
+        if response is None or response["code"] != 0:
+            await request.sendMessage("叔叔返回了一个错误")
+            return
+        response = response["result"]
+        thisTime = time.localtime(time.time())
+        dayTime = str(thisTime[1]) + "-" + str(thisTime[2])
+        for i in response:
+            if i["date"] == dayTime:
+                printData="数据来自睿站 现在波特时间{0}:{1}:{2}".format(thisTime[3],thisTime[4],thisTime[5])
+                for j in i["seasons"]:
+                    if "pub_index" not in j or "pub_time" not in j:
+                        continue
+                    printData += "\n" + j["title"] + " " +j["pub_index"] + " " + j["pub_time"]
+                request.sendMessage(printData)
+                return 
 
 def handle():
     return plugin()

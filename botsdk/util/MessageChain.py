@@ -24,9 +24,9 @@ class MessageChain:
         imgData = [{"type": "Image"}]
         if imageId is not None:
             imgData[0]["imageId"] = imageId
-        if url is not None:
+        elif url is not None:
             imgData[0]["url"] = url
-        if path is not None:
+        elif path is not None:
             imgData[0]["path"] = path
         else:
             raise BotException("MessageChain.image需要一个正常的参数")
@@ -37,9 +37,9 @@ class MessageChain:
         imgData = [{"type": "FlashImage"}]
         if imageId is not None:
             imgData[0]["imageId"] = imageId
-        if url is not None:
+        elif url is not None:
             imgData[0]["url"] = url
-        if path is not None:
+        elif path is not None:
             imgData[0]["path"] = path
         else:
             raise BotException("MessageChain.image需要一个正常的参数")

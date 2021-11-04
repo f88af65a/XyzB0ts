@@ -58,13 +58,14 @@ class plugin(BotPlugin):
         maxDynamicId = 0
         notifyName = f"bilibili.dynamic.{uid}"
         while True:
+            await asyncio.sleep(30)
             try:
                 data = await get(f"https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?host_uid={uid}&offset_dynamic_id=0&need_top=1&platform=web")
                 if data is None:
-                    raise
+                    continue
                 data = json.loads(data)
                 if data["code"] != 0:
-                    raise
+                    continue
                 datas = data["data"]["cards"]
                 if len(dynamicId) == 0:
                     for i in datas:
@@ -80,7 +81,6 @@ class plugin(BotPlugin):
                     dynamicId = set(localId)
             except Exception as e:
                 printTraceBack()
-            await asyncio.sleep(30)
     
     async def anime(self, request):
         response = await get("https://bangumi.bilibili.com/web_api/timeline_global")

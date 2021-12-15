@@ -1,5 +1,4 @@
 import json
-import botsdk.BotRequest
 from botsdk.util.MessageChain import MessageChain
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.HttpRequest import get
@@ -61,37 +60,51 @@ class plugin(BotPlugin):
         if len(response["results"]) == 0:
             printData.text("无相似图片")
             return printData
-        printData.text("返回了{0}张结果\n相似度大于80%的结果".format(len(response["results"])))
-        for i in range(0,len(response["results"])):
+        printData.text(
+            "返回了{0}张结果\n相似度大于80%的结果".format(len(response["results"])))
+        for i in range(0, len(response["results"])):
             if float(response["results"][i]["header"]["similarity"]) < 80:
                 continue
             if "member_name" in response["results"][i]["data"]:
-                printData.text("\n[作者]{0}".format(response["results"][i]["data"]["member_name"]))
+                printData.text("\n[作者]{0}".format(
+                    response["results"][i]["data"]["member_name"]))
             if "member_id" in response["results"][i]["data"]:
-                printData.text("\n[作者ID]{0}".format(response["results"][i]["data"]["member_id"]))
+                printData.text("\n[作者ID]{0}".format(
+                    response["results"][i]["data"]["member_id"]))
             if "title" in response["results"][i]["data"]:
-                printData.text("\n[标题]{0}".format(response["results"][i]["data"]["title"]))
+                printData.text("\n[标题]{0}".format(
+                    response["results"][i]["data"]["title"]))
             if "pixiv_id" in response["results"][i]["data"]:
-                printData.text("\n[pixiv_id]{0}".format(response["results"][i]["data"]["pixiv_id"]))
-                printData.text("\n[相似度]{0}".format(response["results"][i]["header"]["similarity"]))
+                printData.text("\n[pixiv_id]{0}".format(
+                    response["results"][i]["data"]["pixiv_id"]))
+                printData.text("\n[相似度]{0}".format(
+                    response["results"][i]["header"]["similarity"]))
             if "ext_urls" in response["results"][i]["data"]:
-                printData.text("\n[链接]{0}".format(response["results"][i]["data"]["ext_urls"][0]))
-        printData.text("\n相似度大于60%的结果".format(len(response["results"])))
-        for i in range(0,len(response["results"])):
-            if float(response["results"][i]["header"]["similarity"]) >= 80 or float(response["results"][i]["header"]["similarity"]) < 60:
+                printData.text("\n[链接]{0}".format(
+                    response["results"][i]["data"]["ext_urls"][0]))
+        printData.text("\n相似度大于60%的结果")
+        for i in range(0, len(response["results"])):
+            if (float(response["results"][i]["header"]["similarity"]) >= 80
+                    or (float(response["results"][i]["header"]["similarity"])
+                        < 60)):
                 continue
             if "member_name" in response["results"][i]["data"]:
-                printData.text("\n[作者]{0}".format(response["results"][i]["data"]["member_name"]))
+                printData.text("\n[作者]{0}".format(
+                    response["results"][i]["data"]["member_name"]))
             if "member_id" in response["results"][i]["data"]:
-                printData.text("\n[作者ID]{0}".format(response["results"][i]["data"]["member_id"]))
+                printData.text("\n[作者ID]{0}".format(
+                    response["results"][i]["data"]["member_id"]))
             if "title" in response["results"][i]["data"]:
-                printData.text("\n[标题]{0}".format(response["results"][i]["data"]["title"]))
+                printData.text("\n[标题]{0}".format(
+                    response["results"][i]["data"]["title"]))
             if "pixiv_id" in response["results"][i]["data"]:
-                printData.text("\n[pixiv_id]{0}".format(response["results"][i]["data"]["pixiv_id"]))
-                printData.text("\n[相似度]{0}".format(response["results"][i]["header"]["similarity"]))
+                printData.text("\n[pixiv_id]{0}".format(
+                    response["results"][i]["data"]["pixiv_id"]))
+                printData.text("\n[相似度]{0}".format(
+                    response["results"][i]["header"]["similarity"]))
             if "ext_urls" in response["results"][i]["data"]:
-                printData.text("\n[链接]{0}".format(response["results"][i]["data"]["ext_urls"][0]))
-
+                printData.text("\n[链接]{0}".format(
+                    response["results"][i]["data"]["ext_urls"][0]))
         return printData
 
 

@@ -1,5 +1,5 @@
 class NotifyTreeNode:
-    def __init__(self, notifyName : str = ""):
+    def __init__(self, notifyName: str = ""):
         self.notifyName = notifyName
         self.nextNode = dict()
         self.notifySet = set()
@@ -18,12 +18,13 @@ class NotifyTreeNode:
     def addNode(self, newNode):
         self.nextNode[newNode.getName()] = newNode
 
-    def addNotify(self, groupid:str):
+    def addNotify(self, groupid: str):
         self.notifySet.add(groupid)
 
     def removeNotify(self, id: str):
         if id in self.notifySet:
             self.notifySet.remove(id)
+
 
 class NotifyTree:
     def __init__(self):
@@ -34,7 +35,7 @@ class NotifyTree:
         if len(notifyName) == 0 or notifyName[0] == "":
             return None
         node = self.root
-        for i in range(0,len(notifyName)):
+        for i in range(0, len(notifyName)):
             if (re := node.getNext(notifyName[i])) is not None:
                 node = re
                 continue
@@ -48,20 +49,20 @@ class NotifyTree:
         if len(notifyName) == 0 or notifyName[0] == "":
             return
         node = self.root
-        for i in range(0,len(notifyName)):
+        for i in range(0, len(notifyName)):
             if (re := node.getNext(notifyName[i])) is not None:
                 node = re
                 continue
             return
         node.removeNotify(id)
-    
-    def get(self, notifyName:str):
+
+    def get(self, notifyName: str):
         notifyName = notifyName.split(".")
         notifySet = set()
         if len(notifyName) == 0 or notifyName[0] == "":
             return NotifyTree
         node = self.root
-        for i in range(0,len(notifyName)):
+        for i in range(0, len(notifyName)):
             if (re := node.getNext(notifyName[i])) is not None:
                 node = re
                 notifySet |= node.getNotifySet()
@@ -69,19 +70,23 @@ class NotifyTree:
             break
         return notifySet
 
+
 class BotNotifyModule:
     def __init__(self):
         self.notifyTree = NotifyTree()
-    
+
     def addListen(self, id: str, notifyName: str):
         self.notifyTree.add(id, notifyName)
-    
+
     def removeListen(self, id: str, notifyName: str):
         self.notifyTree.remove(id, notifyName)
 
     def notify(self, notifyName: str):
         return self.notifyTree.get(notifyName)
 
+
 notifyModule = BotNotifyModule()
+
+
 def getNotifyModule():
     return notifyModule

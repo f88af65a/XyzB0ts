@@ -1,0 +1,20 @@
+{
+    "api":[
+        {
+            "name":"",
+            "path":"",
+            "method":"",
+            "parameter":{
+                "参数名":"默认值"
+            }
+        },
+        {
+            "name":"",
+            "path":"",
+            "method":"",
+            "parameter":{
+                "参数名":"默认值"
+            }
+        }
+    ]
+}

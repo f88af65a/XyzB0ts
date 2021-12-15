@@ -27,7 +27,7 @@ class Adapter:
                 and os.path.isfile(filePath)):
             raise BotException("adapter路径不存在")
         with open(filePath, "r") as f:
-            adapterData = json.loads(f.read())
+            adapterData = json.loads(f.read())["api"]
         for i in adapterData:
             self.addMethod(i, adapterData[i]["path"],
                            adapterData[i]["method"],
@@ -42,7 +42,7 @@ class Adapter:
 
         async def forward(**kwargs):
             return await getattr(self, method)(
-                self, self.apiDict[name], **kwargs)
+                self.apiDict[name], **kwargs)
         setattr(self, name, forward)
 
 

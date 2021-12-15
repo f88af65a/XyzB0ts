@@ -4,6 +4,7 @@ import sys
 
 import botsdk.util.HttpRequest
 from botsdk.util.BotException import BotException
+from botsdk.util.JsonConfig import getConfig
 
 
 def getAdapter(adapterName: str, url: str):
@@ -15,6 +16,7 @@ class Adapter:
         self.url = url
         self.apiDict = {}
         self.init()
+        self.loadAdapterFile(getConfig()["adapterPath"])
 
     def init(self):
         pass

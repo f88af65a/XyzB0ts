@@ -1,6 +1,7 @@
 {
 	"appPath":"",
 	"pluginsPath":"plugins/",
+	"adapterPath":"adapter/",
 	"sqlPath":"botsql.sql",
 	"localFilePath":"./localFile/",
 	"workProcess":"4",

@@ -1,20 +1,44 @@
 {
-    "api":[
-        {
-            "name":"",
-            "path":"",
-            "method":"",
+    "api":{
+        "verify":{
+            "path":"/verify",
+            "method":"post",
             "parameter":{
-                "参数名":"默认值"
+                "verifyKey":""
             }
         },
-        {
-            "name":"",
-            "path":"",
-            "method":"",
+        "bind":{
+            "path":"/bind",
+            "method":"post",
             "parameter":{
-                "参数名":"默认值"
+                "sessionKey":"",
+                "qq":""
+            }
+        },
+        "release":{
+            "path":"/release",
+            "method":"post",
+            "parameter":{
+                "sessionKey":"",
+                "qq":""
+            }
+        },
+        "fetchMessage":{
+            "path":"/fetchMessage",
+            "method":"get",
+            "parameter":{
+                "sessionKey":"",
+                "count":""
+            }
+        },
+        "sendGroupMessage":{
+            "path":"/sendGroupMessage",
+            "method":"post",
+            "parameter":{
+                "sessionKey":"",
+                "target":"",
+                "messageChain":""
             }
         }
-    ]
+    }
 }

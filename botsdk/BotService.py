@@ -4,10 +4,11 @@ import uuid
 import botsdk.Bot
 import botsdk.BotRequest
 import botsdk.BotRoute
+from botsdk.util.Adapter import MiraiAdapter
 from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 from botsdk.util.BotPluginsManager import BotPluginsManager
-from botsdk.util.JsonConfig import getConfig
 from botsdk.util.Error import debugPrint
+from botsdk.util.JsonConfig import getConfig
 
 
 class BotService:
@@ -21,7 +22,12 @@ class BotService:
             # 初始化Bot
             self.bot = botsdk.Bot.Bot(
                 getConfig()["account"][accountMark]["path"],
-                getConfig()["account"][accountMark]["port"], qq)
+                getConfig()["account"][accountMark]["port"],
+                qq,
+                MiraiAdapter(getConfig()["account"][accountMark]["path"]
+                             + ":"
+                             + getConfig()["account"][accountMark]["port"])
+                )
             # 登录
             re = await self.bot.login(
                 qq, getConfig()["account"][accountMark]["passwd"])

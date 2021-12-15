@@ -1,22 +1,26 @@
 import json
 
 import botsdk.util.HttpRequest
+from botsdk.util.Adapter import getAdapter
 from botsdk.util.BotException import BotException
 from botsdk.util.Error import debugPrint, exceptionExit
 from botsdk.util.MessageChain import MessageChain
 
 
 class Bot:
-    def __init__(self, path, port, qq, sessionKey=None):
+    def __init__(self, path, port, qq, adapterName, sessionKey=None):
         self.url = f"http://{path}:{port}"
         self.path = path
         self.port = port
         self.qq = qq
+        self.adapterName = adapterName
+        self.adapter = getAdapter(adapterName, self.url)
         if sessionKey is not None:
             self.sessionKey = sessionKey
 
     def getData(self):
-        return (self.path, self.port, self.qq, self.sessionKey)
+        return (self.path, self.port, self.qq,
+                self.adapterName, self.sessionKey)
 
     def getQq(self):
         return self.qq
@@ -44,7 +48,8 @@ class Bot:
     async def verify(self, authkey: str):
         kv = dict()
         kv["verifyKey"] = authkey
-        re = await self.post("/verify", kv)
+        # re = await self.post("/verify", kv)
+        re = await self.adapter.verify(verifyKey=authkey)
         if re is None:
             debugPrint("账号验证失败")
             return None
@@ -58,7 +63,8 @@ class Bot:
         kv = dict()
         kv["sessionKey"] = self.sessionKey
         kv["qq"] = qq
-        re = await self.post("/bind", kv)
+        # re = await self.post("/bind", kv)
+        re = await self.adapter.bind(sessionKey=self.sessionKey, qq=qq)
         if re is None:
             debugPrint("账号绑定失败")
             return None

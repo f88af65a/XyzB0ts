@@ -20,7 +20,7 @@ class plugin(BotPlugin):
     async def doFormat(self, request: BotRequest):
         if request.getType() == "GroupMessage":
             cookie = request.getCookie("format")
-            if cookie is None:
+            if cookie is None or request.getFirst("Plain")["text"] is None:
                 return
             request.getFirst("Plain")["text"] = (
                 request.getFirst("Plain")["text"]

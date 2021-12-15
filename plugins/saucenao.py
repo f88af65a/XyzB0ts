@@ -1,16 +1,19 @@
 import json
-import botsdk.Bot
 import botsdk.BotRequest
 from botsdk.util.MessageChain import MessageChain
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.HttpRequest import *
+from botsdk.util.HttpRequest import get
+
 
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
         self.name = "saucenao"
         self.addTarget("GroupMessage", "saucenao", self.saucenao)
-        self.saucenaoUrl = "https://saucenao.com/search.php?db=999&output_type=2&numres=16&api_key={key}&url={url}"
+        self.saucenaoUrl = (
+            "https://saucenao.com/search.php?db=999&"
+            "output_type=2&numres=16&api_key={key}&url={url}"
+        )
         self.key = None
         self.canDetach = True
 
@@ -18,7 +21,6 @@ class plugin(BotPlugin):
         self.key = self.getConfig()["saucenaoKey"]
 
     async def saucenao(self, request):
-        groupid = request.getGroupId()
         message = request.getMessageChain()
         for i in message[1:]:
             if i["type"] == "Image":
@@ -32,7 +34,8 @@ class plugin(BotPlugin):
                 if quoteMessageChain["code"] != 0:
                     await request.sendMessage(MessageChain().text("消息不在缓存中"))
                     return
-                quoteMessageChain = quoteMessageChain["data"]["messageChain"][1:]
+                quoteMessageChain = (
+                    quoteMessageChain["data"]["messageChain"][1:])
                 for j in quoteMessageChain:
                     if j["type"] == "Image":
                         re = await self.search(j["url"])
@@ -40,16 +43,19 @@ class plugin(BotPlugin):
                         return
                 await request.sendMessage(MessageChain().text("回复消息中没有图片"))
                 return
-        await request.sendMessage(MessageChain().text("未找到图片或参数不为图片(hxd你连发图都不会了🐎)"))
+        await request.sendMessage(
+            MessageChain().text("未找到图片或参数不为图片(hxd你连发图都不会了🐎)"))
 
-    async def search(self,url):
-        searchUrl =  self.saucenaoUrl.format(key = self.key, url = url)
+    async def search(self, url):
+        searchUrl = self.saucenaoUrl.format(key=self.key, url=url)
         response = json.loads(await get(searchUrl))
         printData = MessageChain()
         if response is None:
             await printData.text("超时或格式错误")
             return printData
-        if "header" not in response or "status" not in response["header"] or response["header"]["status"] != 0:
+        if ("header" not in response
+                or "status" not in response["header"]
+                or response["header"]["status"] != 0):
             printData.text("又返回了一个错误")
             return printData
         if len(response["results"]) == 0:

@@ -1,13 +1,12 @@
-from botsdk.util.MessageChain import MessageChain
 from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.Error import *
-from botsdk.util.Cookie import *
-from botsdk.util.MessageType import messageType
+from botsdk.util.MessageChain import MessageChain
+
 
 class formatDict(dict):
     def __missing__(self, key):
         return f"{{{key}}}"
+
 
 class plugin(BotPlugin):
     "/format key=word;key=word..."
@@ -23,7 +22,10 @@ class plugin(BotPlugin):
             cookie = request.getCookie("format")
             if cookie is None:
                 return
-            request.getFirst("Plain")["text"] = request.getFirst("Plain")["text"].format_map(formatDict(cookie))
+            request.getFirst("Plain")["text"] = (
+                request.getFirst("Plain")["text"]
+                .format_map(formatDict(cookie))
+                )
 
     async def setFormat(self, request: BotRequest):
         "/format [key=word]"
@@ -50,6 +52,7 @@ class plugin(BotPlugin):
                 cookie[i[0]] = i[1]
         request.setCookie("format", cookie)
         await request.sendMessage(MessageChain().plain("修改完成"))
+
 
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

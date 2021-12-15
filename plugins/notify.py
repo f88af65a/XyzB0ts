@@ -1,16 +1,15 @@
 from botsdk.BotRequest import BotRequest
+from botsdk.util.BotNotifyModule import getNotifyModule
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Cookie import getAllCookie
-from botsdk.util.MessageChain import MessageChain
-from botsdk.util.BotNotifyModule import BotNotifyModule
-from botsdk.util.BotNotifyModule import getNotifyModule
+
 
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
         self.name = "notify"
         self.addTarget("GroupMessage", "notify", self.manageNotify)
-    
+
     def init(self, bot):
         allCookie = getAllCookie()
         for i in allCookie:
@@ -41,6 +40,7 @@ class plugin(BotPlugin):
             await request.sendMessage(self.manageNotify.__doc__)
             return
         await request.sendMessage("修改完成")
+
 
 def handle():
     return plugin()

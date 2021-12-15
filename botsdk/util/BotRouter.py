@@ -40,8 +40,9 @@ class TypeRouter(BotRouter):
                     concurrentModule: defaultBotConcurrentModule = None):
         if request.getType() in pluginsManager.getListener():
             for i in pluginsManager.getListener():
-                await i[request.getType()]["typeListener"](request)
-                await asyncio.sleep(0)
+                for j in i[request.getType()]["typeListener"]:
+                    await j(request)
+                    await asyncio.sleep(0)
         return True
 
 

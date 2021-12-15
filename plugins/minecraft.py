@@ -115,8 +115,8 @@ class plugin(BotPlugin):
                 if "playerlist" in data:
                     printData += "\n在线玩家:\n"
                     for i in range(0, len(responseData["players"]["sample"])):
-                        printData += responseData
-                        ["players"]["sample"][i]["name"]
+                        printData += (responseData
+                                      ["players"]["sample"][i]["name"])
                         if i != len(responseData["players"]["sample"]) - 1:
                             printData += "\n"
                 await request.sendMessage(MessageChain().plain(printData))

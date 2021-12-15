@@ -16,7 +16,7 @@ class Adapter:
         self.url = url
         self.apiDict = {}
         self.init()
-        self.loadAdapterFile(getConfig()["adapterPath"])
+        self.loadAdapterFile(getConfig()["adapterPath"] + self.adapterFileName)
 
     def init(self):
         pass
@@ -49,11 +49,16 @@ class Adapter:
 
 
 class MiraiAdapter(Adapter):
+    def init(self):
+        self.adapterFileName = "mirai.json"
+
     async def get(self, parameter, **kwargs):
-        return await botsdk.util.HttpRequest.get(
-            (self.url + parameter["path"] + "?"
-             + "&".join(["=".join(i, kwargs[i]) for i in kwargs])))
+        return json.loads(
+            await botsdk.util.HttpRequest.get(
+                (self.url + parameter["path"] + "?"
+                 + "&".join(["=".join(i, kwargs[i]) for i in kwargs]))))
 
     async def post(self, parameter, **kwargs):
-        return await botsdk.util.HttpRequest.post(
-            self.url + parameter["path"], kwargs)
+        return json.loads(
+            await botsdk.util.HttpRequest.post(
+                self.url + parameter["path"], kwargs))

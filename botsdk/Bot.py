@@ -18,6 +18,8 @@ class Bot:
         if sessionKey is not None:
             self.sessionKey = sessionKey
 
+    # 非API
+
     def getData(self):
         return (self.path, self.port, self.qq,
                 self.adapterName, self.sessionKey)
@@ -30,6 +32,17 @@ class Bot:
 
     def getPort(self):
         return self.port
+
+    async def sendMessageById(
+            self, id: str, messageChain: MessageChain, quote=None):
+        messageType, target = id.split(":")
+        target = int(target)
+        if messageType == "User":
+            await self.sendFriendMessage(target, messageChain.getData(), quote)
+        elif messageType == "Group":
+            await self.sendGroupMessage(target, messageChain.getData(), quote)
+        else:
+            raise BotException("Bot.sendMessageById遇到了不支持的类型")
 
     async def post(self, path, data):
         return json.loads(
@@ -45,10 +58,9 @@ class Bot:
             return 2
         return 0
 
+    # API
+
     async def verify(self, authkey: str):
-        kv = dict()
-        kv["verifyKey"] = authkey
-        # re = await self.post("/verify", kv)
         re = await self.adapter.verify(verifyKey=authkey)
         if re is None:
             debugPrint("账号验证失败")
@@ -60,11 +72,8 @@ class Bot:
         return re
 
     async def bind(self, qq: int):
-        kv = dict()
-        kv["sessionKey"] = self.sessionKey
-        kv["qq"] = qq
-        # re = await self.post("/bind", kv)
-        re = await self.adapter.bind(sessionKey=self.sessionKey, qq=qq)
+        re = await self.adapter.bind(
+            sessionKey=self.sessionKey, qq=qq)
         if re is None:
             debugPrint("账号绑定失败")
             return None
@@ -76,44 +85,59 @@ class Bot:
         kv = dict()
         kv["sessionKey"] = self.sessionKey
         kv["qq"] = int(self.qq)
-        re = await self.post("/release", kv)
+        # re = await self.post("/release", kv)
+        re = await self.adapter.release(kv)
         return re
 
     async def sendGroupMessage(
             self, target: int, messageChain: list, quote=None):
+        '''
         return await self.post(
             "/sendGroupMessage",
             {"sessionKey": self.sessionKey,
                 "target": target, "messageChain": messageChain}
             | ({"quote": int(quote)} if quote is not None else {}))
+        '''
+        return await self.adapter.sendGroupMessage(
+            sessionKey=self.sessionKey,
+            target=target,
+            messageChain=(messageChain | {"quote": int(quote)}
+                          if quote is not None else {})
+        )
 
     async def sendFriendMessage(
             self, target: int, messageChain: list, quote=None):
+        '''
         return await self.post(
             "/sendFriendMessage",
             {"sessionKey": self.sessionKey, "target": target,
                 "messageChain": messageChain}
             | ({"quote": int(quote)} if quote is not None else {}))
+        '''
+        return await self.adapter.sendFriendMessage(
+            sessionKey=self.sessionKey,
+            target=target,
+            messageChain=(messageChain | {"quote": int(quote)}
+                          if quote is not None else {})
+        )
 
     async def sendTempMessage(
             self, targetGroup: int, targetQq: int,
             messageChain: list, quote=None):
+        '''
         return await self.post(
             "/sendFriendMessage",
             {"sessionKey": self.sessionKey, "qq": targetQq,
                 "group": targetGroup, "messageChain": messageChain}
             | ({"quote": int(quote)} if quote is not None else {}))
-
-    async def sendMessageById(
-            self, id: str, messageChain: MessageChain, quote=None):
-        messageType, target = id.split(":")
-        target = int(target)
-        if messageType == "User":
-            await self.sendFriendMessage(target, messageChain.getData(), quote)
-        elif messageType == "Group":
-            await self.sendGroupMessage(target, messageChain.getData(), quote)
-        else:
-            raise BotException("Bot.sendMessageById遇到了不支持的类型")
+        '''
+        return await self.adapter.sendTempMessage(
+            sessionKey=self.sessionKey,
+            qq=targetQq,
+            group=targetGroup,
+            messageChain=(messageChain | {"quote": int(quote)}
+                          if quote is not None else {})
+        )
 
     async def sendNudge(self, target: int, subject: int, kind: str):
         return await self.post(
@@ -127,8 +151,14 @@ class Bot:
             {"sessionKey": self.sessionKey, "target": target})
 
     async def fetchMessage(self, count: int):
+        '''
         return await self.get("/fetchMessage?sessionKey="
                               + self.sessionKey + "&count=" + str(count))
+        '''
+        return await self.adapter.fetchMessage(
+            sessionKey=self.sessionKey,
+            count=count
+        )
 
     async def countMessage(self):
         return await self.get("/countMessage?sessionKey=" + self.sessionKey)

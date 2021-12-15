@@ -39,6 +39,16 @@
                 "target":"",
                 "messageChain":""
             }
+        },
+        "sendFriendMessage":{
+            "path":"/sendFriendMessage",
+            "method":"post",
+            "parameter":{
+                "sessionKey":"",
+                "target":"",
+                "qq":"",
+                "messageChain":""
+            }
         }
     }
 }

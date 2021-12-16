@@ -6,6 +6,15 @@ config = None
 configDirPath = "./configs/"
 
 
+def reload():
+    return load()
+
+
+def getConfig():
+    global config
+    return config
+
+
 def load():
     global config
     try:
@@ -26,12 +35,3 @@ def checkLocalFile():
 
 
 checkLocalFile()
-
-
-def reload():
-    return load()
-
-
-def getConfig():
-    global config
-    return config

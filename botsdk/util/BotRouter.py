@@ -1,5 +1,4 @@
 import asyncio
-import json
 import re
 
 from botsdk.BotRequest import BotRequest

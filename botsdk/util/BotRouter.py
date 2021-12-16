@@ -111,4 +111,5 @@ class TargetRouter(BotRouter):
                     concurrentModule.addTask(request.getData())
                 else:
                     await asyncHandlePacket(ret, request)
+                await asyncio.sleep()
         return True

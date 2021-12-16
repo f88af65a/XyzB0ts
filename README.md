@@ -7,6 +7,9 @@
 # 快速开始
  [快速开始](docs/HOWTOSTART.MD)
 
+## 一些链接
+ [ADAPTER说明](docs/ADAPTER.MD)
+ [更新记录](docs/UPDATE.MD)
 
 ## 一个简单的插件实现
  在群中输入/hello时bot将发送hello  

@@ -105,6 +105,7 @@ class RedisCookie(Cookie):
 
     def setCookieByDict(self, id, data):
         self.sql[id] = base64.b64encode(json.dumps(data).encode()).decode()
+        self.sql.save()
 
     def getCookie(self, id: str, key: str = None):
         if key is None:

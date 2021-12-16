@@ -78,7 +78,7 @@ class TargetRouter(BotRouter):
             if not permissionCheck(request, target):
                 await request.sendMessage(MessageChain().plain("权限限制"))
                 return
-            controlData = {"size": 1}
+            controlData = {"size": 1, "wait": 0}
             if reData.group(1) is not None:
                 # 控制字段权限判断
                 if not permissionCmp(

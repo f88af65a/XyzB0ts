@@ -61,7 +61,7 @@ class SqliteCookie(Cookie):
         return self.updateCookie(id, base64.b64decode(re[0][1]).decode("utf8"))
 
     def getCookieByDict(self, id: str):
-        return json.loads(self, self.getCookieByStr(id))
+        return json.loads(self.getCookieByStr(id))
 
     def setCookieByStr(self, id: str, cookie: str):
         self.cookieDict[id] = cookie
@@ -88,7 +88,7 @@ class SqliteCookie(Cookie):
         self.setCookieByDict(id, cookie)
 
 
-class redisCookie(Cookie):
+class RedisCookie(Cookie):
     def __init__(self):
         self.sql = redis.Redis(
             host="localhost", port=6379, decode_responses=True)
@@ -96,7 +96,7 @@ class redisCookie(Cookie):
     def getAllCookie(self):
         re = dict()
         for i in self.sql.keys("*"):
-            re[i] = json.loads(base64.decode(self.sql[i]).decode())
+            re[i] = json.loads(base64.b64decode(self.sql[i]).decode())
         return re
 
     def getCookieByDict(self, id):
@@ -110,7 +110,7 @@ class redisCookie(Cookie):
     def getCookie(self, id: str, key: str = None):
         if key is None:
             return self.getCookieByDict(id)
-        cookie = self.sql.get(id)
+        cookie = self.getCookieByDict(id)
         if key in cookie:
             return cookie[key]
         return None

@@ -56,7 +56,7 @@ class MiraiAdapter(Adapter):
         return json.loads(
             await botsdk.util.HttpRequest.get(
                 (self.url + parameter["path"] + "?"
-                 + "&".join(["=".join(i, kwargs[i]) for i in kwargs]))))
+                 + "&".join(["=".join([i, kwargs[i]]) for i in kwargs]))))
 
     async def post(self, parameter, **kwargs):
         return json.loads(

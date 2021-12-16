@@ -1,4 +1,5 @@
 import time
+import asyncio
 
 from botsdk.util.Error import asyncTraceBack, debugPrint, printTraceBack
 from botsdk.util.MessageChain import MessageChain
@@ -48,17 +49,21 @@ def getEndCallBackTask():
 
 @asyncTraceBack
 @asyncTimeTest
-async def asyncHandlePacket(fn, *args, **kwargs):
+async def asyncHandlePacket(func, *args, **kwargs):
     try:
         for i in getStartCallBackTask():
-            i(fn, *args, **kwargs)
+            i(func, *args, **kwargs)
         try:
-            await fn(*args, **kwargs)
+            request = args[0]
+            controlData = request.getControlData()
+            for i in range(int(controlData["size"])):
+                await asyncio.sleep(int(controlData["wait"]))
+                await func(*args, **kwargs)
         except Exception as e:
             await args[0].sendMessage(
                 MessageChain().text(f"执行过程中发生异常 {str(e)}"))
             raise e
         for i in getEndCallBackTask():
-            i(fn, *args, **kwargs)
+            i(func, *args, **kwargs)
     except Exception:
         printTraceBack()

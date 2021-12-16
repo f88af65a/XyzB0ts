@@ -54,7 +54,7 @@ class TypeRouter(BotRouter):
 class TargetRouter(BotRouter):
     def init(self):
         self.pattern = re.compile(
-            (r"^(\[(\S*?=\S*?)\])?(["
+            (r"^(\[(\S*=\S*)&?\])?(["
              + "".join(["\\" + i for i in getConfig()["commandTarget"]])
              + r"])(\S+)( \S+)*$"))
 
@@ -89,27 +89,24 @@ class TargetRouter(BotRouter):
                         MessageChain().plain("使用控制字段权限不足"))
                     return
                 # 控制字段提取
-                controlList = reData.group(2).split("&")
+                controlList = reData.group(1)[1:-1].split("&")
                 for i in controlList:
                     controlLineSplit = i.split("=")
                     if len(controlLineSplit) != 2:
                         debugPrint("控制字段格式出错")
+                        return
                     else:
-                        if controlLineSplit[0] == "size":
-                            controlData[controlLineSplit[0]] = (
-                                json.loads(controlLineSplit[1]))
-                request.setControlData(controlData)
+                        controlData[controlLineSplit[0]] = controlLineSplit[1]
+            request.setControlData(controlData)
             # 设置处理模块名
             request.setHandleModuleName(
                 pluginsManager.getHandleByTarget(
                     request.getType(), target).__module__)
             # 路由
-            for i in range(controlData["size"]):
-                if (concurrentModule is not None
-                        and ret.__self__.getCanDetach()):
-                    # 多进程方式
-                    concurrentModule.addTask(request.getData())
-                else:
-                    await asyncHandlePacket(ret, request)
-                await asyncio.sleep(0)
+            if (concurrentModule is not None
+                    and ret.__self__.getCanDetach()):
+                # 多进程方式
+                concurrentModule.addTask(request.getData())
+            else:
+                await asyncHandlePacket(ret, request)
         return True

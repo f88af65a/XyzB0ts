@@ -1,14 +1,14 @@
 import base64
 import json
-import sqlite3
 import sys
 
-import redis
 from botsdk.util.JsonConfig import getConfig
 
-'''
-id为0表示持久化的设置
-'''
+
+if (driver := getConfig()["cookieDriver"]) == "RedisCookie":
+    import redis
+elif driver == "SqliteCookie":
+    import sqlite3
 
 
 class Cookie:

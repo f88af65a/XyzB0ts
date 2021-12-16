@@ -1,2 +1,3 @@
 messageType = ({"FriendMessage", "GroupMessage",
-                "TempMessage", "StrangerMessage", "OtherClientMessage"})
+                "TempMessage", "StrangerMessage",
+                "OtherClientMessage"})

@@ -3,6 +3,7 @@ import copy
 from botsdk.util.BotException import BotException
 
 
+# 对MessageChain功能的基本封装
 class MessageChain:
     def __init__(self, rhs=None):
         if rhs is None:

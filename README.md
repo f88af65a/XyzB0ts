@@ -18,6 +18,7 @@ from botsdk.BotRequest import BotRequest
 from botsdk.util.MessageChain import MessageChain
 from botsdk.util.BotPlugin import BotPlugin
 
+
 class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
@@ -26,6 +27,7 @@ class plugin(BotPlugin):
 
     async def hello(self, request):
         await request.sendMessage(MessageChain().text("hello"))
+
 
 def handle():
     return plugin()

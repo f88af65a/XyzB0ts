@@ -20,6 +20,14 @@ def load():
 load()
 
 
+def checkLocalFile():
+    if not os.path.exists(getConfig()["localFilePath"]):
+        raise BotException("localFile不存在")
+
+
+checkLocalFile()
+
+
 def reload():
     return load()
 
@@ -27,11 +35,3 @@ def reload():
 def getConfig():
     global config
     return config
-
-
-def checkLocalFile():
-    if not os.path.exists(getConfig()["localFilePath"]):
-        raise BotException("localFile不存在")
-
-
-checkLocalFile()

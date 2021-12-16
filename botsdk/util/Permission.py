@@ -66,6 +66,7 @@ def systemPermissionCheck(request: BotRequest, target: str, cookie):
     return None
 
 
+# 获取config中的user权限
 def getPermissionFromSystem(qq):
     config = getConfig()
     qq = str(qq)

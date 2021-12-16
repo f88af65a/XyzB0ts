@@ -1,7 +1,7 @@
 import json
 
 import aiohttp
-from botsdk.util.Error import printTraceBack
+from botsdk.util.Error import debugPrint, printTraceBack
 
 
 async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
@@ -19,6 +19,7 @@ async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
                 return await r.text()
     except Exception:
         printTraceBack()
+        debugPrint(f"请求{url}时发生异常")
         return None
 
 
@@ -33,4 +34,5 @@ async def post(url, data, byte=None, timeout: int = 15):
                 return await r.text()
     except Exception:
         printTraceBack()
+        debugPrint(f"请求{url}时发生异常")
         return None

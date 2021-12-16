@@ -89,7 +89,7 @@ class TargetRouter(BotRouter):
                         MessageChain().plain("使用控制字段权限不足"))
                     return
                 # 控制字段提取
-                controlList = reData.group(1).split("&")
+                controlList = reData.group(2).split("&")
                 for i in controlList:
                     controlLineSplit = i.split("=")
                     if len(controlLineSplit) != 2:

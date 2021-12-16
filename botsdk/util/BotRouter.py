@@ -61,48 +61,17 @@ class TargetRouter(BotRouter):
     async def route(self, pluginsManager: BotPluginsManager,
                     request: BotRequest,
                     concurrentModule: defaultBotConcurrentModule = None):
-        if request.getType() not in messageType:
+        # 类型判断与命令获取
+        if (request.getType() not in messageType
+                or (target := request.getFirstText()) is None):
             return False
-        # 命令提取
-        target = request.getFirstTextSplit()
-        if target is None:
-            return
         # 正则匹配
         reData = self.pattern.search(target)
         # target获取
         if reData.group(4) is None:
             return
         target = reData.group(4)
-        # 判断target是否存在
-        isTargetFlag = False
-        for i in getConfig()["commandTarget"]:
-            if len(target) >= len(i) and target[:len(i)] == i:
-                target = target[len(i):]
-                isTargetFlag = True
-                break
-        if not isTargetFlag:
-            return
         request.setTarget(target)
-        # 控制字段判断
-        controlData = {"size": 1}
-        if reData.group(1) is not None:
-            # 控制字段权限判断
-            if not permissionCmp(
-                    str(getPermissionFromSystem(request.getSenderId())),
-                    "ADMINISTRATOR"):
-                await request.sendMessage(MessageChain().plain("使用控制字段权限不足"))
-                return
-            # 控制字段提取
-            controlList = reData.group(1).split("&")
-            for i in controlList:
-                controlLineSplit = i.split("=")
-                if len(controlLineSplit) != 2:
-                    debugPrint("控制字段格式出错")
-                else:
-                    if controlLineSplit[0] == "size":
-                        controlData[controlLineSplit[0]] = (
-                            json.loads(controlLineSplit[1]))
-            request.setControlData(controlData)
         # 命令判断
         if (ret := pluginsManager.getTarget(
                 request.getType(), target)) is not None:
@@ -110,6 +79,27 @@ class TargetRouter(BotRouter):
             if not permissionCheck(request, target):
                 await request.sendMessage(MessageChain().plain("权限限制"))
                 return
+            controlData = {"size": 1}
+            if reData.group(1) is not None:
+                # 控制字段权限判断
+                if not permissionCmp(
+                        str(getPermissionFromSystem(request.getSenderId())),
+                        "ADMINISTRATOR"):
+                    await request.sendMessage(
+                        MessageChain().plain("使用控制字段权限不足"))
+                    return
+                # 控制字段提取
+                controlList = reData.group(1).split("&")
+                for i in controlList:
+                    controlLineSplit = i.split("=")
+                    if len(controlLineSplit) != 2:
+                        debugPrint("控制字段格式出错")
+                    else:
+                        if controlLineSplit[0] == "size":
+                            controlData[controlLineSplit[0]] = (
+                                json.loads(controlLineSplit[1]))
+                request.setControlData(controlData)
+            # 设置处理模块名
             request.setHandleModuleName(
                 pluginsManager.getHandleByTarget(
                     request.getType(), target).__module__)

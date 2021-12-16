@@ -87,6 +87,11 @@ class BotRequest(dict):
                 return i
         return None
 
+    def getFirstText(self):
+        if (re := self.getFirst("Plain")) is not None:
+            return re["text"]
+        return None
+
     def getFirstTextSplit(self):
         if (re := self.getFirst("Plain")) is not None:
             return re["text"].split(" ")

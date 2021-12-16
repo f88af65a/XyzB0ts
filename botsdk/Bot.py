@@ -85,19 +85,11 @@ class Bot:
         kv = dict()
         kv["sessionKey"] = self.sessionKey
         kv["qq"] = int(self.qq)
-        # re = await self.post("/release", kv)
         re = await self.adapter.release(kv)
         return re
 
     async def sendGroupMessage(
             self, target: int, messageChain: list, quote=None):
-        '''
-        return await self.post(
-            "/sendGroupMessage",
-            {"sessionKey": self.sessionKey,
-                "target": target, "messageChain": messageChain}
-            | ({"quote": int(quote)} if quote is not None else {}))
-        '''
         return await self.adapter.sendGroupMessage(
             sessionKey=self.sessionKey,
             target=target,
@@ -107,13 +99,6 @@ class Bot:
 
     async def sendFriendMessage(
             self, target: int, messageChain: list, quote=None):
-        '''
-        return await self.post(
-            "/sendFriendMessage",
-            {"sessionKey": self.sessionKey, "target": target,
-                "messageChain": messageChain}
-            | ({"quote": int(quote)} if quote is not None else {}))
-        '''
         return await self.adapter.sendFriendMessage(
             sessionKey=self.sessionKey,
             target=target,
@@ -124,13 +109,6 @@ class Bot:
     async def sendTempMessage(
             self, targetGroup: int, targetQq: int,
             messageChain: list, quote=None):
-        '''
-        return await self.post(
-            "/sendFriendMessage",
-            {"sessionKey": self.sessionKey, "qq": targetQq,
-                "group": targetGroup, "messageChain": messageChain}
-            | ({"quote": int(quote)} if quote is not None else {}))
-        '''
         return await self.adapter.sendTempMessage(
             sessionKey=self.sessionKey,
             qq=targetQq,
@@ -140,49 +118,88 @@ class Bot:
         )
 
     async def sendNudge(self, target: int, subject: int, kind: str):
-        return await self.post(
-            "/sendNudge",
-            {"sessionKey": self.sessionKey, "target": target,
-                "subject": subject, "kind": kind})
+        return await self.adapter.sendNudge(
+            sessionKey=self.sessionKey,
+            target=target,
+            subject=subject,
+            kind=kind
+        )
 
     async def recall(self, target: int):
-        return await self.post(
-            "/recall",
-            {"sessionKey": self.sessionKey, "target": target})
+        return await self.adapter.recall(
+            sessionKey=self.sessionKey,
+            target=target
+        )
 
     async def fetchMessage(self, count: int):
-        '''
-        return await self.get("/fetchMessage?sessionKey="
-                              + self.sessionKey + "&count=" + str(count))
-        '''
         return await self.adapter.fetchMessage(
             sessionKey=self.sessionKey,
             count=str(count)
         )
 
-    async def countMessage(self):
-        return await self.get("/countMessage?sessionKey=" + self.sessionKey)
-
     async def memberList(self, target: int):
-        return await self.get("/memberList?sessionKey="
-                              + self.sessionKey + "&target=" + str(target))
+        return await self.adapter.memberList(
+            sessionKey=self.sessionKey,
+            target=target
+        )
 
-    async def mute(self, target, memberid, time):
-        await self.post(
-            "/mute",
-            {"sessionKey": self.sessionKey, "target": int(target),
-                "memberId": int(memberid), "time": int(time)})
+    async def friendList(self, target: int):
+        return await self.adapter.groupList(
+            sessionKey=self.sessionKey
+        )
 
-    async def unmute(self, target, memberid):
-        await self.post(
-            "/unmute",
-            {"sessionKey": self.sessionKey, "target": int(target),
-                "memberId": int(memberid)})
+    async def groupList(self, target: int):
+        return await self.adapter.groupList(
+            sessionKey=self.sessionKey
+        )
 
-    async def messageFromId(self, messageId):
-        return await self.get("/messageFromId?sessionKey={}&id={}"
-                              .format(self.sessionKey, messageId))
+    async def mute(self, target, memberId, time):
+        return await self.adapter.mute(
+            sessionKey=self.sessionKey,
+            target=target,
+            memberId=memberId,
+            time=time
+        )
 
-    async def doGroupInvite(self, data):
-        data.update({"sessionKey": self.sessionKey})
-        await self.post("/resp/botInvitedJoinGroupRequestEvent", data)
+    async def unmute(self, target, memberId):
+        return await self.adapter.unmute(
+            sessionKey=self.sessionKey,
+            target=target,
+            memberId=memberId
+        )
+
+    async def messageFromId(self, messageId: int):
+        return await self.adapter.messageFromId(
+            sessionKey=self.sessionKey,
+            id=messageId
+        )
+
+    async def MemberJoinRequestEvent(self, data):
+        return await self.adapter.BotInvitedJoinGroupRequestEvent(
+            sessionKey=self.sessionKey,
+            eventId=data["eventId"],
+            fromId=data["fromId"],
+            groupId=data["groupId"],
+            operate=data["operate"],
+            message=data["message"]
+        )
+
+    async def BotInvitedJoinGroupRequestEvent(self, data):
+        return await self.adapter.BotInvitedJoinGroupRequestEvent(
+            sessionKey=self.sessionKey,
+            eventId=data["eventId"],
+            fromId=data["fromId"],
+            groupId=data["groupId"],
+            operate=data["operate"],
+            message=data["message"]
+        )
+
+    async def NewFriendRequestEvent(self, data):
+        return await self.adapter.NewFriendRequestEvent(
+            sessionKey=self.sessionKey,
+            eventId=data["eventId"],
+            fromId=data["fromId"],
+            groupId=data["groupId"],
+            operate=data["operate"],
+            message=data["message"]
+        )

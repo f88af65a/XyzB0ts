@@ -101,8 +101,8 @@ class Bot:
         return await self.adapter.sendGroupMessage(
             sessionKey=self.sessionKey,
             target=target,
-            messageChain=(messageChain | {"quote": int(quote)}
-                          if quote is not None else {})
+            messageChain=messageChain,
+            quote=quote
         )
 
     async def sendFriendMessage(
@@ -117,8 +117,8 @@ class Bot:
         return await self.adapter.sendFriendMessage(
             sessionKey=self.sessionKey,
             target=target,
-            messageChain=(messageChain | {"quote": int(quote)}
-                          if quote is not None else {})
+            messageChain=messageChain,
+            quote=quote
         )
 
     async def sendTempMessage(
@@ -135,8 +135,8 @@ class Bot:
             sessionKey=self.sessionKey,
             qq=targetQq,
             group=targetGroup,
-            messageChain=(messageChain | {"quote": int(quote)}
-                          if quote is not None else {})
+            messageChain=messageChain,
+            quote=quote
         )
 
     async def sendNudge(self, target: int, subject: int, kind: str):

@@ -1,6 +1,7 @@
 {
 	"appPath":"",
 	"pluginsPath":"plugins/",
+	"adapterPath":"adapter/",
 	"sqlPath":"botsql.sql",
 	"localFilePath":"./localFile/",
 	"workProcess":"4",
@@ -11,6 +12,7 @@
 	"deBugGroupId":[],
 	"commandTarget":["/","#","."],
 	"account":[{"path":"localhost", "port":"", "qq":"","passwd":""}],
+	"cookieDriver":"SqliteCookie",
 	"systemCookie":{
 		"systemPermission":{
 			"load":"ADMINISTRATOR",

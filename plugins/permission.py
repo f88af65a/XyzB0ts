@@ -1,7 +1,7 @@
-import botsdk.BotRequest
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.Cookie import *
+from botsdk.util.MessageChain import MessageChain
+
 
 class plugin(BotPlugin):
     def __init__(self):
@@ -9,9 +9,10 @@ class plugin(BotPlugin):
         self.name = "permission"
         self.addTarget("GroupMessage", "权限", self.quanxian)
         self.addTarget("GroupMessage", "群友权限", self.qunyouquanxian)
-        self.permissionSet = {"OWNER","ADMINISTRATOR","MEMBER"}
+        self.permissionSet = {"OWNER", "ADMINISTRATOR", "MEMBER"}
+        self.canDetach = True
 
-    async def quanxian(self, request):
+    async def quanxian(self, request: BotRequest):
         data = request.getFirstTextSplit()
         if len(data) < 3:
             await request.sendMessage(MessageChain().text("缺少参数"))
@@ -26,12 +27,11 @@ class plugin(BotPlugin):
         request.setCookie("groupPermission", cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
 
-    async def qunyouquanxian(self, request):
+    async def qunyouquanxian(self, request: BotRequest):
         data = request.getFirstTextSplit()
-        groupid = request.getGroupId()
         try:
             target = str(int(data[1]))
-        except Exception as e:
+        except Exception:
             await request.sendMessage(MessageChain().text("你这什么QQ啊"))
             return
         if len(data) < 4:
@@ -52,6 +52,7 @@ class plugin(BotPlugin):
             return
         request.setCookie("groupMemberPermission", cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
+
 
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

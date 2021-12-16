@@ -7,6 +7,9 @@
 # 快速开始
  [快速开始](docs/HOWTOSTART.MD)
 
+## 一些链接
+ [ADAPTER说明](docs/ADAPTER.MD)  
+ [更新记录](docs/UPDATE.MD)
 
 ## 一个简单的插件实现
  在群中输入/hello时bot将发送hello  
@@ -14,6 +17,7 @@
 from botsdk.BotRequest import BotRequest
 from botsdk.util.MessageChain import MessageChain
 from botsdk.util.BotPlugin import BotPlugin
+
 
 class plugin(BotPlugin):
     def __init__(self):
@@ -23,6 +27,7 @@ class plugin(BotPlugin):
 
     async def hello(self, request):
         await request.sendMessage(MessageChain().text("hello"))
+
 
 def handle():
     return plugin()

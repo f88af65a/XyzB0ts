@@ -1,90 +1,110 @@
-import json
 import asyncio
-from botsdk.util.Error import *
-from botsdk.util.Permission import *
+import re
+
 from botsdk.BotRequest import BotRequest
-from botsdk.util.MessageType import messageType
-from botsdk.util.MessageChain import MessageChain
-from botsdk.util.HandlePacket import asyncHandlePacket
-from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
+from botsdk.util.BotPluginsManager import BotPluginsManager
+from botsdk.util.HandlePacket import asyncHandlePacket
+from botsdk.util.JsonConfig import getConfig
+from botsdk.util.MessageChain import MessageChain
+from botsdk.util.MessageType import messageType
+from botsdk.util.Permission import getPermissionFromSystem, permissionCheck
+from botsdk.util.Permission import permissionCmp
+
 
 class BotRouter:
     def __init__(self):
         self.loop = asyncio.get_event_loop()
+        self.init()
 
-    async def route(self, pluginsManager: BotPluginsManager, request: BotRequest \
-        , concurrentModule: defaultBotConcurrentModule=None):
+    def init(self):
         pass
 
+    async def route(self, pluginsManager: BotPluginsManager,
+                    request: BotRequest,
+                    concurrentModule: defaultBotConcurrentModule = None):
+        pass
+
+
 class GeneralRouter(BotRouter):
-    async def route(self, pluginsManager: BotPluginsManager, request: BotRequest \
-        , concurrentModule: defaultBotConcurrentModule=None):
+    async def route(self, pluginsManager: BotPluginsManager,
+                    request: BotRequest,
+                    concurrentModule: defaultBotConcurrentModule = None):
         for i in pluginsManager.getGeneralList():
-            if (re := await i[1](request)) is not None and re is False:
+            if (ret := await i[1](request)) is not None and ret is False:
                 return False
             await asyncio.sleep(0)
         return True
 
+
 class TypeRouter(BotRouter):
-    async def route(self, pluginsManager: BotPluginsManager, request: BotRequest \
-        , concurrentModule: defaultBotConcurrentModule=None):
+    async def route(self, pluginsManager: BotPluginsManager,
+                    request: BotRequest,
+                    concurrentModule: defaultBotConcurrentModule = None):
         if request.getType() in pluginsManager.getListener():
-            for i in pluginsManager.getListener()[request.getType()]["typeListener"]:
+            listener = pluginsManager.getListener()
+            for i in listener[request.getType()]["typeListener"]:
                 await i(request)
                 await asyncio.sleep(0)
         return True
 
+
 class TargetRouter(BotRouter):
-    async def route(self, pluginsManager: BotPluginsManager, request: BotRequest \
-        , concurrentModule: defaultBotConcurrentModule=None):
-        if  request.getType() not in messageType:
+    def init(self):
+        self.pattern = re.compile(
+            (r"^(\[(\S*=\S*)&?\])?(["
+             + "".join(["\\" + i for i in getConfig()["commandTarget"]])
+             + r"])(\S+)( \S+)*$"))
+
+    async def route(self, pluginsManager: BotPluginsManager,
+                    request: BotRequest,
+                    concurrentModule: defaultBotConcurrentModule = None):
+        # 类型判断与命令获取
+        if (request.getType() not in messageType
+                or (target := request.getFirstText()) is None):
             return False
-        #命令分析
-        target = request.getFirstTextSplit()
-        #控制字段
-        controlData = {"size": 1}
-        if target is not None and len(target) >= 2 and len(target[0]) > 2 \
-            and target[0][0] == "[" and target[0][-1] == "]":
-            if not permissionCmp(str(getPermissionFromSystem(request.getSenderId())), "ADMINISTRATOR"):
-                await request.sendMessage(MessageChain().plain("使用控制字段权限不足"))
-                return
-            controlList = target[0][1: -1].split("&")
-            for i in controlList:
-                controlLineSplit = i.split("=")
-                if len(controlLineSplit) != 2:
-                    debugPrint("控制字段格式出错")
-                else:
-                    if controlLineSplit[0] == "size":
-                        controlData[controlLineSplit[0]] = json.loads(controlLineSplit[1])
-            del target[0]
-            request.getFirst("Plain")["text"] = " ".join(target)
-            request.setControlData(controlData)
-        #target获取
-        if target is None or len(target) == 0 or len(target[0]) == 0:
+        # 正则匹配
+        reData = self.pattern.search(target)
+        # target获取
+        if reData is None or reData.group(4) is None:
             return
-        target = target[0]
-        isTargetFlag = False
-        for i in getConfig()["commandTarget"]:
-            if len(target) >= len(i) and target[:len(i)] == i:
-                target = target[len(i):]
-                isTargetFlag = True
-                break
-        if not isTargetFlag:
-            return
+        target = reData.group(4)
         request.setTarget(target)
-        #命令判断
-        if (re := pluginsManager.getTarget(request.getType(), target)) is not None:
-            #权限判断
+        # 命令判断
+        if (ret := pluginsManager.getTarget(
+                request.getType(), target)) is not None:
+            # 权限判断
             if not permissionCheck(request, target):
                 await request.sendMessage(MessageChain().plain("权限限制"))
                 return
-            request.setHandleModuleName(pluginsManager.getHandleByTarget(request.getType(), target).__module__)
-            #路由
-            for i in range(controlData["size"]):
-                if concurrentModule is not None and re.__self__.getCanDetach():
-                    #多进程方式
-                    concurrentModule.addTask(request.getData())
-                else:
-                    await asyncHandlePacket(re, request)
+            controlData = {"size": 1, "wait": 0}
+            if reData.group(1) is not None:
+                # 控制字段权限判断
+                if not permissionCmp(
+                        str(getPermissionFromSystem(request.getSenderId())),
+                        "ADMINISTRATOR"):
+                    await request.sendMessage(
+                        MessageChain().plain("使用控制字段权限不足"))
+                    return
+                # 控制字段提取
+                controlList = reData.group(1)[1:-1].split("&")
+                for i in controlList:
+                    controlLineSplit = i.split("=")
+                    if len(controlLineSplit) != 2:
+                        MessageChain().plain("控制字段有误")
+                        return
+                    else:
+                        controlData[controlLineSplit[0]] = controlLineSplit[1]
+            request.setControlData(controlData)
+            # 设置处理模块名
+            request.setHandleModuleName(
+                pluginsManager.getHandleByTarget(
+                    request.getType(), target).__module__)
+            # 路由
+            if (concurrentModule is not None
+                    and ret.__self__.getCanDetach()):
+                # 多进程方式
+                concurrentModule.addTask(request.getData())
+            else:
+                await asyncHandlePacket(ret, request)
         return True

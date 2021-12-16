@@ -1,10 +1,8 @@
-import botsdk.Bot
 from botsdk.BotRequest import BotRequest
-from botsdk.util.MessageChain import MessageChain
-from botsdk.util.Cookie import getCookie, setCookie
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.Permission import permissionCmp
-from botsdk.util.Permission import getSystemPermissionAndCheck
+from botsdk.util.MessageChain import MessageChain
+from botsdk.util.Permission import getSystemPermissionAndCheck, permissionCmp
+
 
 class plugin(BotPlugin):
     def __init__(self):
@@ -12,6 +10,7 @@ class plugin(BotPlugin):
         self.name = "blacklist"
         self.addFilter(self.blackListCheck)
         self.addTarget("GroupMessage", "blacklist", self.blacklist)
+        self.canDetach = True
 
     async def blacklist(self, request: BotRequest):
         '''/blacklist [add/remove] qq'''
@@ -25,16 +24,18 @@ class plugin(BotPlugin):
             await request.sendMessage(MessageChain().text(str(cookie)))
             return
         if len(data) < 3:
-            await request.sendMessage(MessageChain().text("/blacklist [add/remove] qq"))
+            await request.sendMessage(
+                MessageChain().text("/blacklist [add/remove] qq"))
             return
         target = data[2]
         try:
             target = str(int(target))
-            if target != data[2] or getSystemPermissionAndCheck(target, "ADMINISTRATOR"):
+            if target != data[2] or getSystemPermissionAndCheck(
+                    target, "ADMINISTRATOR"):
                 raise
-        except Exception as e:
-                await request.sendMessage(MessageChain().text("???"))
-                return 
+        except Exception:
+            await request.sendMessage(MessageChain().text("???"))
+            return
         groupMemberList = await bot.memberList(groupid)
         groupMemberList = groupMemberList["data"]
         checkFlag = True
@@ -65,6 +66,7 @@ class plugin(BotPlugin):
             if cookie is not None and request.getSenderId() in cookie:
                 return False
         return True
+
 
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

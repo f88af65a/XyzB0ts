@@ -16,6 +16,7 @@ class plugin(BotPlugin):
         self.name = "format"
         self.addTarget("GroupMessage", "format", self.setFormat)
         self.addFormat(self.doFormat)
+        self.canDetach = True
 
     async def doFormat(self, request: BotRequest):
         if request.getType() == "GroupMessage":

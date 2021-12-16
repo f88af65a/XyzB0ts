@@ -9,6 +9,7 @@ class plugin(BotPlugin):
         super().__init__()
         self.name = "notify"
         self.addTarget("GroupMessage", "notify", self.manageNotify)
+        self.canDetach = True
 
     def init(self, bot):
         allCookie = getCookieDriver().getAllCookie()

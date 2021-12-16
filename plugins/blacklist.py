@@ -10,6 +10,7 @@ class plugin(BotPlugin):
         self.name = "blacklist"
         self.addFilter(self.blackListCheck)
         self.addTarget("GroupMessage", "blacklist", self.blacklist)
+        self.canDetach = True
 
     async def blacklist(self, request: BotRequest):
         '''/blacklist [add/remove] qq'''

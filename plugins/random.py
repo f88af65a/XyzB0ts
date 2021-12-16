@@ -10,6 +10,7 @@ class plugin(BotPlugin):
         super().__init__()
         self.name = "random"
         self.addTarget("GroupMessage", "random", self.random)
+        self.canDetach = True
 
     async def random(self, request: BotRequest):
         "/random 最小值 最大值"

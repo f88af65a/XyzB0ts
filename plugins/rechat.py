@@ -11,6 +11,7 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "复读机", self.fuduji)
         self.addTarget("GroupMessage", "say", self.say)
         self.reChatDict = {}
+        self.canDetach = True
 
     async def rechat(self, request: BotRequest):
         bot = request.getBot()

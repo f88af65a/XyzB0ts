@@ -105,8 +105,10 @@ class plugin(BotPlugin):
         allName = route.getAllPluginName()
         re = []
         for i in allName:
-            for j in route.getPlugin(i).getListenTarget():
-                re.append("{}:{}".format(i, j[1]))
+            listener = route.getPlugin(i).getListener()
+            for j in listener:
+                for k in listener[j]["targetListener"]:
+                    re.append("{}:{}".format(i, k))
         await bot.sendGroupMessage(
             request.getGroupId(),
             MessageChain().text(str(re)).getData())

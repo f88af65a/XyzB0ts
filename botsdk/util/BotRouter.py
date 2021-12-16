@@ -68,7 +68,7 @@ class TargetRouter(BotRouter):
         # 正则匹配
         reData = self.pattern.search(target)
         # target获取
-        if reData.group(4) is None:
+        if reData is None or reData.group(4) is None:
             return
         target = reData.group(4)
         request.setTarget(target)

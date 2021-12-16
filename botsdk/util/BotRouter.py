@@ -4,7 +4,6 @@ import re
 from botsdk.BotRequest import BotRequest
 from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 from botsdk.util.BotPluginsManager import BotPluginsManager
-from botsdk.util.Error import debugPrint
 from botsdk.util.HandlePacket import asyncHandlePacket
 from botsdk.util.JsonConfig import getConfig
 from botsdk.util.MessageChain import MessageChain
@@ -92,7 +91,7 @@ class TargetRouter(BotRouter):
                 for i in controlList:
                     controlLineSplit = i.split("=")
                     if len(controlLineSplit) != 2:
-                        debugPrint("控制字段格式出错")
+                        MessageChain().plain("控制字段有误")
                         return
                     else:
                         controlData[controlLineSplit[0]] = controlLineSplit[1]

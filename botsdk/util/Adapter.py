@@ -43,6 +43,13 @@ class Adapter:
                               "method": method}
 
         async def forward(**kwargs):
+            builtins = sys.modules['builtins']
+            # 参数检查
+            for i in args:
+                if i not in kwargs:
+                    raise BotException(f"adapter调用函数{name}缺少参数{i}")
+                kwargs[i] = getattr(builtins, args[i])(kwargs[i])
+            # 转发
             return await getattr(self, method)(
                 self.apiDict[name], **kwargs)
         setattr(self, name, forward)

@@ -4,129 +4,129 @@
             "path":"/verify",
             "method":"post",
             "parameter":{
-                "verifyKey":""
+                "verifyKey":"str"
             }
         },
         "bind":{
             "path":"/bind",
             "method":"post",
             "parameter":{
-                "sessionKey":"",
-                "qq":""
+                "sessionKey":"str",
+                "qq":"int"
             }
         },
         "release":{
             "path":"/release",
             "method":"post",
             "parameter":{
-                "sessionKey":"",
-                "qq":""
+                "sessionKey":"str",
+                "qq":"int"
             }
         },
         "fetchMessage":{
             "path":"/fetchMessage",
             "method":"get",
             "parameter":{
-                "sessionKey":"",
-                "count":""
+                "sessionKey":"str",
+                "count":"str"
             }
         },
         "sendGroupMessage":{
             "path":"/sendGroupMessage",
             "method":"post",
             "parameter":{
-                "sessionKey":"",
-                "target":"",
-                "messageChain":""
+                "sessionKey":"str",
+                "target":"int",
+                "messageChain":"list"
             }
         },
         "sendFriendMessage":{
             "path":"/sendFriendMessage",
             "method":"post",
             "parameter":{
-                "sessionKey":"",
-                "target":"",
-                "qq":"",
-                "messageChain":""
+                "sessionKey":"str",
+                "target":"int",
+                "qq":"int",
+                "messageChain":"list"
             }
         },
         "mute":{
             "path":"/mute",
             "method":"post",
             "parameter":{
-                "sessionKey":"",
-                "target":"",
-                "memberId":"",
-                "time":""
+                "sessionKey":"str",
+                "target":"int",
+                "memberId":"int",
+                "time":"int"
             }
         },
         "unmute":{
             "path":"/unmute",
             "method":"post",
             "parameter":{
-                "sessionKey":"",
-                "target":"",
-                "memberId":""
+                "sessionKey":"str",
+                "target":"int",
+                "memberId":"int"
             }
         },
         "memberList":{
             "path":"/memberList",
             "method":"get",
             "parameter":{
-                "sessionKey":"",
-                "target":""
+                "sessionKey":"str",
+                "target":"int"
             }
         }, 
         "friendList":{
             "path":"/friendList",
             "method":"get",
             "parameter":{
-                "sessionKey":""
+                "sessionKey":"str"
             }
         }, 
         "groupList":{
             "path":"/groupList",
             "method":"get",
             "parameter":{
-                "sessionKey":""
+                "sessionKey":"str"
             }
         }, 
         "messageFromId":{
             "path":"/messageFromId",
             "method":"get",
             "parameter":{
-                "sessionKey":"",
-                "id":""
+                "sessionKey":"str",
+                "id":"int"
             }
         },
         "sendNudge":{
             "path":"/sendNudge",
             "method":"post",
             "parameter":{
-                "sessionKey":"",
-                "target":"",
-                "subject":"",
-                "kind":""
+                "sessionKey":"int",
+                "target":"int",
+                "subject":"int",
+                "kind":"str"
             }
         },
         "recall":{
             "path":"/recall",
             "method":"post",
             "parameter":{
-                "sessionKey":"",
-                "target":""
+                "sessionKey":"str",
+                "target":"int"
             }
         },
         "NewFriendRequestEvent":{
             "path":"/resp/newFriendRequestEvent",
             "method":"post",
             "parameter":{
-                "sessionKey":"",
-                "eventId":"",
-                "fromId":"",
-                "groupId":"",
-                "operate":"",
-                "message":""
+                "sessionKey":"str",
+                "eventId":"int",
+                "fromId":"int",
+                "groupId":"int",
+                "operate":"int",
+                "message":"str"
             }
         },
         "MemberJoinRequestEvent":{
@@ -134,23 +134,23 @@
             "method":"post",
             "parameter":{
                 "sessionKey":"YourSessionKey",
-                "eventId":"",
-                "fromId":"",
-                "groupId":"",
-                "operate":"",
-                "message":""
+                "eventId":"int",
+                "fromId":"int",
+                "groupId":"int",
+                "operate":"int",
+                "message":"str"
             }
         },
         "BotInvitedJoinGroupRequestEvent":{
             "path":"/resp/botInvitedJoinGroupRequestEvent",
             "method":"post",
             "parameter":{
-                "sessionKey":"",
-                "eventId":"",
-                "fromId":"",
-                "groupId":"",
-                "operate":"",
-                "message":""
+                "sessionKey":"str",
+                "eventId":"int",
+                "fromId":"int",
+                "groupId":"int",
+                "operate":"int",
+                "message":"str"
             }
         }
     }

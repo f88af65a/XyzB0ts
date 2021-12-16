@@ -130,7 +130,7 @@ def getCookieDriver():
     global cookieDriver
     if cookieDriver is None:
         cookieDriver = getattr(
-            sys.modules(__name__),
+            sys.modules[__name__],
             getConfig()["cookieDriver"])()
     return cookieDriver
 

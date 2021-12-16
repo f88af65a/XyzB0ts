@@ -1,4 +1,4 @@
-from botsdk.util.Cookie import getCookieByDict
+from botsdk.util.Cookie import getCookieDriver
 from botsdk.BotRequest import BotRequest
 from botsdk.util.JsonConfig import getConfig
 
@@ -12,7 +12,7 @@ def permissionCheck(request: BotRequest, target: str):
             request.getSenderId(), "ADMINISTRATOR"):
         return True
     if request.getType() == "GroupMessage":
-        cookie = getCookieByDict(request.getId())
+        cookie = getCookieDriver().getCookieByDict(request.getId())
         if not (groupPermissionCheck(request, target, cookie)
                 or groupMemberPermissionCheck(request, target, cookie)):
             return False

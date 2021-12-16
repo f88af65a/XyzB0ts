@@ -10,6 +10,7 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "权限", self.quanxian)
         self.addTarget("GroupMessage", "群友权限", self.qunyouquanxian)
         self.permissionSet = {"OWNER", "ADMINISTRATOR", "MEMBER"}
+        self.canDetach = True
 
     async def quanxian(self, request: BotRequest):
         data = request.getFirstTextSplit()

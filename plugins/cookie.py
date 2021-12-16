@@ -11,6 +11,7 @@ class plugin(BotPlugin):
         self.name = "cookie"
         self.addTarget("GroupMessage", "cookie", self.cookie)
         self.permissionSet = {"OWNER", "ADMINISTRATOR", "MEMBER"}
+        self.canDetach = True
 
     async def cookie(self, request: botsdk.BotRequest):
         cookie = request.getCookie()

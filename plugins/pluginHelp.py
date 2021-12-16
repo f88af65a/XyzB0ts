@@ -13,7 +13,7 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "reload", self.reload)
         self.addTarget("GroupMessage", "unload", self.unload)
         self.addTarget("GroupMessage", "plugins", self.plugins)
-        self.addTarget("GroupMessage", "targets", self.plugins)
+        self.addTarget("GroupMessage", "targets", self.targets)
 
     async def helper(self, request: BotRequest):
         """/help [plugin/target] [插件名/命令名]"""

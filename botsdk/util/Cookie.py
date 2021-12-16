@@ -6,7 +6,6 @@ import sys
 import redis
 from botsdk.util.JsonConfig import getConfig
 
-
 '''
 id为0表示持久化的设置
 '''

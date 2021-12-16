@@ -8,6 +8,7 @@ class plugin(BotPlugin):
     def __init__(self):
         super().__init__()
         self.name = "botInfo"
+        self.canDetach = True
 
     def botinfo(self, request: BotRequest):
         request.sendMessage(MessageChain().plain(

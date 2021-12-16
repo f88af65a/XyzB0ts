@@ -157,7 +157,7 @@ class Bot:
         '''
         return await self.adapter.fetchMessage(
             sessionKey=self.sessionKey,
-            count=count
+            count=str(count)
         )
 
     async def countMessage(self):

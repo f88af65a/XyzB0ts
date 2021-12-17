@@ -134,7 +134,7 @@ class plugin(BotPlugin):
             image = Image.open(fPath)
             image = image.convert("RGB")
             image.save(fPath)
-            msg.text("\n").image(path=getConfig()["appPath"] + fPath[1:])
+            msg.text("\n").image(path=getConfig()["appPath"] + fPath)
             await request.sendMessage(msg)
             os.remove(fPath)
         else:

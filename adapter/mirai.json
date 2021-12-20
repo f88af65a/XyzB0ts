@@ -96,7 +96,7 @@
             "method":"get",
             "parameter":{
                 "sessionKey":"str",
-                "id":"int"
+                "id":"str"
             }
         },
         "sendNudge":{

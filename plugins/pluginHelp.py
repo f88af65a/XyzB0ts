@@ -1,5 +1,6 @@
 from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
+from botsdk.util.JsonConfig import getConfig
 from botsdk.util.MessageChain import MessageChain
 
 
@@ -45,7 +46,7 @@ class plugin(BotPlugin):
                 MessageChain().text("缺少参数").getData())
             return
         path = data[1]
-        re = route.loadPlugin(path)
+        re = route.loadPlugin(getConfig()["pluginsPath"] + path)
         await bot.sendGroupMessage(
             request.getGroupId(),
             MessageChain().text("加载成功" if re else "加载失败").getData())

@@ -103,7 +103,7 @@
             "path":"/sendNudge",
             "method":"post",
             "parameter":{
-                "sessionKey":"int",
+                "sessionKey":"str",
                 "target":"int",
                 "subject":"int",
                 "kind":"str"

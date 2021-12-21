@@ -133,7 +133,7 @@
             "path":"/resp/memberJoinRequestEvent",
             "method":"post",
             "parameter":{
-                "sessionKey":"YourSessionKey",
+                "sessionKey":"str",
                 "eventId":"int",
                 "fromId":"int",
                 "groupId":"int",

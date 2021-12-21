@@ -103,7 +103,7 @@
             "path":"/sendNudge",
             "method":"post",
             "parameter":{
-                "sessionKey":"int",
+                "sessionKey":"str",
                 "target":"int",
                 "subject":"int",
                 "kind":"str"
@@ -133,7 +133,7 @@
             "path":"/resp/memberJoinRequestEvent",
             "method":"post",
             "parameter":{
-                "sessionKey":"YourSessionKey",
+                "sessionKey":"str",
                 "eventId":"int",
                 "fromId":"int",
                 "groupId":"int",

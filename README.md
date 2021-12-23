@@ -5,7 +5,8 @@
 
 
 # 快速开始
- [快速开始](docs/HOWTOSTART.MD)
+ [BOT部署](docs/TOUSE.MD)
+ [插件制作](docs/HOWTOSTART.MD)
 
 ## 一些链接
  [ADAPTER说明](docs/ADAPTER.MD)  

@@ -56,6 +56,9 @@ class plugin(BotPlugin):
             elif "description" in jdata["item"]:
                 msg.text("[动态][UP:{0}]\n".format(jdata["user"]["name"])
                          + jdata["item"]["description"])
+                if ("pictures_count" in jdata["item"]
+                        and jdata["item"]["pictures_count"] != 0):
+                    msg.image(url=jdata["item"]["pictures"][0]["img_src"])
             elif "content" in jdata["item"]:
                 msg.text("[UP:{0}]\n".format(jdata["user"]["uname"])
                          + jdata["item"]["content"])

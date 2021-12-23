@@ -1,26 +1,36 @@
 {
-	"appPath":"",
-	"pluginsPath":"plugins/",
-	"adapterPath":"adapter/",
-	"sqlPath":"botsql.sql",
-	"localFilePath":"localFile/",
-	"workProcess":"4",
-	"workThread":"4",
-	"multi":true,
-	"debug":false,
-	"debugPrint":5,
-	"deBugGroupId":[],
-	"commandTarget":["/","#","."],
-	"account":[{"path":"localhost", "port":"", "qq":"","passwd":""}],
-	"cookieDriver":"SqliteCookie",
-	"systemCookie":{
-		"systemPermission":{
-			"load":"ADMINISTRATOR",
-			"reload":"ADMINISTRATOR",
-			"unload":"ADMINISTRATOR",
-			"config":"ADMINISTRATOR"
-		},
-		"user":{
+	"appPath": "",
+	"pluginsPath": "plugins/",
+	"adapterPath": "adapter/",
+	"sqlPath": "botsql.sql",
+	"localFilePath": "localFile/",
+	"workProcess": "4",
+	"workThread": "4",
+	"multi": true,
+	"debug": false,
+	"debugPrint": 5,
+	"deBugGroupId": [],
+	"commandTarget": [
+		"/",
+		"#",
+		"."
+	],
+	"account": [
+		{
+			"path": "localhost",
+			"port": "",
+			"qq": "",
+			"passwd": ""
 		}
+	],
+	"cookieDriver": "SqliteCookie",
+	"systemCookie": {
+		"systemPermission": {
+			"load": "ADMINISTRATOR",
+			"reload": "ADMINISTRATOR",
+			"unload": "ADMINISTRATOR",
+			"config": "ADMINISTRATOR"
+		},
+		"user": {}
 	}
 }

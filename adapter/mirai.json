@@ -1,156 +1,156 @@
 {
-    "api":{
-        "verify":{
-            "path":"/verify",
-            "method":"post",
-            "parameter":{
-                "verifyKey":"str"
+    "api": {
+        "verify": {
+            "path": "/verify",
+            "method": "post",
+            "parameter": {
+                "verifyKey": "str"
             }
         },
-        "bind":{
-            "path":"/bind",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "qq":"int"
+        "bind": {
+            "path": "/bind",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "qq": "int"
             }
         },
-        "release":{
-            "path":"/release",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "qq":"int"
+        "release": {
+            "path": "/release",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "qq": "int"
             }
         },
-        "fetchMessage":{
-            "path":"/fetchMessage",
-            "method":"get",
-            "parameter":{
-                "sessionKey":"str",
-                "count":"str"
+        "fetchMessage": {
+            "path": "/fetchMessage",
+            "method": "get",
+            "parameter": {
+                "sessionKey": "str",
+                "count": "str"
             }
         },
-        "sendGroupMessage":{
-            "path":"/sendGroupMessage",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "target":"int",
-                "messageChain":"list"
+        "sendGroupMessage": {
+            "path": "/sendGroupMessage",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "target": "int",
+                "messageChain": "list"
             }
         },
-        "sendFriendMessage":{
-            "path":"/sendFriendMessage",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "target":"int",
-                "qq":"int",
-                "messageChain":"list"
+        "sendFriendMessage": {
+            "path": "/sendFriendMessage",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "target": "int",
+                "qq": "int",
+                "messageChain": "list"
             }
         },
-        "mute":{
-            "path":"/mute",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "target":"int",
-                "memberId":"int",
-                "time":"int"
+        "mute": {
+            "path": "/mute",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "target": "int",
+                "memberId": "int",
+                "time": "int"
             }
         },
-        "unmute":{
-            "path":"/unmute",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "target":"int",
-                "memberId":"int"
+        "unmute": {
+            "path": "/unmute",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "target": "int",
+                "memberId": "int"
             }
         },
-        "memberList":{
-            "path":"/memberList",
-            "method":"get",
-            "parameter":{
-                "sessionKey":"str",
-                "target":"int"
-            }
-        }, 
-        "friendList":{
-            "path":"/friendList",
-            "method":"get",
-            "parameter":{
-                "sessionKey":"str"
-            }
-        }, 
-        "groupList":{
-            "path":"/groupList",
-            "method":"get",
-            "parameter":{
-                "sessionKey":"str"
-            }
-        }, 
-        "messageFromId":{
-            "path":"/messageFromId",
-            "method":"get",
-            "parameter":{
-                "sessionKey":"str",
-                "id":"str"
+        "memberList": {
+            "path": "/memberList",
+            "method": "get",
+            "parameter": {
+                "sessionKey": "str",
+                "target": "int"
             }
         },
-        "sendNudge":{
-            "path":"/sendNudge",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "target":"int",
-                "subject":"int",
-                "kind":"str"
+        "friendList": {
+            "path": "/friendList",
+            "method": "get",
+            "parameter": {
+                "sessionKey": "str"
             }
         },
-        "recall":{
-            "path":"/recall",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "target":"int"
+        "groupList": {
+            "path": "/groupList",
+            "method": "get",
+            "parameter": {
+                "sessionKey": "str"
             }
         },
-        "NewFriendRequestEvent":{
-            "path":"/resp/newFriendRequestEvent",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "eventId":"int",
-                "fromId":"int",
-                "groupId":"int",
-                "operate":"int",
-                "message":"str"
+        "messageFromId": {
+            "path": "/messageFromId",
+            "method": "get",
+            "parameter": {
+                "sessionKey": "str",
+                "id": "str"
             }
         },
-        "MemberJoinRequestEvent":{
-            "path":"/resp/memberJoinRequestEvent",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "eventId":"int",
-                "fromId":"int",
-                "groupId":"int",
-                "operate":"int",
-                "message":"str"
+        "sendNudge": {
+            "path": "/sendNudge",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "target": "int",
+                "subject": "int",
+                "kind": "str"
             }
         },
-        "BotInvitedJoinGroupRequestEvent":{
-            "path":"/resp/botInvitedJoinGroupRequestEvent",
-            "method":"post",
-            "parameter":{
-                "sessionKey":"str",
-                "eventId":"int",
-                "fromId":"int",
-                "groupId":"int",
-                "operate":"int",
-                "message":"str"
+        "recall": {
+            "path": "/recall",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "target": "int"
+            }
+        },
+        "NewFriendRequestEvent": {
+            "path": "/resp/newFriendRequestEvent",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "eventId": "int",
+                "fromId": "int",
+                "groupId": "int",
+                "operate": "int",
+                "message": "str"
+            }
+        },
+        "MemberJoinRequestEvent": {
+            "path": "/resp/memberJoinRequestEvent",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "eventId": "int",
+                "fromId": "int",
+                "groupId": "int",
+                "operate": "int",
+                "message": "str"
+            }
+        },
+        "BotInvitedJoinGroupRequestEvent": {
+            "path": "/resp/botInvitedJoinGroupRequestEvent",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "eventId": "int",
+                "fromId": "int",
+                "groupId": "int",
+                "operate": "int",
+                "message": "str"
             }
         }
     }

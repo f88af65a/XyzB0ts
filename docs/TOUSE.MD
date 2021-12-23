@@ -12,10 +12,10 @@
 
 ### 部署
  mirai部署请前往[mirai-api-http](https://github.com/project-mirai/mirai-api-http)  
- BOT的部署只需要运行[start.py](start.py)
+ BOT的部署只需要运行[start.py](/start.py)
 
 ### 配置文件
- BOT配置文件为[configs/config.json](configs/config.json)  
+ BOT配置文件为[configs/config.json](/configs/config.json)  
  其中需要配置的部分为  
  ```json
  "account":[{"path":"localhost", "port":"", "qq":"","passwd":""}],

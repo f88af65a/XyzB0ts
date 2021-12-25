@@ -2,6 +2,7 @@ import json
 import os
 import sys
 
+import aiohttp
 import botsdk.util.HttpRequest
 from botsdk.util.BotException import BotException
 from botsdk.util.JsonConfig import getConfig
@@ -58,14 +59,24 @@ class Adapter:
 class MiraiAdapter(Adapter):
     def init(self):
         self.adapterFileName = "mirai.json"
+        self.session = aiohttp.ClientSession()
 
     async def get(self, parameter, **kwargs):
-        return json.loads(
-            await botsdk.util.HttpRequest.get(
-                (self.url + parameter["path"] + "?"
-                 + "&".join(["=".join([i, kwargs[i]]) for i in kwargs]))))
+        try:
+            async with self.session.get(
+                    (self.url + parameter["path"] + "?"
+                     + "&".join(["=".join([i, kwargs[i]]) for i in kwargs]))
+                    ) as response:
+                return json.loads(response.text)
+        except Exception:
+            return None
 
     async def post(self, parameter, **kwargs):
-        return json.loads(
-            await botsdk.util.HttpRequest.post(
-                self.url + parameter["path"], kwargs))
+        try:
+            async with self.session.post(
+                    self.url + parameter["path"],
+                    headers=kwargs
+                    ) as response:
+                return json.loads(response.text)
+        except Exception:
+            return None

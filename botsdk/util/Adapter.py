@@ -72,7 +72,7 @@ class MiraiAdapter(Adapter):
 
     async def post(self, parameter, **kwargs):
         try:
-            async with self.session.post(
+            async with self.session.get(
                     self.url + parameter["path"],
                     data=json.dumps(kwargs).encode()
                     ) as response:

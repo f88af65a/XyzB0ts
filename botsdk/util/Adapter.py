@@ -3,7 +3,6 @@ import os
 import sys
 
 import aiohttp
-import botsdk.util.HttpRequest
 from botsdk.util.BotException import BotException
 from botsdk.util.JsonConfig import getConfig
 
@@ -67,7 +66,7 @@ class MiraiAdapter(Adapter):
                     (self.url + parameter["path"] + "?"
                      + "&".join(["=".join([i, kwargs[i]]) for i in kwargs]))
                     ) as response:
-                return json.loads(response.text)
+                return json.loads(await response.text())
         except Exception:
             return None
 
@@ -75,8 +74,8 @@ class MiraiAdapter(Adapter):
         try:
             async with self.session.post(
                     self.url + parameter["path"],
-                    headers=kwargs
+                    data=json.dumps(kwargs).encode()
                     ) as response:
-                return json.loads(response.text)
+                return json.loads(await response.text())
         except Exception:
             return None

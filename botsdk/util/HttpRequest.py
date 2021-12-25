@@ -11,6 +11,7 @@ async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
         timeout = aiohttp.ClientTimeout(total=timeout)
         async with aiohttp.ClientSession(
                 connector=conn,
+                connector_owner=False,
                 headers=(headers if headers is not None else None),
                 timeout=timeout) as session:
             async with session.get(
@@ -31,6 +32,7 @@ async def post(url, data, byte=None, timeout: int = 15):
         timeout = aiohttp.ClientTimeout(total=timeout)
         async with aiohttp.ClientSession(
                 connector=conn,
+                connector_owner=False,
                 timeout=timeout) as session:
             async with session.post(url, data=json.dumps(data).encode("utf8"),
                                     verify_ssl=False) as r:

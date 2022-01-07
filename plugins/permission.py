@@ -13,6 +13,7 @@ class plugin(BotPlugin):
         self.canDetach = True
 
     async def quanxian(self, request: BotRequest):
+        '''#群友权限 命令名 所需权限'''
         data = request.getFirstTextSplit()
         if len(data) < 3:
             await request.sendMessage(MessageChain().text("缺少参数"))
@@ -28,6 +29,7 @@ class plugin(BotPlugin):
         await request.sendMessage(MessageChain().text("修改完成"))
 
     async def qunyouquanxian(self, request: BotRequest):
+        '''#群友权限 群友QQ add/remove 权限名'''
         data = request.getFirstTextSplit()
         try:
             target = str(int(data[1]))

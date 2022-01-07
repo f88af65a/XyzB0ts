@@ -26,7 +26,8 @@ async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
 async def post(url, data, byte=None, timeout: int = 15):
     try:
         timeout = aiohttp.ClientTimeout(total=timeout)
-        async with aiohttp.ClientSession(timeout=timeout) as session:
+        async with aiohttp.ClientSession(
+                timeout=timeout) as session:
             async with session.post(url, data=json.dumps(data).encode("utf8"),
                                     verify_ssl=False) as r:
                 if byte is True:

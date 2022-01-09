@@ -6,11 +6,11 @@ from botsdk.BotModule.Bot import getBot
 
 
 def getRequest(data):
-    return getAttrFromModule(
-        ((getConfig()["botPath"]
-         + data[0]["bot"][0]["botType"]).replace("/", ".")
+    getAttrFromModule(
+        (getConfig()["botPath"]
+         + data["botType"].replace("/", ".")
          + ".Request"),
-        data[0]["bot"][0]["botType"] + "Request")(data)
+        data["bot"]["botType"] + "Request")(data)
 
 
 class Request(dict):
@@ -22,7 +22,7 @@ class Request(dict):
 
     def getBot(self):
         if self.bot is None:
-            self.bot = getBot(self.data["bot"])
+            self.bot = getBot(*self.data["bot"])
         return self.bot
 
     def getData(self):
@@ -52,18 +52,6 @@ class Request(dict):
     def getTarget(self):
         return self.data["target"]
 
-    def getRoute(self):
-        return self.route
-
-    def getPluginsManager(self):
-        return self.route.getPluginsManager()
-
-    def getUuid(self):
-        return self.data["uuid"]
-
-    def makeMessageChain(self, data):
-        return self.getBot().makeMessageChain(data)
-
     # needOverRide
     def getId(self):
         pass
@@ -78,6 +66,15 @@ class Request(dict):
         pass
 
     # old
+
+    def getRoute(self):
+        return self.route
+
+    def getPluginsManager(self):
+        return self.route.getPluginsManager()
+
+    def getUuid(self):
+        return self.data["uuid"]
 
     def getMessageId(self):
         return self["messageChain"][0]["id"]

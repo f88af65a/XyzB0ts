@@ -4,7 +4,7 @@ from botsdk.util.JsonConfig import getConfig
 
 
 def getBot(data):
-    return getAttrFromModule(
+    getAttrFromModule(
                 (getConfig()["botPath"]
                  + data["botType"]).replace("/", ".") + ".Bot",
                 data["botType"] + "Bot")(data)
@@ -47,9 +47,3 @@ class Bot:
 
     async def fetchMessage(self):
         pass
-
-    def makeMessageChain(self, data):
-        return getAttrFromModule(
-            (getConfig()["botPath"]
-             + self.data["botType"]).replace("/", ".")
-            + "./MessageChain", "MessageChain")(data)

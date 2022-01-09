@@ -8,7 +8,7 @@ from botsdk.util.JsonConfig import getConfig
 
 
 def getAdapter(adapterName: str, data):
-    return getattr(sys.modules[__name__], adapterName)(data)
+    return getattr(sys.modules[__name__], adapterName + "Adapter")(data)
 
 
 class Adapter:

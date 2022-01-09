@@ -7,12 +7,6 @@ from botsdk.BotModule.Request import Request
 
 
 class MiraiRequest(Request):
-    def __init__(self, data, responseChain, route=None):
-        super().__init__(responseChain)
-        self.data = data
-        self.route = route
-        self.bot = None
-
     def getBot(self):
         if self.bot is None:
             self.bot = Bot(*self.data["bot"])

@@ -1,4 +1,13 @@
 from botsdk.util.Adapter import getAdapter
+from botsdk.util.Tool import getAttrFromModule
+from botsdk.util.JsonConfig import getConfig
+
+
+def getBot(data):
+    getAttrFromModule(
+                (getConfig()["botPath"]
+                 + data["botType"]).replace("/", ".") + ".Bot",
+                data["botType"] + "Bot")(data)
 
 
 class Bot:
@@ -22,7 +31,7 @@ class Bot:
         return self.botService
 
     def getData(self):
-        return (self.data)
+        return (self.data,)
 
     def getBotType(self):
         return self.botType

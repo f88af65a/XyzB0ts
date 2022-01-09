@@ -1,6 +1,16 @@
-from bot.Mirai.Bot import Bot
 from botsdk.util.BotException import BotException
 from botsdk.util.Cookie import getCookie, setCookie
+from botsdk.util.Tool import getAttrFromModule
+from botsdk.util.JsonConfig import getConfig
+from botsdk.BotModule.Bot import getBot
+
+
+def getRequest(data):
+    getAttrFromModule(
+        (getConfig()["botPath"]
+         + data["botType"].replace("/", ".")
+         + ".Request"),
+        data["bot"]["botType"] + "Request")(data)
 
 
 class Request(dict):
@@ -12,7 +22,7 @@ class Request(dict):
 
     def getBot(self):
         if self.bot is None:
-            self.bot = Bot(*self.data["bot"])
+            self.bot = getBot(*self.data["bot"])
         return self.bot
 
     def getData(self):

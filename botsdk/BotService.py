@@ -49,7 +49,7 @@ class BotService:
                     asyncio.run_coroutine_threadsafe(
                         botRoute.route(
                             getAttrFromModule(
-                                botPath + "Request",
+                                botPath + ".Request",
                                 botType + "Request")(
                                 {"bot": bot.getData(),
                                     "uuid": uuid.uuid4()},

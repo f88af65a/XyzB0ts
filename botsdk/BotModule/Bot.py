@@ -48,7 +48,7 @@ class Bot:
     async def fetchMessage(self):
         pass
 
-    def makeMessageChain(self, data):
+    def makeMessageChain(self, data=None):
         return getAttrFromModule(
             (getConfig()["botPath"]
              + self.data["botType"]).replace("/", ".")

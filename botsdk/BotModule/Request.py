@@ -61,7 +61,7 @@ class Request(dict):
     def getUuid(self):
         return self.data["uuid"]
 
-    def makeMessageChain(self, data):
+    def makeMessageChain(self, data=None):
         return self.getBot().makeMessageChain(data)
 
     # needOverRide

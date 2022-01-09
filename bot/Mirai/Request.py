@@ -1,7 +1,6 @@
 from botsdk.util.Cookie import getCookie
 from botsdk.util.Cookie import setCookie
 from botsdk.util.BotException import BotException
-from botsdk.BotModule.MessageChain import MessageChain
 from botsdk.BotModule.Request import Request
 
 

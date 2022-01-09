@@ -10,7 +10,7 @@ def getRequest(data):
         ((getConfig()["botPath"]
          + data[0]["bot"][0]["botType"]).replace("/", ".")
          + ".Request"),
-        data[0]["bot"][0]["botType"] + "Request")(data)
+        data[0]["bot"][0]["botType"] + "Request")(*data)
 
 
 class Request(dict):

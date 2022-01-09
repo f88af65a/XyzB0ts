@@ -6,8 +6,8 @@ from botsdk.util.JsonConfig import getConfig
 def getBot(data):
     return getAttrFromModule(
                 (getConfig()["botPath"]
-                 + data["botType"]).replace("/", ".") + ".Bot",
-                data["botType"] + "Bot")(data)
+                 + data[0]["botType"]).replace("/", ".") + ".Bot",
+                data[0]["botType"] + "Bot")(*data)
 
 
 class Bot:
@@ -52,4 +52,4 @@ class Bot:
         return getAttrFromModule(
             (getConfig()["botPath"]
              + self.data["botType"]).replace("/", ".")
-            + "./MessageChain", "MessageChain")(data)
+            + ".MessageChain", self.data["botType"] + "MessageChain")(data)

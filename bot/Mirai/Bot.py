@@ -46,6 +46,7 @@ class MiraiBot(Bot):
             return None
         if re["code"] == 0:
             self.sessionKey = re["session"]
+            self.data["sessionKey"] = self.sessionKey
         else:
             exceptionExit("账号验证失败")
         return re

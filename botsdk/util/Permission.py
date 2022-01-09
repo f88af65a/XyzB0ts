@@ -1,10 +1,9 @@
 from botsdk.util.Cookie import getCookieDriver
-from botsdk.BotModule.Request import BotRequest
 from botsdk.util.JsonConfig import getConfig
 
 
 # 返回真为有权限,假为没权限
-def permissionCheck(request: BotRequest, target: str):
+def permissionCheck(request, target: str):
     if (re := systemPermissionCheck(
             request, target, getConfig()["systemCookie"])) is not None:
         return re
@@ -30,7 +29,7 @@ def permissionCmp(f, s):
     return helpDict[str(f)] > helpDict[str(s)]
 
 
-def groupPermissionCheck(request: BotRequest, target: str, cookie):
+def groupPermissionCheck(request, target: str, cookie):
     if request.getPermission() == "OWNER":
         return True
     if "groupPermission" not in cookie:
@@ -45,7 +44,7 @@ def groupPermissionCheck(request: BotRequest, target: str, cookie):
 
 
 # 格式为cookie["groupMemberPermission"] ["QQ"][命令,命令]
-def groupMemberPermissionCheck(request: BotRequest, target: str, cookie):
+def groupMemberPermissionCheck(request, target: str, cookie):
     if ("groupMemberPermission" in cookie
             and str(request.getSenderId()) in cookie["groupMemberPermission"]
             and target in
@@ -56,7 +55,7 @@ def groupMemberPermissionCheck(request: BotRequest, target: str, cookie):
 
 # 系统权限所限制的指令在cookie["systemPermission"]["指令"]="权限"
 # 用户权限在cookie["user"]["用户"]="权限"
-def systemPermissionCheck(request: BotRequest, target: str, cookie):
+def systemPermissionCheck(request, target: str, cookie):
     if "systemPermission" in cookie and target in cookie["systemPermission"]:
         if ("user" in cookie and str(request.getSenderId()) in cookie["user"]
                 and markToInt(cookie["user"][str(request.getSenderId())])

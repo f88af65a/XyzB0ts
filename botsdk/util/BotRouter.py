@@ -1,7 +1,6 @@
 import asyncio
 import re
 
-from botsdk.BotModule.Request import BotRequest
 from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.HandlePacket import asyncHandlePacket
@@ -21,14 +20,14 @@ class BotRouter:
         pass
 
     async def route(self, pluginsManager: BotPluginsManager,
-                    request: BotRequest,
+                    request,
                     concurrentModule: defaultBotConcurrentModule = None):
         pass
 
 
 class GeneralRouter(BotRouter):
     async def route(self, pluginsManager: BotPluginsManager,
-                    request: BotRequest,
+                    request,
                     concurrentModule: defaultBotConcurrentModule = None):
         for i in pluginsManager.getGeneralList():
             if (ret := await i[1](request)) is not None and ret is False:
@@ -39,7 +38,7 @@ class GeneralRouter(BotRouter):
 
 class TypeRouter(BotRouter):
     async def route(self, pluginsManager: BotPluginsManager,
-                    request: BotRequest,
+                    request,
                     concurrentModule: defaultBotConcurrentModule = None):
         if request.getType() in pluginsManager.getListener():
             listener = pluginsManager.getListener()
@@ -57,7 +56,7 @@ class TargetRouter(BotRouter):
              + r"])(\S+)( \S+)*$"))
 
     async def route(self, pluginsManager: BotPluginsManager,
-                    request: BotRequest,
+                    request,
                     concurrentModule: defaultBotConcurrentModule = None):
         # 类型判断与命令获取
         if (request.getType() not in messageType

@@ -3,7 +3,7 @@ import importlib
 import threading
 from multiprocessing import Process, Queue
 
-from botsdk.BotModule.Request import BotRequest
+from botsdk.BotModule.Request import Request
 from botsdk.util.BotException import BotException
 from botsdk.util.Error import debugPrint, printTraceBack
 from botsdk.util.HandlePacket import asyncHandlePacket
@@ -32,7 +32,7 @@ async def workProcessRun(queue, threadList):
             except Exception:
                 await asyncio.sleep(0.05)
                 continue
-            request = BotRequest(*data)
+            request = Request(*data)
             module = importlib.reload(
                 importlib.import_module(request.getHandleModuleName()))
             plugin = getattr(module, "handle")()

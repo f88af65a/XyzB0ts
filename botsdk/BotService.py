@@ -8,7 +8,7 @@ from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.Error import debugPrint
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.Tool import getModuleByPath
+from botsdk.util.Tool import getAttrFromModule
 
 
 class BotService:
@@ -17,12 +17,13 @@ class BotService:
 
     async def runInEventLoop(self, accountMark, concurrentModule):
         while True:
+            botPath = (getConfig()["botPath"]
+                       + getConfig()["account"][accountMark]["botType"])
             # 初始化Bot
-            bot = getModuleByPath(
-                    (getConfig()["botPath"]
-                     + getConfig()["account"][accountMark]["botType"])
-                )(getConfig()["account"][accountMark])
             botName = getConfig()["account"][accountMark]["botName"]
+            bot = getAttrFromModule(
+                botPath + "Bot",
+                botName + "Bot")(getConfig()["account"][accountMark])
             # 登录
             re = bot.login()
             if re != 0:
@@ -47,7 +48,9 @@ class BotService:
                 for i in re:
                     asyncio.run_coroutine_threadsafe(
                         botRoute.route(
-                            botsdk.Request.BotRequest(
+                            getAttrFromModule(
+                                botPath + "Request",
+                                botName + "Request")(
                                 {"bot": bot.getData(),
                                     "uuid": uuid.uuid4()},
                                 i, botRoute)),

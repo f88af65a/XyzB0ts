@@ -1,5 +1,5 @@
 import json
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.HttpRequest import get
 

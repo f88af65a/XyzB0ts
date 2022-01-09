@@ -1,11 +1,12 @@
-from botsdk.Bot import Bot
+from bot.Mirai.Bot import Bot
 from botsdk.util.Cookie import getCookie
 from botsdk.util.Cookie import setCookie
 from botsdk.util.BotException import BotException
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
+from botsdk.BotModule.Request import Request
 
 
-class BotRequest(dict):
+class MiraiRequest(Request):
     def __init__(self, data, responseChain, route=None):
         super().__init__(responseChain)
         self.data = data
@@ -16,6 +17,12 @@ class BotRequest(dict):
         if self.bot is None:
             self.bot = Bot(*self.data["bot"])
         return self.bot
+
+    def getData(self):
+        return (self.data, dict(self))
+
+    def getSenderId(self):
+        return str(self["sender"]["id"])
 
     def getRoute(self):
         return self.route
@@ -31,9 +38,6 @@ class BotRequest(dict):
 
     def getMessageTime(self):
         return self["messageChain"][0]["time"]
-
-    def getData(self):
-        return (self.data, dict(self))
 
     def setControlData(self, controlData):
         self.data["controlData"] = controlData
@@ -71,9 +75,6 @@ class BotRequest(dict):
 
     def setCookie(self, target: str, cookie):
         setCookie(self.getId(), target, cookie)
-
-    def getSenderId(self):
-        return str(self["sender"]["id"])
 
     def getGroupId(self):
         return str(self["sender"]["group"]["id"])

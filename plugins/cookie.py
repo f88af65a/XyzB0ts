@@ -1,8 +1,7 @@
 import json
 
-import botsdk.BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -13,7 +12,7 @@ class plugin(BotPlugin):
         self.permissionSet = {"OWNER", "ADMINISTRATOR", "MEMBER"}
         self.canDetach = True
 
-    async def cookie(self, request: botsdk.BotRequest):
+    async def cookie(self, request):
         cookie = request.getCookie()
         await request.sendMessage(MessageChain().text(json.dumps(cookie)))
 

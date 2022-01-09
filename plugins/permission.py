@@ -1,6 +1,5 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -12,7 +11,7 @@ class plugin(BotPlugin):
         self.permissionSet = {"OWNER", "ADMINISTRATOR", "MEMBER"}
         self.canDetach = True
 
-    async def quanxian(self, request: BotRequest):
+    async def quanxian(self, request):
         '''#群友权限 命令名 所需权限'''
         data = request.getFirstTextSplit()
         if len(data) < 3:
@@ -28,7 +27,7 @@ class plugin(BotPlugin):
         request.setCookie("groupPermission", cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
 
-    async def qunyouquanxian(self, request: BotRequest):
+    async def qunyouquanxian(self, request):
         '''#群友权限 群友QQ add/remove 权限名'''
         data = request.getFirstTextSplit()
         try:

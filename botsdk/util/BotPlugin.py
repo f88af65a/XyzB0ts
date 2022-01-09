@@ -49,7 +49,6 @@ class BotPlugin:
             self.initPluginConfig()
             self.init(bot)
         except Exception:
-            self.clear()
             printTraceBack()
             return False
         return True
@@ -65,8 +64,12 @@ class BotPlugin:
     def init(self, bot):
         pass
 
-    # 手动清理bot使用的资源
-    def clear(self):
+    # 加载时调用
+    def load(self):
+        pass
+
+    # 卸载时调用
+    def unload(self):
         pass
 
     def getName(self):

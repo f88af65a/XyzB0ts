@@ -1,6 +1,5 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -13,7 +12,7 @@ class plugin(BotPlugin):
         self.reChatDict = {}
         self.canDetach = True
 
-    async def rechat(self, request: BotRequest):
+    async def rechat(self, request):
         bot = request.getBot()
         cookie = request.getCookie("rechatState")
         if cookie is not None and cookie["rechatState"] == "开启":
@@ -31,7 +30,7 @@ class plugin(BotPlugin):
             else:
                 self.reChatDict[groupid] = chain
 
-    async def fuduji(self, request: BotRequest):
+    async def fuduji(self, request):
         data = request.getFirstTextSplit()
         if len(data) < 2:
             await request.sendMessage(MessageChain().text("/复读机 [开启/关闭]"))
@@ -49,7 +48,7 @@ class plugin(BotPlugin):
             request.setCookie("rechatState", cookie)
         await request.sendMessage(MessageChain().text("修改完成"))
 
-    async def say(self, request: BotRequest):
+    async def say(self, request):
         chain = []
         for i in request.getMessageChain()[1:]:
             chain.append(dict())

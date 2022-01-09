@@ -1,0 +1,15 @@
+{
+    "config": {
+    },
+    "api": {
+        "verify": {
+            "path": "/verify",
+            "method": "post",
+            "parameter": {
+                "verifyKey": "str"
+            },
+            "data": "",
+            "dataParseMethod": ""
+        }
+    }
+}

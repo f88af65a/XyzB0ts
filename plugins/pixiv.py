@@ -4,11 +4,10 @@ import os
 import random
 import time
 
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.HttpRequest import get
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 from PIL import Image
 
 
@@ -27,7 +26,7 @@ class plugin(BotPlugin):
         self.url = self.getConfig()["hibiapiUrl"]
         self.proxy = self.getConfig()["pixivProxy"]
 
-    async def search(self, request: BotRequest):
+    async def search(self, request):
         data = request.getFirstTextSplit()
         if len(data) < 2:
             request.sendMessage(MessageChain().text("/pixiv.search 关键字"))
@@ -66,7 +65,7 @@ class plugin(BotPlugin):
             return
         await self.getImgFromList(data, response, request)
 
-    async def rank(self, request: BotRequest):
+    async def rank(self, request):
         rankType = ["day", "week", "month", "rookie", "original", "male"]
         url = (f'''{self.url}/api/pixiv/rank?RankingType='''
                f'''{rankType[random.randint(0,len(rankType) - 1)]}&date='''

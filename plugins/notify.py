@@ -1,4 +1,4 @@
-from botsdk.BotRequest import BotRequest
+from botsdk.BotModule.Request import BotRequest
 from botsdk.util.BotNotifyModule import getNotifyModule
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Cookie import getCookieDriver

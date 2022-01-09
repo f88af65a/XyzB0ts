@@ -1,6 +1,5 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -13,7 +12,7 @@ class plugin(BotPlugin):
         self.help = "/空调"
         self.canDetach = True
 
-    async def kongtiao(self, request: BotRequest):
+    async def kongtiao(self, request):
         bot = request.bot
         await bot.sendGroupMessage(
             request.getGroupId(),

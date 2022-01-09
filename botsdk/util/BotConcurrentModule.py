@@ -3,7 +3,7 @@ import importlib
 import threading
 from multiprocessing import Process, Queue
 
-from botsdk.BotRequest import BotRequest
+from botsdk.BotModule.Request import BotRequest
 from botsdk.util.BotException import BotException
 from botsdk.util.Error import debugPrint, printTraceBack
 from botsdk.util.HandlePacket import asyncHandlePacket

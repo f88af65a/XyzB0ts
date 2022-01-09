@@ -1,12 +1,12 @@
 import asyncio
 import re
 
-from botsdk.BotRequest import BotRequest
+from botsdk.BotModule.Request import BotRequest
 from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.HandlePacket import asyncHandlePacket
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 from botsdk.util.MessageType import messageType
 from botsdk.util.Permission import getPermissionFromSystem, permissionCheck
 from botsdk.util.Permission import permissionCmp

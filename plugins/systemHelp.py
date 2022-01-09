@@ -1,8 +1,8 @@
-import botsdk.Bot
-import botsdk.BotRequest
+import botsdk.BotModule.Bot
+import botsdk.BotModule.Request
 import botsdk.util.JsonConfig
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):

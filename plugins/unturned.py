@@ -1,9 +1,8 @@
 import asyncio
 import socket
 
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -13,7 +12,7 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "un", self.unSearch)
         self.canDetach = True
 
-    async def unSearch(self, request: BotRequest):
+    async def unSearch(self, request):
         "/un 服务器ip [端口默认27015]"
         data = request.getFirstTextSplit()
         if len(data) < 2:

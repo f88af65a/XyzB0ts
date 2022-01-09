@@ -1,8 +1,7 @@
 import random
 
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -12,7 +11,7 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "random", self.random)
         self.canDetach = True
 
-    async def random(self, request: BotRequest):
+    async def random(self, request):
         "/random 最小值 最大值"
         data = request.getFirstTextSplit()
         if len(data) < 3:

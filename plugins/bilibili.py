@@ -3,13 +3,11 @@ import copy
 import json
 import time
 
-from botsdk.Bot import Bot
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotNotifyModule import getNotifyModule
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Error import printTraceBack
 from botsdk.util.HttpRequest import get
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -23,7 +21,7 @@ class plugin(BotPlugin):
         for i in self.getConfig()["listen"]:
             self.addFuture(i, self.bilibiliGetDynamic(bot, i))
 
-    async def toNotify(self, notifyName, bot: Bot, messageChain: MessageChain):
+    async def toNotify(self, notifyName, bot, messageChain: MessageChain):
         notifyModule = getNotifyModule()
         notifySet = copy.deepcopy(notifyModule.notify(notifyName))
         for i in notifySet:
@@ -128,7 +126,7 @@ class plugin(BotPlugin):
                 await request.sendMessage(printData)
                 return
 
-    async def follower(self, request: BotRequest):
+    async def follower(self, request):
         data = request.getFirstTextSplit()
         if len(data) < 2:
             request.sendMessage("uid呢，uid在哪里")

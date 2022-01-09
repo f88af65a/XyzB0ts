@@ -3,10 +3,9 @@ import json
 import socket
 import time
 
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Error import printTraceBack
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 def getMcRequestData(ip, port):
@@ -38,7 +37,7 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "mcbe", self.getBe)
         self.canDetach = True
 
-    async def getMc(self, request: BotRequest):
+    async def getMc(self, request):
         "/mc ip [端口]不写默认25565"
         data = request.getFirstTextSplit()
         serverIp = None

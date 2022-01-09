@@ -1,28 +1,18 @@
-import json
-
-import botsdk.util.HttpRequest
-from botsdk.util.Adapter import getAdapter
+from botsdk.BotModule.Bot import Bot
 from botsdk.util.BotException import BotException
 from botsdk.util.Error import debugPrint, exceptionExit
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
-class Bot:
-    def __init__(self, path, port, qq, adapterName, sessionKey=None):
-        self.url = f"http://{path}:{port}"
-        self.path = path
-        self.port = port
-        self.qq = qq
-        self.adapterName = adapterName
-        self.adapter = getAdapter(adapterName, self.url)
-        if sessionKey is not None:
-            self.sessionKey = sessionKey
+class MiraiBot(Bot):
+    def init(self):
+        self.path = self.data["path"]
+        self.port = self.data["port"]
+        self.qq = self.data["qq"]
+        if "sessionKey" in self.data:
+            self.sessionKey = self.data["sessionKey"]
 
     # 非API
-
-    def getData(self):
-        return (self.path, self.port, self.qq,
-                self.adapterName, self.sessionKey)
 
     def getQq(self):
         return self.qq
@@ -43,13 +33,6 @@ class Bot:
             await self.sendGroupMessage(target, messageChain.getData(), quote)
         else:
             raise BotException("Bot.sendMessageById遇到了不支持的类型")
-
-    async def post(self, path, data):
-        return json.loads(
-            await botsdk.util.HttpRequest.post(self.url + path, data))
-
-    async def get(self, path):
-        return json.loads(await botsdk.util.HttpRequest.get(self.url + path))
 
     async def login(self, qq: int, authkey: str):
         if await self.verify(authkey) is None:

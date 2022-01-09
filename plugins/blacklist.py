@@ -1,6 +1,5 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 from botsdk.util.Permission import getSystemPermissionAndCheck, permissionCmp
 
 
@@ -12,7 +11,7 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "blacklist", self.blacklist)
         self.canDetach = True
 
-    async def blacklist(self, request: BotRequest):
+    async def blacklist(self, request):
         '''/blacklist [add/remove] qq'''
         data = request.getFirstTextSplit()
         bot = request.getBot()

@@ -1,7 +1,6 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -16,7 +15,7 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "plugins", self.plugins)
         self.addTarget("GroupMessage", "targets", self.targets)
 
-    async def helper(self, request: BotRequest):
+    async def helper(self, request):
         """/help [plugin/target] [插件名/命令名]"""
         data = request.getFirstTextSplit()
         if len(data) < 3:
@@ -36,7 +35,7 @@ class plugin(BotPlugin):
             return
         await request.sendMessage(MessageChain().text("不存在"))
 
-    async def load(self, request: BotRequest):
+    async def load(self, request):
         data = request.getFirstTextSplit()
         bot = request.getBot()
         route = request.getPluginsManager()
@@ -51,7 +50,7 @@ class plugin(BotPlugin):
             request.getGroupId(),
             MessageChain().text("加载成功" if re else "加载失败").getData())
 
-    async def reload(self, request: BotRequest):
+    async def reload(self, request):
         data = request.getFirstTextSplit()
         bot = request.getBot()
         route = request.getPluginsManager()
@@ -72,7 +71,7 @@ class plugin(BotPlugin):
             request.getGroupId(),
             MessageChain().text("加载成功" if re else "加载失败").getData())
 
-    async def unload(self, request: BotRequest):
+    async def unload(self, request):
         data = request.getFirstTextSplit()
         bot = request.getBot()
         route = request.getPluginsManager()
@@ -93,14 +92,14 @@ class plugin(BotPlugin):
             request.getGroupId(),
             MessageChain().text("卸载成功").getData())
 
-    async def plugins(self, request: BotRequest):
+    async def plugins(self, request):
         bot = request.getBot()
         route = request.getPluginsManager()
         await bot.sendGroupMessage(
             request.getGroupId(),
             MessageChain().text(str(route.getAllPluginName())).getData())
 
-    async def targets(self, request: BotRequest):
+    async def targets(self, request):
         bot = request.getBot()
         route = request.getPluginsManager()
         allName = route.getAllPluginName()

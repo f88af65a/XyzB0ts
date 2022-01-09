@@ -1,6 +1,5 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
 class formatDict(dict):
@@ -18,7 +17,7 @@ class plugin(BotPlugin):
         self.addFormat(self.doFormat)
         self.canDetach = True
 
-    async def doFormat(self, request: BotRequest):
+    async def doFormat(self, request):
         if request.getType() == "GroupMessage":
             cookie = request.getCookie("format")
             if cookie is None or request.getFirst("Plain") is None:
@@ -28,7 +27,7 @@ class plugin(BotPlugin):
                 .format_map(formatDict(cookie))
                 )
 
-    async def setFormat(self, request: BotRequest):
+    async def setFormat(self, request):
         "/format [key=word]"
         data = request.getFirstTextSplit()
         if len(data) < 2:

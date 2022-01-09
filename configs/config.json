@@ -1,7 +1,7 @@
 {
 	"appPath": "",
 	"pluginsPath": "plugins/",
-	"adapterPath": "adapter/",
+	"botPath": "bot/",
 	"sqlPath": "botsql.sql",
 	"localFilePath": "localFile/",
 	"workProcess": "4",
@@ -17,8 +17,9 @@
 	],
 	"account": [
 		{
+			"botName": "",
+			"botType": "",
 			"path": "localhost",
-			"port": "",
 			"qq": "",
 			"passwd": ""
 		}

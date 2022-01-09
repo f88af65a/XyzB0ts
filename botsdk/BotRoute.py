@@ -1,5 +1,5 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
+from botsdk.BotModule.Request import Request
 from botsdk.util.TimeTest import asyncTimeTest
 from botsdk.util.Error import asyncTraceBack
 
@@ -13,15 +13,12 @@ class BotRoute:
 
     @asyncTraceBack
     @asyncTimeTest
-    async def route(self, request: BotRequest):
+    async def route(self, request: Request):
         for i in range(len(self.router)):
             if (re := await self.router[i].route(
                     self.pluginsManager, request,
                     self.concurrentModule)) is not None and re is False:
                 return
-
-    def getNotifyModule(self):
-        return self.notifyModule
 
     def getPluginsManager(self):
         return self.pluginsManager

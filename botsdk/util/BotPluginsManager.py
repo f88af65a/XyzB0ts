@@ -47,6 +47,9 @@ class BotPluginsManager:
             printTraceBack()
             return False
         handle.onLoad()
+        # 检查是否是兼容的
+        if self.getBot().getBotType() not in handle.getBotSet():
+            return False
         # 检查名称是否重复
         if handle.getName() in self.plugins:
             return False
@@ -132,3 +135,6 @@ class BotPluginsManager:
                 and target in self.getListener()["targetListener"]):
             return self.getListener()["typeListener"][target]
         return []
+
+    def getBot(self):
+        return self.bot

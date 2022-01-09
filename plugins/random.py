@@ -4,8 +4,8 @@ from botsdk.util.BotPlugin import BotPlugin
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
+        self.addBotType("Mirai")
         self.name = "random"
         self.addTarget("GroupMessage", "random", self.random)
         self.canDetach = True

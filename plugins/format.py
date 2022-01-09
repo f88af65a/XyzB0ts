@@ -9,11 +9,11 @@ class formatDict(dict):
 class plugin(BotPlugin):
     "/format key=word;key=word..."
 
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "format"
         self.addTarget("GroupMessage", "format", self.setFormat)
         self.addFormat(self.doFormat)
+        self.addBotType("Mirai")
         self.canDetach = True
 
     async def doFormat(self, request):

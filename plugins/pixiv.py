@@ -12,8 +12,8 @@ from PIL import Image
 
 class plugin(BotPlugin):
     '''p站相关功能\n/pixiv.[search/rank] [关键字/无] [on]'''
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
+        self.addBotType("Mirai")
         self.name = "pixiv"
         self.addTarget("GroupMessage", "pixiv.search", self.search)
         self.addTarget("GroupMessage", "pixiv.rank", self.rank)

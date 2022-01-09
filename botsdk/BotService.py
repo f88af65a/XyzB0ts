@@ -9,11 +9,15 @@ from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.Error import debugPrint
 from botsdk.util.JsonConfig import getConfig
 from botsdk.util.Tool import getAttrFromModule
+from botsdk.util.Timer import Timer
 
 
 class BotService:
     def __init__(self):
-        pass
+        self.timer = Timer()
+
+    def getTimer(self):
+        return self.timer
 
     async def runInEventLoop(self, accountMark, concurrentModule):
         while True:
@@ -43,7 +47,8 @@ class BotService:
                         debugPrint(
                             f'''账号{botName}获取消息失败重试:{retrySize + 1}''',
                             fromName="BotService")
-                        await bot.onError(re[1])
+                        if (re := await bot.onError(re[1])) is False:
+                            return
                         await asyncio.sleep(retrySize * 5)
                 for i in re[1]:
                     asyncio.run_coroutine_threadsafe(
@@ -67,4 +72,5 @@ class BotService:
             asyncio.run_coroutine_threadsafe(
                 self.runInEventLoop(i, concurrentModule),
                 self.loop)
+        self.runInEventLoop(self.timer.timerLoop(), concurrentModule)
         self.loop.run_forever()

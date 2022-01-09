@@ -2,8 +2,8 @@ from botsdk.util.BotPlugin import BotPlugin
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
+        self.addBotType("Mirai")
         self.name = "rechat"
         self.addType("GroupMessage", self.rechat)
         self.addTarget("GroupMessage", "复读机", self.fuduji)

@@ -11,11 +11,11 @@ from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "bilibili"
         self.addTarget("GroupMessage", "anime", self.anime)
         self.addTarget("GroupMessage", "follower", self.follower)
+        self.addBotType("Mirai")
 
     def init(self, bot):
         for i in self.getConfig()["listen"]:

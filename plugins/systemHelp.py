@@ -5,8 +5,8 @@ from botsdk.util.BotPlugin import BotPlugin
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
+        self.addBotType("Mirai")
         self.name = "systemHelp"
         self.addTarget("GroupMessage", "config", self.configHelp)
 

@@ -2,12 +2,12 @@ from botsdk.util.BotPlugin import BotPlugin
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "permission"
         self.addTarget("GroupMessage", "权限", self.quanxian)
         self.addTarget("GroupMessage", "群友权限", self.qunyouquanxian)
         self.permissionSet = {"OWNER", "ADMINISTRATOR", "MEMBER"}
+        self.addBotType("Mirai")
         self.canDetach = True
 
     async def quanxian(self, request):

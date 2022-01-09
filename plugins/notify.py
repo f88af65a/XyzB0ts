@@ -4,10 +4,10 @@ from botsdk.util.Cookie import getCookieDriver
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "notify"
         self.addTarget("GroupMessage", "notify", self.manageNotify)
+        self.addBotType("Mirai")
         self.canDetach = True
 
     def init(self, bot):

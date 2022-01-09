@@ -5,7 +5,8 @@ from botsdk.util.Error import asyncTraceBack
 
 
 class BotRoute:
-    def __init__(self, bot, pluginsManager, concurrentModule=None):
+    def __init__(self, bot, pluginsManager, botService, concurrentModule=None):
+        self.botService = botService
         self.bot = bot
         self.concurrentModule = concurrentModule
         self.pluginsManager = pluginsManager
@@ -22,3 +23,9 @@ class BotRoute:
 
     def getPluginsManager(self):
         return self.pluginsManager
+
+    def getBot(self):
+        return self.bot
+
+    def getBotService(self):
+        return self.botService

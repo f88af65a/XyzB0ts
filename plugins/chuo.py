@@ -2,10 +2,10 @@ from botsdk.util.BotPlugin import BotPlugin
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "chuo"
         self.addType("NudgeEvent", self.nudge)
+        self.addBotType("Mirai")
         self.canDetach = True
 
     async def nudge(self, request):

@@ -3,11 +3,11 @@ from botsdk.util.Permission import getSystemPermissionAndCheck, permissionCmp
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "blacklist"
         self.addFilter(self.blackListCheck)
         self.addTarget("GroupMessage", "blacklist", self.blacklist)
+        self.addBotType("Mirai")
         self.canDetach = True
 
     async def blacklist(self, request):

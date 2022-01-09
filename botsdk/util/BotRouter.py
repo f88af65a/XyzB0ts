@@ -74,7 +74,7 @@ class TargetRouter(BotRouter):
                 request.getType(), target)) is not None:
             # 权限判断
             if not permissionCheck(request, target):
-                await request.sendMessage(MessageChain().plain("权限限制"))
+                await request.sendMessage("权限限制")
                 return
             controlData = {"size": 1, "wait": 0}
             if reData.group(1) is not None:

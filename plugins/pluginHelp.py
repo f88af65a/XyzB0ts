@@ -4,8 +4,8 @@ from botsdk.util.JsonConfig import getConfig
 
 class plugin(BotPlugin):
     '''/[help/info/load/reload/unload] 插件名'''
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
+        self.addBotType("Mirai")
         self.name = "pluginHelp"
         self.addTarget("GroupMessage", "help", self.helper)
         self.addTarget("GroupMessage", "load", self.load)

@@ -29,11 +29,11 @@ def getVarInt(b):
 class plugin(BotPlugin):
     "/[mcbe/mcpe] ip [端口]"
 
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "minecraft"
         self.addTarget("GroupMessage", "mc", self.getMc)
         self.addTarget("GroupMessage", "mcbe", self.getBe)
+        self.addBotType("Mirai")
         self.canDetach = True
 
     async def getMc(self, request):

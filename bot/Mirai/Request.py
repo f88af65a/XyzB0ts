@@ -50,9 +50,9 @@ class MiraiRequest(Request):
 
     def getId(self):
         if self["type"] == "GroupMessage":
-            return f"""Group:{self["sender"]["group"]["id"]}"""
+            return f"""QQ:Group:{self["sender"]["group"]["id"]}"""
         else:
-            return f'''User:{self["sender"]["id"]}'''
+            return f'''QQ:User:{self["sender"]["id"]}'''
 
     def getCookie(self, target: str = None):
         return getCookie(self.getId(), target)

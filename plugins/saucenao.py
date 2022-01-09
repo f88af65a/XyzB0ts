@@ -4,8 +4,8 @@ from botsdk.util.HttpRequest import get
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
+        self.addBotType("Mirai")
         self.name = "saucenao"
         self.addTarget("GroupMessage", "saucenao", self.saucenao)
         self.saucenaoUrl = (

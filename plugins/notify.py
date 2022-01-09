@@ -1,4 +1,3 @@
-from botsdk.BotModule.Request import BotRequest
 from botsdk.util.BotNotifyModule import getNotifyModule
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Cookie import getCookieDriver
@@ -18,7 +17,7 @@ class plugin(BotPlugin):
                 for j in allCookie[i]["notify"]:
                     getNotifyModule().addListen(i, j)
 
-    async def manageNotify(self, request: BotRequest):
+    async def manageNotify(self, request):
         "/notify [add/remove] 通知名"
         data = request.getFirstTextSplit()
         if len(data) < 3:

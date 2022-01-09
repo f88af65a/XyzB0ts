@@ -19,13 +19,13 @@ class BotService:
         while True:
             # 初始化Bot
             botType = getConfig()["account"][accountMark]["botType"]
-            botPath = getConfig()["botPath"] + botType
+            botPath = (getConfig()["botPath"] + botType).replace("/", ".")
             botName = getConfig()["account"][accountMark]["botName"]
             bot = getAttrFromModule(
                 botPath + ".Bot",
                 botType + "Bot")(getConfig()["account"][accountMark])
             # 登录
-            re = bot.login()
+            re = await bot.login()
             if re != 0:
                 debugPrint(f'''{botName}登陆失败''', fromName="BotService")
                 return
@@ -36,16 +36,16 @@ class BotService:
             while True:
                 retrySize = 0
                 while True:
-                    if (re := await bot.fetchMessage()) is not None:
+                    if (re := await bot.fetchMessage()) and re[0] == 0:
                         break
                     else:
                         retrySize += 1
                         debugPrint(
                             f'''账号{botName}获取消息失败重试:{retrySize + 1}''',
                             fromName="BotService")
-                        await bot.onError(re)
+                        await bot.onError(re[1])
                         await asyncio.sleep(retrySize * 5)
-                for i in re:
+                for i in re[1]:
                     asyncio.run_coroutine_threadsafe(
                         botRoute.route(
                             getAttrFromModule(

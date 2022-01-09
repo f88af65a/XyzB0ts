@@ -7,7 +7,6 @@ from botsdk.BotModule.MessageChain import MessageChain
 class MiraiBot(Bot):
     def init(self):
         self.path = self.data["path"]
-        self.port = self.data["port"]
         self.qq = self.data["qq"]
         if "sessionKey" in self.data:
             self.sessionKey = self.data["sessionKey"]
@@ -20,9 +19,6 @@ class MiraiBot(Bot):
     def getPath(self):
         return self.path
 
-    def getPort(self):
-        return self.port
-
     async def sendMessageById(
             self, id: str, messageChain: MessageChain, quote=None):
         messageType, target = id.split(":")
@@ -34,10 +30,10 @@ class MiraiBot(Bot):
         else:
             raise BotException("Bot.sendMessageById遇到了不支持的类型")
 
-    async def login(self, qq: int, authkey: str):
-        if await self.verify(authkey) is None:
+    async def login(self):
+        if await self.verify(self.data["passwd"]) is None:
             return 1
-        if await self.bind(qq) is None:
+        if await self.bind(self.qq) is None:
             return 2
         return 0
 
@@ -114,11 +110,17 @@ class MiraiBot(Bot):
             target=target
         )
 
-    async def fetchMessage(self, count: int):
-        return await self.adapter.fetchMessage(
+    async def fetchMessage(self):
+        re = await self.adapter.fetchMessage(
             sessionKey=self.sessionKey,
-            count=str(count)
+            count=str(128)
         )
+        if re["code"] != 0:
+            return (1, re)
+        _readList = []
+        for i in range(0, len(re["data"])):
+            _readList.append(re["data"][i])
+        return (0, _readList)
 
     async def memberList(self, target: int):
         return await self.adapter.memberList(

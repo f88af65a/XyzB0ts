@@ -65,11 +65,11 @@ class BotPlugin:
         pass
 
     # 加载时调用
-    def load(self):
+    def onLoad(self):
         pass
 
     # 卸载时调用
-    def unload(self):
+    def onUnload(self):
         pass
 
     def getName(self):

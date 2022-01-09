@@ -16,7 +16,8 @@ class Adapter:
         self.data = data
         self.apiDict = {}
         self.init()
-        self.loadAdapterFile(getConfig()["adapterPath"] + self.adapterFileName)
+        self.loadAdapterFile(
+            f"""{getConfig()["botPath"]}{data["botType"]}/adapter.json""")
 
     def init(self):
         pass
@@ -58,7 +59,7 @@ class Adapter:
 class MiraiAdapter(Adapter):
     def __init__(self, data):
         super().__init__(data)
-        self.url = self.data["url"]
+        self.url = self.data["path"]
 
     def init(self):
         self.adapterFileName = "mirai.json"

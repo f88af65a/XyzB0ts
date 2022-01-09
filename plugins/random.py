@@ -1,7 +1,6 @@
 import random
 
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -15,19 +14,16 @@ class plugin(BotPlugin):
         "/random 最小值 最大值"
         data = request.getFirstTextSplit()
         if len(data) < 3:
-            await request.sendMessage(
-                MessageChain().plain(self.random.__doc__))
+            await request.sendMessage(self.random.__doc__)
             return
         try:
             l, r = int(data[1]), int(data[2])
             if l > r:
                 raise
         except Exception:
-            await request.sendMessage(
-                MessageChain().plain(self.random.__doc__))
+            await request.sendMessage(self.random.__doc__)
             return
-        await request.sendMessage(
-            MessageChain().plain(str(random.randint(l, r))))
+        await request.sendMessage(str(random.randint(l, r)))
 
 
 def handle():

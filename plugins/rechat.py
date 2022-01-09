@@ -1,5 +1,4 @@
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -33,7 +32,7 @@ class plugin(BotPlugin):
     async def fuduji(self, request):
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            await request.sendMessage(MessageChain().text("/复读机 [开启/关闭]"))
+            await request.sendMessage("/复读机 [开启/关闭]")
             return
         cookie = request.getCookie("rechatState")
         if cookie is None:
@@ -41,12 +40,12 @@ class plugin(BotPlugin):
         oldState = cookie["rechatState"]
         newState = data[1]
         if newState != "开启" and newState != "关闭":
-            await request.sendMessage(MessageChain().text("会不会用啊"))
+            await request.sendMessage("会不会用啊")
             return
         if oldState != newState:
             cookie["rechatState"] = newState
             request.setCookie("rechatState", cookie)
-        await request.sendMessage(MessageChain().text("修改完成"))
+        await request.sendMessage("修改完成")
 
     async def say(self, request):
         chain = []

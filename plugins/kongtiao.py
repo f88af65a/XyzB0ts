@@ -1,5 +1,4 @@
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -16,7 +15,8 @@ class plugin(BotPlugin):
         bot = request.bot
         await bot.sendGroupMessage(
             request.getGroupId(),
-            MessageChain().text("https://ac.yunyoujun.cn/#/").getData())
+            request.makeMessageChain()
+            .text("https://ac.yunyoujun.cn/#/").getData())
 
 
 def handle(*args, **kwargs):

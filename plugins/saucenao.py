@@ -1,5 +1,4 @@
 import json
-from botsdk.BotModule.MessageChain import MessageChain
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.HttpRequest import get
 
@@ -31,24 +30,23 @@ class plugin(BotPlugin):
                 quoteMessageId = i["id"]
                 quoteMessageChain = await bot.messageFromId(quoteMessageId)
                 if quoteMessageChain["code"] != 0:
-                    await request.sendMessage(MessageChain().text("消息不在缓存中"))
+                    await request.sendMessage("消息不在缓存中")
                     return
                 quoteMessageChain = (
                     quoteMessageChain["data"]["messageChain"][1:])
                 for j in quoteMessageChain:
                     if j["type"] == "Image":
-                        re = await self.search(j["url"])
+                        re = await self.search(j["url"], request)
                         await request.sendMessage(re, request.getMessageId())
                         return
-                await request.sendMessage(MessageChain().text("回复消息中没有图片"))
+                await request.sendMessage("回复消息中没有图片")
                 return
-        await request.sendMessage(
-            MessageChain().text("未找到图片或参数不为图片(hxd你连发图都不会了🐎)"))
+        await request.sendMessage("未找到图片或参数不为图片(hxd你连发图都不会了🐎)")
 
-    async def search(self, url):
+    async def search(self, url, request):
         searchUrl = self.saucenaoUrl.format(key=self.key, url=url)
         response = json.loads(await get(searchUrl))
-        printData = MessageChain()
+        printData = request.makeMessageChain()
         if response is None:
             await printData.text("超时或格式错误")
             return printData

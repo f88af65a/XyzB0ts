@@ -7,7 +7,6 @@ import time
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.HttpRequest import get
 from botsdk.util.JsonConfig import getConfig
-from botsdk.BotModule.MessageChain import MessageChain
 from PIL import Image
 
 
@@ -29,7 +28,7 @@ class plugin(BotPlugin):
     async def search(self, request):
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            request.sendMessage(MessageChain().text("/pixiv.search 关键字"))
+            request.sendMessage("/pixiv.search 关键字")
             return
         response = []
         startMark = 1
@@ -61,7 +60,7 @@ class plugin(BotPlugin):
                 if safeFlag:
                     response += [j]
         if len(response) == 0:
-            await request.sendMessage(MessageChain().text("没有搜到图或者响应超时"))
+            await request.sendMessage("没有搜到图或者响应超时")
             return
         await self.getImgFromList(data, response, request)
 
@@ -75,11 +74,11 @@ class plugin(BotPlugin):
                        * (60 * 60 * 24)))}''')
         response = await get(url)
         if response is None:
-            await request.sendMessage(MessageChain().plain("响应超时"))
+            await request.sendMessage("响应超时")
             return
         response = json.loads(response)["illusts"]
         if len(response) == 0:
-            await request.sendMessage(MessageChain().plain("怎么会没有图太怪了"))
+            await request.sendMessage("怎么会没有图太怪了")
             return
         await self.getImgFromList(["on"], response, request)
 
@@ -93,7 +92,7 @@ class plugin(BotPlugin):
                 reverse=True)
             re = response[random.randint(
                 0, max(math.floor(len(response) * 0.5), 1))]
-        msg = MessageChain().text(
+        msg = request.makeMessageChain().text(
             (f'''搜索到{len(response)}个作品\n作者:{re["user"]["name"]}\n标题:'''
              f'''{re["title"]}\n链接:www.pixiv.net/artworks/{re["id"]}\nVIEW:'''
              f'''{re["total_view"]}\nLIKE:{re["total_bookmarks"]}'''))

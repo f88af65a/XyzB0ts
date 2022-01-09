@@ -27,8 +27,7 @@ class plugin(BotPlugin):
         for i in notifySet:
             await bot.sendMessageById(i, messageChain)
 
-    def dynamicCardAnlysis(self, jdata) -> str:
-        msg = MessageChain()
+    def dynamicCardAnlysis(self, jdata, msg):
         if "vest" in jdata:
             msg.text("[动态][UP:{0}]\n".format(jdata["user"]["uname"]
                      + jdata["sketch"]["title"])
@@ -50,7 +49,7 @@ class plugin(BotPlugin):
             if "origin" in jdata:
                 msg.text("[转发][UP:{0}]\n".format(jdata["user"]["uname"])
                          + jdata["item"]["content"] + "\n")
-                msg += self.dynamicCardAnlysis(json.loads(jdata["origin"]))
+                self.dynamicCardAnlysis(json.loads(jdata["origin"]), msg)
             elif "description" in jdata["item"]:
                 msg.text("[动态][UP:{0}]\n".format(jdata["user"]["name"])
                          + jdata["item"]["description"])
@@ -62,7 +61,6 @@ class plugin(BotPlugin):
                          + jdata["item"]["content"])
             else:
                 msg.text("\n是未识别类型的新动态")
-        return msg
 
     async def bilibiliGetDynamic(self, bot, uid):
         dynamicId = set()
@@ -90,11 +88,13 @@ class plugin(BotPlugin):
                         localId.append(i["desc"]["dynamic_id"])
                         if (i["desc"]["dynamic_id"] not in dynamicId
                                 and i["desc"]["dynamic_id"] > maxDynamicId):
+                            dynamicChain = bot.makeMessageChain().plain(
+                                self.dynamicCardAnlysis(json.loads(i["card"])))
+                            self.dynamicCardAnlysis()
                             await self.toNotify(
                                 notifyName, bot,
-                                MessageChain().text("[是新动态捏]")
-                                + self.dynamicCardAnlysis(
-                                    json.loads(i["card"])))
+                                bot.makeMessageChain().text("[是新动态捏]")
+                                + dynamicChain)
                             dynamicId.add(i["desc"]["dynamic_id"])
                     maxDynamicId = max(maxDynamicId, max(localId))
                     dynamicId = set(localId)

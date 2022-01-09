@@ -1,5 +1,4 @@
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.BotModule.MessageChain import MessageChain
 from botsdk.util.Permission import getSystemPermissionAndCheck, permissionCmp
 
 
@@ -20,11 +19,10 @@ class plugin(BotPlugin):
         if cookie is None:
             cookie = []
         if "list" in data:
-            await request.sendMessage(MessageChain().text(str(cookie)))
+            await request.sendMessage(str(cookie))
             return
         if len(data) < 3:
-            await request.sendMessage(
-                MessageChain().text("/blacklist [add/remove] qq"))
+            await request.sendMessage("/blacklist [add/remove] qq")
             return
         target = data[2]
         try:
@@ -33,7 +31,7 @@ class plugin(BotPlugin):
                     target, "ADMINISTRATOR"):
                 raise
         except Exception:
-            await request.sendMessage(MessageChain().text("???"))
+            await request.sendMessage("???")
             return
         groupMemberList = await bot.memberList(groupid)
         groupMemberList = groupMemberList["data"]
@@ -48,7 +46,7 @@ class plugin(BotPlugin):
                         checkFlag = False
                     break
         if checkFlag:
-            await request.sendMessage(MessageChain().text("权限不足或该qq不在群"))
+            await request.sendMessage("权限不足或该qq不在群")
             return
         if data[1] == "add":
             if target not in cookie:
@@ -57,7 +55,7 @@ class plugin(BotPlugin):
             if target in cookie:
                 cookie.remove(target)
         request.setCookie("blackList", cookie)
-        await request.sendMessage(MessageChain().text("完成"))
+        await request.sendMessage("完成")
 
     async def blackListCheck(self, request):
         if request.getType() == "GroupMessage":

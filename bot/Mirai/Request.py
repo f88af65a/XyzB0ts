@@ -91,7 +91,7 @@ class MiraiRequest(Request):
 
     async def sendMessage(self, msgChain, quote=None):
         if type(msgChain) is str:
-            msgChain = MessageChain().plain(msgChain)
+            msgChain = self.makeMessageChain().plain(msgChain)
         if self.getType() == "FriendMessage":
             await self.getBot().sendFriendMessage(
                 int(self.getSenderId()), msgChain.getData(), quote)

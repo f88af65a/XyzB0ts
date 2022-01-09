@@ -5,7 +5,6 @@ import time
 
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Error import printTraceBack
-from botsdk.BotModule.MessageChain import MessageChain
 
 
 def getMcRequestData(ip, port):
@@ -43,8 +42,7 @@ class plugin(BotPlugin):
         serverIp = None
         serverPort = 25565
         if len(data) < 2:
-            await request.sendMessage(
-                MessageChain().plain("缺少参数\n/mc ip [端口]不写默认25565"))
+            await request.sendMessage("缺少参数\n/mc ip [端口]不写默认25565")
             return
         if len(data) >= 2:
             serverIp = data[1]
@@ -52,7 +50,7 @@ class plugin(BotPlugin):
             if not (data[2].isnumeric()
                     and int(data[2]) >= 0
                     and int(data[2]) <= 65535):
-                request.sendMessage(MessageChain().plain("端口有误"))
+                request.sendMessage("端口有误")
                 return
             serverPort = int(data[2])
         # 初始化socket
@@ -63,14 +61,14 @@ class plugin(BotPlugin):
             try:
                 await loop.sock_connect(sock, (serverIp, serverPort))
             except Exception:
-                await request.sendMessage(MessageChain().plain("连接失败"))
+                await request.sendMessage("连接失败")
                 return
             requestData = getMcRequestData(serverIp, serverPort)
             # 发送
             try:
                 await loop.sock_sendall(sock, requestData)
             except Exception:
-                await request.sendMessage(MessageChain().plain("请求发送失败"))
+                await request.sendMessage("请求发送失败")
                 return
             # 接受
             responseData = bytes()
@@ -87,8 +85,7 @@ class plugin(BotPlugin):
                     break
                 rdata = await loop.sock_recv(sock, 10240)
                 if len(rdata) == 0:
-                    await request.sendMessage(
-                        MessageChain().plain("接受请求时连接断开"))
+                    await request.sendMessage("接受请求时连接断开")
                     return -1
                 responseData += rdata
                 await asyncio.sleep(0)
@@ -118,9 +115,9 @@ class plugin(BotPlugin):
                                       ["players"]["sample"][i]["name"])
                         if i != len(responseData["players"]["sample"]) - 1:
                             printData += "\n"
-                await request.sendMessage(MessageChain().plain(printData))
+                await request.sendMessage(request.makeMessageChain(printData))
             except Exception:
-                await request.sendMessage(MessageChain().plain("解析过程中出错"))
+                await request.sendMessage(request.makeMessageChain("解析过程中出错"))
                 printTraceBack()
 
     async def getBe(self, request):
@@ -129,8 +126,7 @@ class plugin(BotPlugin):
         serverIp = None
         serverPort = 19132
         if len(data) < 2:
-            await request.sendMessage(
-                MessageChain().plain("缺少参数\n/mcbe ip [端口]不写默认19132"))
+            await request.sendMessage("缺少参数\n/mcbe ip [端口]不写默认19132")
             return
         if len(data) >= 2:
             serverIp = data[1]
@@ -138,7 +134,7 @@ class plugin(BotPlugin):
             if not (data[2].isnumeric()
                     and int(data[2]) >= 0
                     and int(data[2]) <= 65535):
-                request.sendMessage(MessageChain().plain("端口有误"))
+                request.sendMessage("端口有误")
                 return
             serverPort = int(data[2])
         # 初始化socket
@@ -149,7 +145,7 @@ class plugin(BotPlugin):
             try:
                 await loop.sock_connect(sock, (serverIp, serverPort))
             except Exception:
-                await request.sendMessage(MessageChain().plain("连接失败"))
+                await request.sendMessage("连接失败")
                 return
             requestData = (b"\x01"
                            + b"\x00" * 8
@@ -160,7 +156,7 @@ class plugin(BotPlugin):
             try:
                 await loop.sock_sendall(sock, requestData)
             except Exception:
-                await request.sendMessage(MessageChain().plain("请求发送失败"))
+                await request.sendMessage("请求发送失败")
                 return
             # 接受
             responseData = bytes()
@@ -173,8 +169,7 @@ class plugin(BotPlugin):
                     responseData = b""
                 if len(responseData) == 0:
                     sock.close()
-                    await request.sendMessage(
-                        MessageChain().plain("接收过程中连接断开"))
+                    await request.sendMessage("接收过程中连接断开")
                     return
                 breakFlag = False
                 await asyncio.sleep(0)
@@ -188,9 +183,9 @@ class plugin(BotPlugin):
                 printData += (
                     f"版本:{responseData[0]} {responseData[2]} {responseData[3]}"
                     )
-                await request.sendMessage(MessageChain().plain(printData))
+                await request.sendMessage(printData)
             except Exception:
-                await request.sendMessage(MessageChain().plain("解析过程中出错"))
+                await request.sendMessage("解析过程中出错")
                 printTraceBack()
 
 

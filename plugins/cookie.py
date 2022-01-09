@@ -1,7 +1,6 @@
 import json
 
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -14,7 +13,8 @@ class plugin(BotPlugin):
 
     async def cookie(self, request):
         cookie = request.getCookie()
-        await request.sendMessage(MessageChain().text(json.dumps(cookie)))
+        await request.sendMessage(
+            request.makeMessageChain().text(json.dumps(cookie)))
 
 
 def handle(*args, **kwargs):

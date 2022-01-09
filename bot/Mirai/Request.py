@@ -1,4 +1,3 @@
-from bot.Mirai.Bot import Bot
 from botsdk.util.Cookie import getCookie
 from botsdk.util.Cookie import setCookie
 from botsdk.util.BotException import BotException
@@ -7,14 +6,6 @@ from botsdk.BotModule.Request import Request
 
 
 class MiraiRequest(Request):
-    def getBot(self):
-        if self.bot is None:
-            self.bot = Bot(*self.data["bot"])
-        return self.bot
-
-    def getData(self):
-        return (self.data, dict(self))
-
     def getSenderId(self):
         return str(self["sender"]["id"])
 

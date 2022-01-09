@@ -5,7 +5,7 @@ class Bot:
     def __init__(self, data, botService=None):
         self.data = data
         self.botType = data["botType"]
-        self.adapter = getAdapter(self.botType)
+        self.adapter = getAdapter(self.botType, data)
         self.botService = botService
         self.init()
 

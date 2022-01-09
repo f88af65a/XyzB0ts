@@ -7,13 +7,13 @@ from botsdk.util.BotException import BotException
 from botsdk.util.JsonConfig import getConfig
 
 
-def getAdapter(adapterName: str, url: str):
-    return getattr(sys.modules[__name__], adapterName)(url)
+def getAdapter(adapterName: str, data):
+    return getattr(sys.modules[__name__], adapterName)(data)
 
 
 class Adapter:
-    def __init__(self, url):
-        self.url = url
+    def __init__(self, data):
+        self.data = data
         self.apiDict = {}
         self.init()
         self.loadAdapterFile(getConfig()["adapterPath"] + self.adapterFileName)
@@ -56,6 +56,10 @@ class Adapter:
 
 
 class MiraiAdapter(Adapter):
+    def __init__(self, data):
+        super().__init__(data)
+        self.url = self.data["url"]
+
     def init(self):
         self.adapterFileName = "mirai.json"
 

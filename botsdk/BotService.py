@@ -17,13 +17,13 @@ class BotService:
 
     async def runInEventLoop(self, accountMark, concurrentModule):
         while True:
-            botPath = (getConfig()["botPath"]
-                       + getConfig()["account"][accountMark]["botType"])
             # 初始化Bot
+            botType = getConfig()["account"][accountMark]["botType"]
+            botPath = getConfig()["botPath"] + botType
             botName = getConfig()["account"][accountMark]["botName"]
             bot = getAttrFromModule(
-                botPath + "Bot",
-                botName + "Bot")(getConfig()["account"][accountMark])
+                botPath + ".Bot",
+                botType + "Bot")(getConfig()["account"][accountMark])
             # 登录
             re = bot.login()
             if re != 0:
@@ -50,7 +50,7 @@ class BotService:
                         botRoute.route(
                             getAttrFromModule(
                                 botPath + "Request",
-                                botName + "Request")(
+                                botType + "Request")(
                                 {"bot": bot.getData(),
                                     "uuid": uuid.uuid4()},
                                 i, botRoute)),

@@ -38,7 +38,8 @@ def permissionCheck(request, target: str):
         permissionRoles = set(cookie[target])
         if (target in cookie
                 and (requestRole & permissionRoles
-                     or "*" in permissionRoles)):
+                     or ("*" in permissionRoles
+                         and permissionRoles["*"] | requestRole))):
             return True
         if m < len(childs) and f":{childs[m]}" in cookie:
             cookie = cookie[f":{childs[m]}"]

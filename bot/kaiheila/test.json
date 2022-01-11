@@ -1,5 +1,6 @@
 {
     "config": {
+        "OwnerRole":""
     },
     "api": {
         "verify": {

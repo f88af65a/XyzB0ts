@@ -1,4 +1,7 @@
 {
+    "config": {
+        "ownerRole":"OWNER"
+    },
     "api": {
         "verify": {
             "path": "/verify",

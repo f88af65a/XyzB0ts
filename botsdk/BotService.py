@@ -10,6 +10,7 @@ from botsdk.util.Error import debugPrint
 from botsdk.util.JsonConfig import getConfig
 from botsdk.util.Tool import getAttrFromModule
 from botsdk.util.Timer import Timer
+from botsdk.util.Error import asyncTraceBack
 
 
 class BotService:
@@ -19,6 +20,7 @@ class BotService:
     def getTimer(self):
         return self.timer
 
+    @asyncTraceBack
     async def runInEventLoop(self, accountMark, concurrentModule):
         while True:
             # 初始化Bot

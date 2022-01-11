@@ -1,14 +1,15 @@
 import asyncio
 import re
 
+from botsdk.BotModule.MessageChain import MessageChain
 from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 from botsdk.util.BotPluginsManager import BotPluginsManager
+from botsdk.util.Error import asyncTraceBack
 from botsdk.util.HandlePacket import asyncHandlePacket
 from botsdk.util.JsonConfig import getConfig
-from botsdk.BotModule.MessageChain import MessageChain
 from botsdk.util.MessageType import messageType
-from botsdk.util.Permission import getPermissionFromSystem, permissionCheck
-from botsdk.util.Permission import permissionCmp
+from botsdk.util.Permission import (getPermissionFromSystem, permissionCheck,
+                                    permissionCmp)
 
 
 class BotRouter:
@@ -55,6 +56,7 @@ class TargetRouter(BotRouter):
              + "".join(["\\" + i for i in getConfig()["commandTarget"]])
              + r"])(\S+)( \S+)*$"))
 
+    @asyncTraceBack
     async def route(self, pluginsManager: BotPluginsManager,
                     request,
                     concurrentModule: defaultBotConcurrentModule = None):

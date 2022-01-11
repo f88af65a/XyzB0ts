@@ -1,9 +1,49 @@
 from botsdk.util.Cookie import getCookieDriver
 from botsdk.util.JsonConfig import getConfig
 
+'''
+ 一次Rquest的权限判断由发送者的角色、在Cookie中保存的角色和系统添加的角色
+ 发送者角色由request处理
+ cookie中的角色在request初始化时从cookie["Permission"]获取
+    cookie["Permission"]格式
+    cookie["Permission"]={":id":{":id"={}, "命令名":["所需权限"]},"命令名":["所需权限"]}
+ 返回真为有权限,假为没权限
+'''
 
-# 返回真为有权限,假为没权限
+
 def permissionCheck(request, target: str):
+    requestRole = request.getRoles() | {"*"}
+    userId = request.getUserId()
+    systemCookie = getConfig()["systemCookie"]
+    if userId in systemCookie["user"]:
+        requestRole |= set(systemCookie["user"][userId])
+    if "System:Owner" in requestRole:
+        return True
+    if target in systemCookie["systemPermission"]:
+        if set(systemCookie["systemPermission"][target]) & requestRole:
+            return True
+        else:
+            return False
+    if request.getBot().getOwnerRole() in requestRole:
+        return True
+    childs = request.getId().split(":")[3:]
+    cookie = request.getCookie()
+    if "Permission" not in cookie:
+        return False
+    cookie = cookie["Permission"]
+    m = 0
+    while True:
+        if target in cookie and requestRole & set(cookie[target]):
+            return True
+        if m < len(childs) and f":{childs[m]}" in cookie:
+            cookie = cookie[f":{childs[m]}"]
+            m += 1
+        else:
+            break
+    return False
+
+
+def oldPermissionCheck(request, target: str):
     if (re := systemPermissionCheck(
             request, target, getConfig()["systemCookie"])) is not None:
         return re

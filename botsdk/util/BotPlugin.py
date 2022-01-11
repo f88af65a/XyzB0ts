@@ -23,6 +23,8 @@ class BotPlugin:
         self.generalList = []
         # 兼容的bot类型
         self.botSet = set()
+        # 跳过权限检查
+        self.passPermissionCheck = False
 
     def getBotSet(self):
         return self.botSet()

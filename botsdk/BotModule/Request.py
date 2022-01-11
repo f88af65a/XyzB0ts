@@ -1,4 +1,3 @@
-from botsdk.util.BotException import BotException
 from botsdk.util.Cookie import getCookie, setCookie
 from botsdk.util.Tool import getAttrFromModule
 from botsdk.util.JsonConfig import getConfig
@@ -24,6 +23,12 @@ class Request(dict):
         if self.bot is None:
             self.bot = getBot(self.data["bot"])
         return self.bot
+
+    def getRoute(self):
+        return self.route
+
+    def getPluginsManager(self):
+        return self.route.getPluginsManager()
 
     def getData(self):
         return (self.data, dict(self))
@@ -52,12 +57,6 @@ class Request(dict):
     def getTarget(self):
         return self.data["target"]
 
-    def getRoute(self):
-        return self.route
-
-    def getPluginsManager(self):
-        return self.route.getPluginsManager()
-
     def getUuid(self):
         return self.data["uuid"]
 
@@ -65,56 +64,26 @@ class Request(dict):
         return self.getBot().makeMessageChain(data)
 
     # needOverRide
+    # 获取角色
+    def getRoles(self):
+        pass
+
+    # 获取发送者的BotId
+    def getUserId(self):
+        pass
+
+    # 获取接收到数据的BotId
     def getId(self):
         pass
 
+    # 获取消息的首串文本消息
     def getFirstText(self):
         pass
 
+    # 发送消息
     def sendMessage(self, messageChain):
         pass
 
+    # 获取消息类型
     def getType(self):
         pass
-
-    # old
-
-    def getMessageId(self):
-        return self["messageChain"][0]["id"]
-
-    def getMessageTime(self):
-        return self["messageChain"][0]["time"]
-
-    def getMyQq(self):
-        return self.data["qq"]
-
-    def getFirst(self, messageType):
-        for i in self.getMessageChain()[1:]:
-            if i["type"] == messageType:
-                return i
-        return None
-
-    def getFirstTextSplit(self):
-        if (re := self.getFirst("Plain")) is not None:
-            return re["text"].split(" ")
-        return None
-
-    def getPermission(self):
-        return self["sender"]["permission"]
-
-    def getMyPermission(self):
-        return self["sender"]["group"]["permission"]
-
-    async def sendNudge(self, target):
-        nudgeType = None
-        if self["type"] == "GroupMessage":
-            nudgeType = "Group"
-        elif self["type"] == "FriendMessage":
-            nudgeType = "Friend"
-        else:
-            raise BotException("sendNudge遇到了错误的消息类型")
-        self.getBot().sendNudge(
-            int(self.getBot().getQq()), int(target), nudgeType)
-
-    async def recall(self, target):
-        self.getBot().recall(int(target))

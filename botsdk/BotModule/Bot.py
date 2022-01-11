@@ -1,6 +1,8 @@
+import json
+
 from botsdk.util.Adapter import getAdapter
-from botsdk.util.Tool import getAttrFromModule
 from botsdk.util.JsonConfig import getConfig
+from botsdk.util.Tool import getAttrFromModule
 
 
 def getBot(data):
@@ -16,16 +18,27 @@ class Bot:
         self.botType = data["botType"]
         self.adapter = getAdapter(self.botType, data)
         self.botService = botService
+        if "config" not in self.data:
+            with (open(getConfig()["botPath"] + self.botType + "/adapter.json")
+                  ) as config:
+                self.data["config"] = json.loads(config.read())
+        self.ownerRole = self.data["config"]["config"]["ownerRole"]
         self.init()
 
     def __del__(self):
         self.destroy()
 
-    def init(self):
-        pass
+    def setHandleModuleName(self, name):
+        self.data["handleModuleName"] = name
 
-    def destroy(self):
-        pass
+    def getHandleModuleName(self):
+        return self.data["handleModuleName"]
+
+    def getConfig(self):
+        return self.config
+
+    def getOwnerRole(self):
+        return self.ownerRole
 
     def getBotService(self):
         return self.botService
@@ -35,6 +48,19 @@ class Bot:
 
     def getBotType(self):
         return self.botType
+
+    def makeMessageChain(self, data=None):
+        return getAttrFromModule(
+            (getConfig()["botPath"]
+             + self.data["botType"]).replace("/", ".")
+            + ".MessageChain", self.data["botType"] + "MessageChain")(data)
+
+    # needOverRide
+    def init(self):
+        pass
+
+    def destroy(self):
+        pass
 
     async def login(self):
         pass
@@ -47,9 +73,3 @@ class Bot:
 
     async def fetchMessage(self):
         pass
-
-    def makeMessageChain(self, data=None):
-        return getAttrFromModule(
-            (getConfig()["botPath"]
-             + self.data["botType"]).replace("/", ".")
-            + ".MessageChain", self.data["botType"] + "MessageChain")(data)

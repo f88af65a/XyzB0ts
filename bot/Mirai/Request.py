@@ -120,4 +120,4 @@ class MiraiRequest(Request):
         return {self["sender"]["permission"]}
 
     def getUserId(self):
-        return "QQ:User" + self.getSenderId()
+        return "QQ:User:" + self.getSenderId()

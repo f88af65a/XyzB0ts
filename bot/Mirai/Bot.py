@@ -5,9 +5,6 @@ from botsdk.BotModule.MessageChain import MessageChain
 
 
 class MiraiBot(Bot):
-    def __init__(self):
-        super().__init__()
-
     def init(self):
         self.path = self.data["path"]
         self.qq = self.data["qq"]

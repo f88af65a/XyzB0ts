@@ -40,7 +40,7 @@ class Timer:
                 del self.d[timer[4]]
         return re
 
-    async def TimerLoop(self):
+    async def timerLoop(self):
         loop = asyncio.get_event_loop()
         while True:
             thisTime = time.time()

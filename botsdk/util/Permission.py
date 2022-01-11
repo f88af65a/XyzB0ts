@@ -26,11 +26,13 @@ def permissionCheck(request, target: str):
             return False
     if request.getBot().getOwnerRole() in requestRole:
         return True
-    childs = request.getId().split(":")[3:]
     cookie = request.getCookie()
-    if "Permission" not in cookie:
+    if "roles" in cookie and userId in cookie["roles"][userId]:
+        requestRole |= set(cookie["roles"][userId])
+    childs = request.getId().split(":")[3:]
+    if "permission" not in cookie:
         return False
-    cookie = cookie["Permission"]
+    cookie = cookie["permission"]
     m = 0
     while True:
         if target in cookie and requestRole & set(cookie[target]):

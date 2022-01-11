@@ -74,5 +74,5 @@ class BotService:
             asyncio.run_coroutine_threadsafe(
                 self.runInEventLoop(i, concurrentModule),
                 self.loop)
-        self.runInEventLoop(self.timer.timerLoop(), concurrentModule)
+        asyncio.run_coroutine_threadsafe(self.timer.timerLoop(), self.loop)
         self.loop.run_forever()

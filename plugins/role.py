@@ -10,18 +10,22 @@ class plugin(BotPlugin):
         self.canDetach = True
 
     async def role(self, request):
-        '''#群友权限 ADD/DEL ID 角色'''
+        '''#角色 ADD/DEL ID 角色'''
         data = request.getFirstTextSplit()
         if len(data) < 4:
             await request.sendMessage("缺少参数")
             return
+        if ":" in data[3]:
+            await request.sendMessage("角色中不许包含:")
+            return
         cookie = request.getCookie("roles")
         if cookie is None:
             cookie = dict()
+        data[2] = f"""{request.getBot().getBotType()}:User:{data[2]}"""
         if data[2] not in cookie:
             cookie[data[2]] = []
-        if data[3] == "ADD":
-            if data[1] not in cookie[data[2]]:
+        if data[1] == "ADD":
+            if data[3] not in cookie[data[2]]:
                 cookie[data[2]].append(data[3])
         elif data[1] == "DEL":
             if data[3] in cookie[data[2]]:
@@ -38,6 +42,9 @@ class plugin(BotPlugin):
         if len(data) < 4:
             await request.sendMessage("缺少参数")
             return
+        if ":" in data[3]:
+            await request.sendMessage("角色中不许包含:")
+            return
         cookie = request.getCookie("permission")
         if cookie is None:
             cookie = dict()
@@ -48,10 +55,10 @@ class plugin(BotPlugin):
             cookie = cookie[f":{i}"]
         if data[2] not in cookie:
             cookie[data[2]] = []
-        if data[2] == "ADD":
+        if data[1] == "ADD":
             if data[3] not in cookie[data[2]]:
                 cookie[data[2]].append(data[3])
-        elif data[2] == "DEL":
+        elif data[1] == "DEL":
             if data[3] in cookie[data[2]]:
                 cookie[data[2]].remove(data[3])
         else:

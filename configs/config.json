@@ -27,10 +27,10 @@
 	"cookieDriver": "SqliteCookie",
 	"systemCookie": {
 		"systemPermission": {
-			"load": "ADMINISTRATOR",
-			"reload": "ADMINISTRATOR",
-			"unload": "ADMINISTRATOR",
-			"config": "ADMINISTRATOR"
+			"load": ["System:Owner"],
+			"reload": ["System:Owner"],
+			"unload": ["System:Owner"],
+			"config": ["System:Owner"]
 		},
 		"user": {}
 	}

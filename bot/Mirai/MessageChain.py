@@ -3,9 +3,6 @@ from botsdk.BotModule.MessageChain import MessageChain
 
 
 class MiraiMessageChain(MessageChain):
-    def __init__(self, rhs=None):
-        super().__init__(rhs)
-
     def plain(self, data):
         self.data += [{"type": "Plain", "text": data}]
         return self

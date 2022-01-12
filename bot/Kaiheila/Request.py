@@ -11,7 +11,7 @@ class KaiheilaRequest(Request):
     def getUserId(self):
         pass
 
-    # 获取接收到数据的BotId
+    # 获取来源BotId
     def getId(self):
         pass
 

@@ -1,7 +1,6 @@
 {
     "config": {
-        "OwnerRole": "",
-        "Gateway": "/api/v3/gateway/index"
+        "ownerRole": "OWNER"
     },
     "api": {
         "getGateway": {

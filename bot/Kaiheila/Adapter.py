@@ -1,4 +1,5 @@
 import json
+import aiohttp
 
 import botsdk.util.HttpRequest
 from botsdk.BotModule.Adapter import Adapter
@@ -12,6 +13,17 @@ class KaiheilaAdapter(Adapter):
             "Authorization": (f"""{self.data["authorizationType"]}"""
                               f""" {self.data["token"]}""")
             }
+        self.session = None
+
+    async def wsConnect(self, url):
+        if self.session is None:
+            self.session = aiohttp.ClientSession()
+        self.ws = await self.session.ws_connect(
+            url, headers=self.data["headers"])
+
+    async def wsDisconnect(self):
+        if not self.ws.closed:
+            self.ws.close()
 
     async def get(self, parameter, **kwargs):
         return json.loads(

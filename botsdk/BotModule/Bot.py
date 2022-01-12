@@ -23,6 +23,7 @@ class Bot:
                   ) as config:
                 self.data["adapterConfig"] = json.loads(config.read())
         self.ownerRole = self.data["adapterConfig"]["config"]["ownerRole"]
+        self.canDetach = True
         self.init()
 
     def __del__(self):
@@ -54,6 +55,9 @@ class Bot:
             (getConfig()["botPath"]
              + self.data["botType"]).replace("/", ".")
             + ".MessageChain", self.data["botType"] + "MessageChain")(data)
+
+    def getCanDetach(self):
+        return self.canDetach
 
     # needOverRide
     # 初始化时调用

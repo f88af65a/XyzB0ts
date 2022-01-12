@@ -103,7 +103,8 @@ class TargetRouter(BotRouter):
                     request.getType(), target).__module__)
             # 路由
             if (concurrentModule is not None
-                    and ret.__self__.getCanDetach()):
+                    and ret.__self__.getCanDetach()
+                    and request.getBot().getCanDetach()):
                 # 多进程方式
                 concurrentModule.addTask(request.getData())
             else:

@@ -88,9 +88,9 @@ class plugin(BotPlugin):
                         localId.append(i["desc"]["dynamic_id"])
                         if (i["desc"]["dynamic_id"] not in dynamicId
                                 and i["desc"]["dynamic_id"] > maxDynamicId):
-                            dynamicChain = bot.makeMessageChain().plain(
-                                self.dynamicCardAnlysis(json.loads(i["card"])))
-                            self.dynamicCardAnlysis()
+                            dynamicChain = bot.makeMessageChain()
+                            self.dynamicCardAnlysis(
+                                json.loads(i["card"]), dynamicChain)
                             await self.toNotify(
                                 notifyName, bot,
                                 bot.makeMessageChain().text("[是新动态捏]")

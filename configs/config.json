@@ -18,10 +18,17 @@
 	"account": [
 		{
 			"botName": "",
-			"botType": "",
+			"botType": "Mirai",
 			"path": "",
 			"qq": "",
 			"passwd": ""
+		},
+		{
+			"botName": "",
+			"botType": "Kaiheila",
+			"path": "https://www.kaiheila.cn/api",
+			"authorizationType": "",
+			"token": ""
 		}
 	],
 	"cookieDriver": "SqliteCookie",

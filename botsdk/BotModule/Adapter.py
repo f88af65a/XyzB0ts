@@ -2,35 +2,40 @@ import json
 import os
 import sys
 
-import botsdk.util.HttpRequest
 from botsdk.util.BotException import BotException
 from botsdk.util.JsonConfig import getConfig
+from botsdk.util.Tool import getAttrFromModule
 
 
-def getAdapter(adapterName: str, data):
-    return getattr(sys.modules[__name__], adapterName + "Adapter")(data)
+def getAdapter(data):
+    return getAttrFromModule(
+        getConfig()["botPath"].replace("/", ".")
+        + data["botType"] + ".Adapter")(data)
 
 
 class Adapter:
     def __init__(self, data):
-        self.data = data
         self.apiDict = {}
-        self.init()
         self.loadAdapterFile(
             f"""{getConfig()["botPath"]}{data["botType"]}/adapter.json""")
+        self.init(data)
 
-    def init(self):
+    def init(self, data):
         pass
 
     def getApi(self):
         return self.apiDict
+
+    def getData(self):
+        return self.data
 
     def loadAdapterFile(self, filePath):
         if not (os.path.exists(filePath)
                 and os.path.isfile(filePath)):
             raise BotException("adapter路径不存在")
         with open(filePath, "r") as f:
-            adapterData = json.loads(f.read())["api"]
+            self.data = json.loads(f.read())
+            adapterData = self.data["api"]
         for i in adapterData:
             self.addMethod(i, adapterData[i]["path"],
                            adapterData[i]["method"],
@@ -54,23 +59,3 @@ class Adapter:
             return await getattr(self, method)(
                 self.apiDict[name], **kwargs)
         setattr(self, name, forward)
-
-
-class MiraiAdapter(Adapter):
-    def __init__(self, data):
-        super().__init__(data)
-        self.url = self.data["path"]
-
-    def init(self):
-        self.adapterFileName = "mirai.json"
-
-    async def get(self, parameter, **kwargs):
-        return json.loads(
-            await botsdk.util.HttpRequest.get(
-                (self.url + parameter["path"] + "?"
-                 + "&".join(["=".join([i, kwargs[i]]) for i in kwargs]))))
-
-    async def post(self, parameter, **kwargs):
-        return json.loads(
-            await botsdk.util.HttpRequest.post(
-                self.url + parameter["path"], kwargs))

@@ -49,8 +49,6 @@ class BotService:
                         debugPrint(
                             f'''账号{botName}获取消息失败重试:{retrySize + 1}''',
                             fromName="BotService")
-                        if (re := await bot.onError(re[1])) is False:
-                            return
                         await asyncio.sleep(retrySize * 5)
                 for i in re[1]:
                     asyncio.run_coroutine_threadsafe(

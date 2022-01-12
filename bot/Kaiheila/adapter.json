@@ -1,0 +1,14 @@
+{
+    "config": {
+        "OwnerRole": "",
+        "Gateway": "/api/v3/gateway/index"
+    },
+    "api": {
+        "getGateway": {
+            "path": "/gateway/index",
+            "method": "get",
+            "parameter": {
+            }
+        }
+    }
+}

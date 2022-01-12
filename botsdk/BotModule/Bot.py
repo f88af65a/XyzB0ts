@@ -1,6 +1,6 @@
 import json
 
-from botsdk.util.Adapter import getAdapter
+from botsdk.BotModule.Adapter import getAdapter
 from botsdk.util.JsonConfig import getConfig
 from botsdk.util.Tool import getAttrFromModule
 
@@ -16,13 +16,13 @@ class Bot:
     def __init__(self, data, botService=None):
         self.data = data
         self.botType = data["botType"]
-        self.adapter = getAdapter(self.botType, data)
+        self.adapter = getAdapter(data)
         self.botService = botService
-        if "config" not in self.data:
+        if "adapterConfig" not in self.data:
             with (open(getConfig()["botPath"] + self.botType + "/adapter.json")
                   ) as config:
-                self.data["config"] = json.loads(config.read())
-        self.ownerRole = self.data["config"]["config"]["ownerRole"]
+                self.data["adapterConfig"] = json.loads(config.read())
+        self.ownerRole = self.data["adapterConfig"]["config"]["ownerRole"]
         self.init()
 
     def __del__(self):
@@ -56,20 +56,22 @@ class Bot:
             + ".MessageChain", self.data["botType"] + "MessageChain")(data)
 
     # needOverRide
+    # 初始化时调用
     def init(self):
         pass
 
+    # 销毁时调用(未启用)
     def destroy(self):
         pass
 
+    # 登录
     async def login(self):
         pass
 
+    # 退出
     async def logout(self):
         pass
 
-    async def onError(self, data):
-        pass
-
+    # 获取消息
     async def fetchMessage(self):
         pass

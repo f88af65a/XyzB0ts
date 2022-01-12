@@ -13,8 +13,7 @@ class KaiheilaBot(Bot):
             0: self.getGatewayState,
             1: self.connWsState,
             2: self.waitHelloState,
-            3: self.connectedState,
-            4: self.timeoutState
+            3: self.connectedState
         }
         self.state = 0
         self.initFlag()
@@ -40,8 +39,7 @@ class KaiheilaBot(Bot):
         self.adapter.wsDisconnect()
 
     async def fetchMessage(self):
-        if self.state == 0:
-            pass
+        return await self.stateMap[self.state]()
 
     async def getGatewayState(self):
         retry = 0
@@ -54,7 +52,7 @@ class KaiheilaBot(Bot):
                 continue
             self.gateway = gateway["data"]["url"]
             self.state = 1
-            break
+            return (0, [])
 
     async def connWsState(self):
         retry = 0
@@ -63,27 +61,28 @@ class KaiheilaBot(Bot):
                 retry += 1
                 if retry == 2:
                     self.state = 0
-                    break
+                    return (0, [])
                 else:
                     await asyncio.sleep(1 << retry)
                     continue
             self.state = 2
-            break
+            return (0, [])
 
     async def waitHelloState(self):
         re = await self.adapter.wsRecv(timeout=6)
         if re is None or re["s"] != 1 or re["d"]["code"] != 0:
             debugPrint(re)
-            self.adapter.wsClose()
+            await self.adapter.wsDisconnect()
             self.state = 1
         else:
             self.sessionId = re["d"]["session_id"]
             self.state = 3
+        return (0, [])
 
     async def connectedState(self):
         thisTime = time.time()
-        if self.lastPingTime is None or self.lastPingTime - thisTime >= 30:
-            self.adapter.wsSend({"s": 2, "sn": self.maxSn})
+        if self.lastPingTime is None or thisTime - self.lastPingTime >= 30:
+            await self.adapter.wsSend({"s": 2, "sn": self.maxSn})
             self.lastPingTime = thisTime
             self.getPong = False
         if (thisTime - self.lastPingTime >= 6
@@ -93,8 +92,8 @@ class KaiheilaBot(Bot):
             if self.lostPong == 2:
                 self.initFlag()
                 self.state = 1
-                return
-            self.adapter.wsSend({"s": 2, "sn": self.maxSn})
+                return (0, [])
+            await self.adapter.wsSend({"s": 2, "sn": self.maxSn})
             self.lastPingTime = time.time()
         data = await self.adapter.wsRecv(timeout=1)
         if data is None:
@@ -122,3 +121,4 @@ class KaiheilaBot(Bot):
             self.state = 0
         elif data["s"] == 6:
             debugPrint("暂时没打算支持这功能")
+        return (0, [])

@@ -23,7 +23,8 @@ class KaiheilaAdapter(Adapter):
         timeout = aiohttp.ClientTimeout(total=timeout)
         try:
             self.ws = await self.session.ws_connect(
-                url, headers=self.data["headers"], timeout=timeout)
+                url, headers=self.data["headers"], timeout=timeout,
+                verify_ssl=False)
             return 0
         except Exception:
             printTraceBack()
@@ -31,20 +32,19 @@ class KaiheilaAdapter(Adapter):
 
     async def wsDisconnect(self):
         if not self.ws.closed:
-            self.ws.close()
+            await self.ws.close()
 
     async def wsRecv(self, timeout=15):
-        timeout = aiohttp.ClientTimeout(total=timeout)
-        if not self.ws.closed():
+        if not self.ws.wsClosed():
             try:
-                return await json.loads(
-                    zlib.decompress(self.ws.receive_bytes(timeout=timeout)))
+                return json.loads(zlib.decompress(
+                    await self.ws.receive_bytes(timeout=timeout)))
             except Exception:
-                printTraceBack
+                pass
         return None
 
     async def wsSend(self, data):
-        if not self.ws.closed():
+        if not self.wsClosed():
             try:
                 return await self.ws.send_json(data)
             except Exception:

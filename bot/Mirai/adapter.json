@@ -40,7 +40,8 @@
             "parameter": {
                 "sessionKey": "str",
                 "target": "int",
-                "messageChain": "list"
+                "messageChain": "list",
+                "quote":"int"
             }
         },
         "sendFriendMessage": {
@@ -50,7 +51,8 @@
                 "sessionKey": "str",
                 "target": "int",
                 "qq": "int",
-                "messageChain": "list"
+                "messageChain": "list",
+                "quote":"int"
             }
         },
         "mute": {

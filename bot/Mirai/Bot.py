@@ -70,21 +70,23 @@ class MiraiBot(Bot):
 
     async def sendGroupMessage(
             self, target: int, messageChain: list, quote=None):
-        return await self.adapter.sendGroupMessage(
-            sessionKey=self.sessionKey,
-            target=target,
-            messageChain=messageChain,
-            quote=quote
-        )
+        kw = dict()
+        kw["sessionKey"] = self.sessionKey
+        kw["target"] = self.target
+        kw["messageChain"] = messageChain
+        if quote:
+            kw["quote"] = quote
+        return await self.adapter.sendGroupMessage(**kw)
 
     async def sendFriendMessage(
             self, target: int, messageChain: list, quote=None):
-        return await self.adapter.sendFriendMessage(
-            sessionKey=self.sessionKey,
-            target=target,
-            messageChain=messageChain,
-            quote=quote
-        )
+        kw = dict()
+        kw["sessionKey"] = self.sessionKey
+        kw["target"] = self.target
+        kw["messageChain"] = messageChain
+        if quote:
+            kw["quote"] = quote
+        return await self.adapter.sendFriendMessage(**kw)
 
     async def sendTempMessage(
             self, targetGroup: int, targetQq: int,

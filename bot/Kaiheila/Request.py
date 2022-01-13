@@ -11,7 +11,7 @@ class KaiheilaRequest(Request):
                 self["extra"]["guild_id"]))["data"]["items"]
             roles = {}
             for i in re:
-                roles[re["role_id"]] = i
+                roles[i["role_id"]] = i
             self.getBot().addToRoles(self["extra"]["guild_id"], roles)
         else:
             roles = roles[self["extra"]["guild_id"]]
@@ -23,7 +23,7 @@ class KaiheilaRequest(Request):
                     self["extra"]["guild_id"]))["data"]["items"]
                 roles = {}
                 for j in re:
-                    roles[re["role_id"]] = j
+                    roles[j["role_id"]] = j
                 self.getBot().addToRoles(self["extra"]["guild_id"], roles)
             ret.add(roles[i]["name"])
         return ret

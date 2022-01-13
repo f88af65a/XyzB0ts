@@ -67,6 +67,9 @@ class Request(dict):
     def makeMessageChain(self, data=None):
         return self.getBot().makeMessageChain(data)
 
+    def getFirstTextSplit(self):
+        return self.getFirstText().split(" ")
+
     # needOverRide
     # 获取角色
     def getRoles(self):

@@ -7,14 +7,14 @@ class plugin(BotPlugin):
     def onLoad(self):
         self.name = "cookie"
         self.addTarget("GroupMessage", "cookie", self.cookie)
-        self.permissionSet = {"OWNER", "ADMINISTRATOR", "MEMBER"}
+        self.addTarget("Group:1", "cookie", self.cookie)
         self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.canDetach = True
 
     async def cookie(self, request):
         cookie = request.getCookie()
-        await request.sendMessage(
-            request.makeMessageChain().text(json.dumps(cookie)))
+        await request.sendMessage(json.dumps(cookie))
 
 
 def handle(*args, **kwargs):

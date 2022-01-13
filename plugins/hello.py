@@ -12,7 +12,7 @@ class plugin(BotPlugin):
 
     async def hello(self, request):
         "#hello"
-        request.sendMessage("hello")
+        await request.sendMessage("hello")
 
 
 def handle(*args, **kwargs):

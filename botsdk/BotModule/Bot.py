@@ -59,6 +59,9 @@ class Bot:
     def getCanDetach(self):
         return self.canDetach
 
+    def getBotName(self):
+        return self.data["botName"]
+
     # needOverRide
     # 初始化时调用
     def init(self):

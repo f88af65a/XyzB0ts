@@ -8,6 +8,18 @@
             "method": "get",
             "parameter": {
             }
+        },
+        "messagecreate":{
+            "path":"/message/create",
+            "method":"post",
+            "parameter":{
+                "type":"int",
+                "target_id":"str",
+                "content": "str",
+                "quote":"str",
+                "nonce":"str",
+                "temp_target_id":"str"
+            }
         }
     }
 }

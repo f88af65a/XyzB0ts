@@ -70,14 +70,15 @@ class MiraiRequest(Request):
         return str(self["sender"]["group"]["id"])
 
     def getMessageChain(self):
-        if self.getType() in self.messageType():
+        if self.getType() in self.messageType:
             return self["messageChain"]
         return None
 
     def getFirst(self, messageType):
-        for i in self.getMessageChain()[1:]:
-            if i["type"] == messageType:
-                return i
+        if self.getType() in self.messageType:
+            for i in self.getMessageChain()[1:]:
+                if i["type"] == messageType:
+                    return i
         return None
 
     def getFirstText(self):

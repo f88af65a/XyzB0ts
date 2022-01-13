@@ -6,25 +6,27 @@ class KaiheilaRequest(Request):
     # 获取角色
     async def getRoles(self):
         roles = self.getBot().getRoles()
-        if self["target_id"] not in roles:
-            re = await self.getBot().getServerRoles(
-                self["target_id"])["data"]["items"]
+        if self["extra"]["guild_id"] not in roles:
+            re = (await self.getBot().getServerRoles(
+                self["extra"]["guild_id"]))["data"]["items"]
             roles = {}
             for i in re:
                 roles[re["role_id"]] = i
-            self.getBot().addToRoles(self["target_id"], roles)
+            self.getBot().addToRoles(self["extra"]["guild_id"], roles)
         else:
-            roles = roles[self["target_id"]]
-        re = set()
-        for i in range(len(self["extra"]["author"]["roles"])):
+            roles = roles[self["extra"]["guild_id"]]
+        ret = set()
+        requestRoles = self["extra"]["author"]["roles"]
+        for i in requestRoles:
             if i not in roles:
-                re = await self.getBot().getServerRoles(
-                    self["target_id"])["data"]["items"]
+                re = (await self.getBot().getServerRoles(
+                    self["extra"]["guild_id"]))["data"]["items"]
                 roles = {}
-                for i in re:
-                    roles[re["role_id"]] = i
-                self.getBot().addToRoles(self["target_id"], roles)
-            re.add(roles[i]["name"])
+                for j in re:
+                    roles[re["role_id"]] = j
+                self.getBot().addToRoles(self["extra"]["guild_id"], roles)
+            ret.add(roles[i]["name"])
+        return ret
 
     # 获取发送者的BotId
     def getUserId(self):

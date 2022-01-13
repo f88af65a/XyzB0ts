@@ -12,7 +12,7 @@ from botsdk.util.JsonConfig import getConfig
 
 
 async def permissionCheck(request, target: str):
-    requestRole = request.getRoles() | {"*"}
+    requestRole = await request.getRoles() | {"*"}
     userId = request.getUserId()
     systemCookie = getConfig()["systemCookie"]
     if userId in systemCookie["user"]:

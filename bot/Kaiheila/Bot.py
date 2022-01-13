@@ -42,7 +42,7 @@ class KaiheilaBot(Bot):
         return await self.stateMap[self.state]()
 
     async def getGatewayState(self):
-        debugPrint(self.getBotNmae() + "获取gateway中")
+        debugPrint(self.getBotName() + "获取gateway中")
         retry = 0
         while True:
             gateway = await self.getGateway()
@@ -56,7 +56,7 @@ class KaiheilaBot(Bot):
             return (0, [])
 
     async def connWsState(self):
-        debugPrint(self.getBotNmae() + "连接gateway中")
+        debugPrint(self.getBotName() + "连接gateway中")
         retry = 0
         while True:
             if await self.adapter.wsConnect(self.gateway) is None:
@@ -71,7 +71,7 @@ class KaiheilaBot(Bot):
             return (0, [])
 
     async def waitHelloState(self):
-        debugPrint(self.getBotNmae() + "等待Hello中")
+        debugPrint(self.getBotName() + "等待Hello中")
         re = await self.adapter.wsRecv(timeout=6)
         if re is None or re["s"] != 1 or re["d"]["code"] != 0:
             debugPrint(re)
@@ -80,7 +80,7 @@ class KaiheilaBot(Bot):
         else:
             self.sessionId = re["d"]["session_id"]
             self.state = 3
-            debugPrint(self.getBotNmae() + "连接成功")
+            debugPrint(self.getBotName() + "连接成功")
         return (0, [])
 
     async def connectedState(self):
@@ -127,11 +127,5 @@ class KaiheilaBot(Bot):
             debugPrint("暂时没打算支持这功能")
         return (0, [])
 
-    async def sendGroupMessage(
-            self, targetId: str, content: str, type: int = 1,
-            quote: str = None, nonce: str = None,
-            tempTargetId: str = None):
-        return self.adapter.messagecreate(
-            type=type, target_id=targetId, content=content,
-            quote=quote, nonce=nonce, temp_target_id=tempTargetId
-        )
+    async def sendGroupMessage(self, type: int = 1, **kwargs):
+        return await self.adapter.messagecreate(type=type, **kwargs)

@@ -62,6 +62,9 @@ class KaiheilaAdapter(Adapter):
                 headers=self.data["headers"]))
 
     async def post(self, parameter, **kwargs):
+        for i in kwargs:
+            if kwargs[i] is None:
+                del kwargs[i]
         return json.loads(
             await botsdk.util.HttpRequest.post(
                 self.url + parameter["path"], kwargs,

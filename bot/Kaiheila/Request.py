@@ -5,7 +5,7 @@ class KaiheilaRequest(Request):
     # needOverRide
     # 获取角色
     def getRoles(self):
-        return set(self["author"]["roles"])
+        return set(self["extra"]["author"]["roles"])
 
     # 获取发送者的BotId
     def getUserId(self):
@@ -36,11 +36,11 @@ class KaiheilaRequest(Request):
         if sendMethod is None:
             return
         if type(messageChain) == str:
-            await sendMethod(targetId=targetId, content=messageChain)
+            await sendMethod(target_id=targetId, content=messageChain)
         else:
             for i in messageChain.getData():
                 if i["type"] == 1:
-                    await sendMethod(targetId=targetId, content=i["content"])
+                    await sendMethod(target_id=targetId, content=i["content"])
 
     # 获取消息类型
     def getType(self):

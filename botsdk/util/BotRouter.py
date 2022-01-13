@@ -60,7 +60,7 @@ class TargetRouter(BotRouter):
                     request,
                     concurrentModule: defaultBotConcurrentModule = None):
         # 类型判断与命令获取
-        if (target := request.getFirstText()) is None or target:
+        if (target := request.getFirstText()) is None or not target:
             return False
         # 正则匹配
         reData = self.pattern.search(target)

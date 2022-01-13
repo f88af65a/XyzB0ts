@@ -1,6 +1,6 @@
 {
     "config": {
-        "ownerRole": "OWNER"
+        "ownerRole": "Bot Manager"
     },
     "api": {
         "getGateway": {

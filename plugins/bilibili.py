@@ -7,7 +7,6 @@ from botsdk.util.BotNotifyModule import getNotifyModule
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Error import printTraceBack
 from botsdk.util.HttpRequest import get
-from botsdk.BotModule.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
@@ -21,7 +20,7 @@ class plugin(BotPlugin):
         for i in self.getConfig()["listen"]:
             self.addFuture(i, self.bilibiliGetDynamic(bot, i))
 
-    async def toNotify(self, notifyName, bot, messageChain: MessageChain):
+    async def toNotify(self, notifyName, bot, messageChain):
         notifyModule = getNotifyModule()
         notifySet = copy.deepcopy(notifyModule.notify(notifyName))
         for i in notifySet:

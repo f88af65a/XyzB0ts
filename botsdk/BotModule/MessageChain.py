@@ -11,6 +11,9 @@ class MessageChain:
         elif type(rhs) == MessageChain:
             self.data = copy.deepcopy(rhs.getData())
 
+    def getData(self):
+        return self.data
+
     def __add__(self, rhs):
         return MessageChain(copy.deepcopy(self.getData() + rhs.getData()))
 

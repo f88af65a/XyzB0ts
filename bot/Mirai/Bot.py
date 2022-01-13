@@ -72,7 +72,7 @@ class MiraiBot(Bot):
             self, target: int, messageChain: list, quote=None):
         kw = dict()
         kw["sessionKey"] = self.sessionKey
-        kw["target"] = self.target
+        kw["target"] = target
         kw["messageChain"] = messageChain
         if quote:
             kw["quote"] = quote
@@ -82,7 +82,7 @@ class MiraiBot(Bot):
             self, target: int, messageChain: list, quote=None):
         kw = dict()
         kw["sessionKey"] = self.sessionKey
-        kw["target"] = self.target
+        kw["target"] = target
         kw["messageChain"] = messageChain
         if quote:
             kw["quote"] = quote

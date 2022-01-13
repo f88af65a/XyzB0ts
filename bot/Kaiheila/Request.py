@@ -5,7 +5,26 @@ class KaiheilaRequest(Request):
     # needOverRide
     # 获取角色
     def getRoles(self):
-        return set(self["extra"]["author"]["roles"])
+        roles = self.getBot().getRoles()
+        if self["target_id"] not in roles:
+            re = self.getBot().getServerRoles(
+                self["target_id"])["data"]["items"]
+            roles = {}
+            for i in re:
+                roles[re["role_id"]] = i
+            self.getBot().addToRoles(self["target_id"], roles)
+        else:
+            roles = roles[self["target_id"]]
+        re = set()
+        for i in range(len(self["extra"]["author"]["roles"])):
+            if i not in roles:
+                re = self.getBot().getServerRoles(
+                    self["target_id"])["data"]["items"]
+                roles = {}
+                for i in re:
+                    roles[re["role_id"]] = i
+                self.getBot().addToRoles(self["target_id"], roles)
+            re.add(roles[i]["name"])
 
     # 获取发送者的BotId
     def getUserId(self):

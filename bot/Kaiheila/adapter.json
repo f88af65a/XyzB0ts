@@ -20,6 +20,15 @@
                 "nonce":"str",
                 "temp_target_id":"str"
             }
+        },
+        "guildrolelist":{
+            "path":"/guild-role/list",
+            "meth":"get",
+            "parameter":{
+                "guild_id":"str",
+                "page":"int",
+                "page_size":"int"
+            }
         }
     }
 }

@@ -17,6 +17,13 @@ class KaiheilaBot(Bot):
         }
         self.state = 0
         self.initFlag()
+        self.data["roles"] = {}
+
+    def getRoles(self):
+        return self.data["roles"]
+
+    def addToRoles(self, serverId, roles):
+        self.data["roles"][serverId] = roles
 
     def initFlag(self):
         self.sn = None
@@ -129,3 +136,6 @@ class KaiheilaBot(Bot):
 
     async def sendGroupMessage(self, type: int = 1, **kwargs):
         return await self.adapter.messagecreate(type=type, **kwargs)
+
+    async def getServerRoles(self, serverId):
+        return await self.adapter.guildrolelist(guild_id=serverId)

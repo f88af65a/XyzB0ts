@@ -23,7 +23,7 @@
         },
         "guildrolelist":{
             "path":"/guild-role/list",
-            "meth":"get",
+            "method":"get",
             "parameter":{
                 "guild_id":"str",
                 "page":"int",

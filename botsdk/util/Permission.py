@@ -11,7 +11,7 @@ from botsdk.util.JsonConfig import getConfig
 '''
 
 
-def permissionCheck(request, target: str):
+async def permissionCheck(request, target: str):
     requestRole = request.getRoles() | {"*"}
     userId = request.getUserId()
     systemCookie = getConfig()["systemCookie"]
@@ -39,8 +39,8 @@ def permissionCheck(request, target: str):
             and (permissionRoles := set(cookie[target]))
             and (requestRole & permissionRoles
                  or ("*" in permissionRoles
-                     and permissionRoles["*"] | requestRole)))
-           or ("*" in cookie and set(cookie["*"]) | requestRole)):
+                     and permissionRoles["*"] & requestRole)))
+           or ("*" in cookie and set(cookie["*"]) & requestRole)):
             return True
         if m < len(childs) and f":{childs[m]}" in cookie:
             cookie = cookie[f":{childs[m]}"]

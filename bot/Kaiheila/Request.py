@@ -4,10 +4,10 @@ from botsdk.BotModule.Request import Request
 class KaiheilaRequest(Request):
     # needOverRide
     # 获取角色
-    def getRoles(self):
+    async def getRoles(self):
         roles = self.getBot().getRoles()
         if self["target_id"] not in roles:
-            re = self.getBot().getServerRoles(
+            re = await self.getBot().getServerRoles(
                 self["target_id"])["data"]["items"]
             roles = {}
             for i in re:
@@ -18,7 +18,7 @@ class KaiheilaRequest(Request):
         re = set()
         for i in range(len(self["extra"]["author"]["roles"])):
             if i not in roles:
-                re = self.getBot().getServerRoles(
+                re = await self.getBot().getServerRoles(
                     self["target_id"])["data"]["items"]
                 roles = {}
                 for i in re:

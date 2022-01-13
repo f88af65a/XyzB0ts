@@ -73,7 +73,7 @@ class TargetRouter(BotRouter):
         if (ret := pluginsManager.getTarget(
                 request.getType(), target)) is not None:
             # 权限判断
-            if not permissionCheck(request, target):
+            if not await permissionCheck(request, target):
                 await request.sendMessage("权限限制")
                 return
             controlData = {"size": 1, "wait": 0}

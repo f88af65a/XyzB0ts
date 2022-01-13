@@ -31,11 +31,11 @@ class KaiheilaAdapter(Adapter):
             return None
 
     async def wsDisconnect(self):
-        if not self.ws.closed:
+        if not self.wsClosed():
             await self.ws.close()
 
     async def wsRecv(self, timeout=15):
-        if not self.ws.wsClosed():
+        if not self.wsClosed():
             try:
                 return json.loads(zlib.decompress(
                     await self.ws.receive_bytes(timeout=timeout)))

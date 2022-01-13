@@ -5,6 +5,12 @@ from botsdk.BotModule.Request import Request
 
 
 class MiraiRequest(Request):
+    def init(self):
+        self.messageType = (
+            {"FriendMessage", "GroupMessage",
+             "TempMessage", "StrangerMessage",
+             "OtherClientMessage"})
+
     def getSenderId(self):
         return str(self["sender"]["id"])
 
@@ -64,7 +70,9 @@ class MiraiRequest(Request):
         return str(self["sender"]["group"]["id"])
 
     def getMessageChain(self):
-        return self["messageChain"]
+        if self.getType() in self.messageType():
+            return self["messageChain"]
+        return None
 
     def getFirst(self, messageType):
         for i in self.getMessageChain()[1:]:

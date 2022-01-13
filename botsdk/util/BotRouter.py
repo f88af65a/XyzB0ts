@@ -7,7 +7,6 @@ from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.Error import asyncTraceBack
 from botsdk.util.HandlePacket import asyncHandlePacket
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.MessageType import messageType
 from botsdk.util.Permission import (getPermissionFromSystem, permissionCheck,
                                     permissionCmp)
 
@@ -61,8 +60,7 @@ class TargetRouter(BotRouter):
                     request,
                     concurrentModule: defaultBotConcurrentModule = None):
         # 类型判断与命令获取
-        if (request.getType() not in messageType
-                or (target := request.getFirstText()) is None):
+        if (target := request.getFirstText()) is None or target:
             return False
         # 正则匹配
         reData = self.pattern.search(target)

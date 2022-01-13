@@ -18,6 +18,10 @@ class Request(dict):
         self.data = data
         self.route = route
         self.bot = None
+        self.init()
+
+    def init(self):
+        pass
 
     def getBot(self):
         if self.bot is None:

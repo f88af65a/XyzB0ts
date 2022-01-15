@@ -35,8 +35,11 @@ class KaiheilaRequest(Request):
     # 获取来源BotId
     def getId(self):
         if self["channel_type"] == "GROUP":
-            return ("""Kaiheila:Group:"""
-                    f"""{self["extra"]["guild_id"]}:{self["target_id"]}""")
+            if self["type"] != 255:
+                return ("""Kaiheila:Group:"""
+                        f"""{self["extra"]["guild_id"]}:{self["target_id"]}""")
+            else:
+                return f"""Kaiheila:Group:{self["extra"]["guild_id"]}"""
         elif self["channel_type"] == "PERSON":
             return f"""Kaiheila:User:{self["target_id"]}"""
 

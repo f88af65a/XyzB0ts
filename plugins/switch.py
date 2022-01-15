@@ -17,7 +17,7 @@ class handle(BotPlugin):
              + r"])(\S+)( \S+)*$"))
 
     async def switchCheck(self, request):
-        if (msg := request.getFirstText()) is not None and not msg:
+        if (msg := request.getFirstText()) is None and not msg:
             return True
         reData = self.pattern.search(msg)
         # target获取

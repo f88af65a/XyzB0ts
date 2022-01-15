@@ -7,9 +7,9 @@ import re
 class handle(BotPlugin):
     def onLoad(self):
         self.name = "switch"
-        self.addFilter(self.switchCheck)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
+        self.addFilter(self.switchCheck)
         self.canDetach = True
         self.pattern = re.compile(
             (r"^(\[(\S*=\S*)&?\])?(["

@@ -83,8 +83,12 @@ class Request(dict):
     def getId(self):
         pass
 
-    # 获取消息的首串文本消息
+    # 获取消息的首个字符串
     def getFirstText(self):
+        pass
+
+    # 修改消息的首个字符串
+    def setFirstText(self):
         pass
 
     # 发送消息

@@ -6,9 +6,9 @@ from botsdk.util.BotPlugin import BotPlugin
 
 class plugin(BotPlugin):
     def onLoad(self):
+        self.name = "systemHelp"
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.name = "systemHelp"
         self.addTarget("GroupMessage", "config", self.configHelp)
         self.addTarget("GROUP:1", "config", self.configHelp)
 

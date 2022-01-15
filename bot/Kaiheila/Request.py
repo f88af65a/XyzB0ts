@@ -48,6 +48,10 @@ class KaiheilaRequest(Request):
         else:
             return ""
 
+    def setFirstText(self, s):
+        if self["type"] == 1:
+            self["content"] = s
+
     # 发送消息
     async def sendMessage(self, messageChain):
         ids = self.getId().split(":")

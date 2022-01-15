@@ -86,6 +86,10 @@ class MiraiRequest(Request):
             return re["text"]
         return None
 
+    def setFirstText(self, s):
+        if (re := self.getFirst("Plain")) is not None:
+            re["text"] = s
+
     def getFirstTextSplit(self):
         if (re := self.getFirst("Plain")) is not None:
             return re["text"].split(" ")

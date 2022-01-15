@@ -5,9 +5,9 @@ from botsdk.util.JsonConfig import getConfig
 class plugin(BotPlugin):
     '''/[help/info/load/reload/unload] 插件名'''
     def onLoad(self):
+        self.name = "pluginHelp"
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.name = "pluginHelp"
         self.addTarget("GroupMessage", "help", self.helper)
         self.addTarget("GroupMessage", "load", self.load)
         self.addTarget("GroupMessage", "reload", self.reload)

@@ -11,11 +11,11 @@ class plugin(BotPlugin):
 
     def onLoad(self):
         self.name = "format"
+        self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "format", self.setFormat)
         self.addTarget("GROUP:1", "format", self.setFormat)
         self.addFormat(self.doFormat)
-        self.addBotType("Mirai")
-        self.addBotType("Kaiheila")
         self.canDetach = True
 
     async def doFormat(self, request):
@@ -23,9 +23,9 @@ class plugin(BotPlugin):
             cookie = request.getCookie("format")
             if cookie is None or request.getFirst("Plain") is None:
                 return
-            request.getFirst("Plain")["text"] = (
-                request.getFirst("Plain")["text"]
-                .format_map(formatDict(cookie))
+            request.setFirstText(
+                    request.getFirstText()
+                    .format_map(formatDict(cookie))
                 )
 
     async def setFormat(self, request):

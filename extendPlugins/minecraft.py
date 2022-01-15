@@ -33,7 +33,10 @@ class plugin(BotPlugin):
         self.name = "minecraft"
         self.addTarget("GroupMessage", "mc", self.getMc)
         self.addTarget("GroupMessage", "mcbe", self.getBe)
+        self.addTarget("GROUP:1", "mc", self.getMc)
+        self.addTarget("GROUP:1", "mcbe", self.getBe)
         self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.canDetach = True
 
     async def getMc(self, request):
@@ -115,9 +118,9 @@ class plugin(BotPlugin):
                                       ["players"]["sample"][i]["name"])
                         if i != len(responseData["players"]["sample"]) - 1:
                             printData += "\n"
-                await request.sendMessage(request.makeMessageChain(printData))
+                await request.sendMessage(printData)
             except Exception:
-                await request.sendMessage(request.makeMessageChain("解析过程中出错"))
+                await request.sendMessage("解析过程中出错")
                 printTraceBack()
 
     async def getBe(self, request):

@@ -5,9 +5,11 @@ from botsdk.util.BotPlugin import BotPlugin
 
 class plugin(BotPlugin):
     def onLoad(self):
-        self.addBotType("Mirai")
         self.name = "random"
         self.addTarget("GroupMessage", "random", self.random)
+        self.addTarget("GROUP:1", "random", self.random)
+        self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.canDetach = True
 
     async def random(self, request):

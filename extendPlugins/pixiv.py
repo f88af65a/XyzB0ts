@@ -110,7 +110,8 @@ class plugin(BotPlugin):
             await request.sendMessage(msg)
         imgType = imgType.replace("https", "http")
         imgType = imgType.replace("i.pximg.net", self.proxy)
-        msg.text("\n").image(url=imgType.replace("https", "http"))
+        request.sendMessage(
+            msg.text("\n").image(url=imgType.replace("https", "http")))
         """
         img = await get(
             imgType.replace("https", "http"),

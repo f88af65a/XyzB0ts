@@ -64,11 +64,15 @@ class KaiheilaRequest(Request):
         else:
             await sendMethod(
                 type=10, target_id=targetId,
-                content=(
-                    '[{"type":"card","theme":"secondary",'
-                    '"size":"lg","modules":'
-                    f'{json.dumps(messageChain.getData())}'
-                    '}]'
+                content=json.dumps(
+                    [
+                        {
+                            "type": "card",
+                            "theme": "secondary",
+                            "size": "lg",
+                            "modules": messageChain.getData()
+                        }
+                    ]
                 )
             )
 

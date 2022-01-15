@@ -24,7 +24,7 @@ class plugin(BotPlugin):
     async def helper(self, request):
         """/help 命令名"""
         data = request.getFirstTextSplit()
-        if len(data) < 3:
+        if len(data) < 2:
             await request.sendMessage("缺少参数")
             return
         route = request.getPluginsManager()

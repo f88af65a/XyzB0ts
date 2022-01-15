@@ -12,8 +12,10 @@ class plugin(BotPlugin):
     def onLoad(self):
         self.name = "format"
         self.addTarget("GroupMessage", "format", self.setFormat)
+        self.addTarget("GROUP:1", "format", self.setFormat)
         self.addFormat(self.doFormat)
         self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.canDetach = True
 
     async def doFormat(self, request):

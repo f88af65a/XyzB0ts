@@ -6,7 +6,10 @@ class plugin(BotPlugin):
         self.name = "role"
         self.addTarget("GroupMessage", "角色", self.role)
         self.addTarget("GroupMessage", "权限", self.permission)
+        self.addTarget("GROUP:1", "角色", self.role)
+        self.addTarget("GROUP:1", "权限", self.permission)
         self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.canDetach = True
 
     async def role(self, request):

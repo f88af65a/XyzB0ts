@@ -6,6 +6,7 @@ class plugin(BotPlugin):
     '''/[help/info/load/reload/unload] 插件名'''
     def onLoad(self):
         self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.name = "pluginHelp"
         self.addTarget("GroupMessage", "help", self.helper)
         self.addTarget("GroupMessage", "load", self.load)
@@ -13,6 +14,12 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "unload", self.unload)
         self.addTarget("GroupMessage", "plugins", self.plugins)
         self.addTarget("GroupMessage", "targets", self.targets)
+        self.addTarget("GROUP:1", "help", self.helper)
+        self.addTarget("GROUP:1", "load", self.load)
+        self.addTarget("GROUP:1", "reload", self.reload)
+        self.addTarget("GROUP:1", "unload", self.unload)
+        self.addTarget("GROUP:1", "plugins", self.plugins)
+        self.addTarget("GROUP:1", "targets", self.targets)
 
     async def helper(self, request):
         """/help [plugin/target] [插件名/命令名]"""

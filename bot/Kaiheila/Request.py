@@ -52,7 +52,7 @@ class KaiheilaRequest(Request):
         sendMethod = None
         if ids[1] == "Group":
             sendMethod = self.getBot().sendGroupMessage
-            targetId = ids[3]
+            targetId = ids[-1]
         if sendMethod is None:
             return
         if type(messageChain) == str:

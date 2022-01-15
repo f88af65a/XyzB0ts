@@ -1,13 +1,10 @@
 import json
 import math
-import os
 import random
 import time
 
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.HttpRequest import get
-from botsdk.util.JsonConfig import getConfig
-from PIL import Image
 
 
 class plugin(BotPlugin):
@@ -113,6 +110,8 @@ class plugin(BotPlugin):
             await request.sendMessage(msg)
         imgType = imgType.replace("https", "http")
         imgType = imgType.replace("i.pximg.net", self.proxy)
+        msg.text("\n").image(url=imgType.replace("https", "http"))
+        """
         img = await get(
             imgType.replace("https", "http"),
             headers={"user-agent": (
@@ -137,6 +136,7 @@ class plugin(BotPlugin):
             os.remove(fPath)
         else:
             await request.sendMessage(msg)
+        """
 
 
 def handle(*args, **kwargs):

@@ -137,6 +137,9 @@ class KaiheilaBot(Bot):
     async def sendGroupMessage(self, type: int = 1, **kwargs):
         return await self.adapter.messagecreate(type=type, **kwargs)
 
+    async def sendFriendMessage(self, type: int = 1, **kwargs):
+        return await self.adapter.directmessagecreate(type=type, **kwargs)
+
     async def getServerRoles(self, serverId):
         return await self.adapter.guildrolelist(guild_id=serverId)
 

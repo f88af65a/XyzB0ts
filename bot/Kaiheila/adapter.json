@@ -7,35 +7,46 @@
         "getGateway": {
             "path": "/gateway/index",
             "method": "get",
+            "parameter": {}
+        },
+        "messagecreate": {
+            "path": "/message/create",
+            "method": "post",
             "parameter": {
-            }
-        },
-        "messagecreate":{
-            "path":"/message/create",
-            "method":"post",
-            "parameter":{
-                "type":"int",
-                "target_id":"str",
+                "type": "int",
+                "target_id": "str",
                 "content": "str",
-                "quote":"str",
-                "nonce":"str",
-                "temp_target_id":"str"
+                "quote": "str",
+                "nonce": "str",
+                "temp_target_id": "str"
             }
         },
-        "guildrolelist":{
-            "path":"/guild-role/list",
-            "method":"get",
-            "parameter":{
-                "guild_id":"str",
-                "page":"int",
-                "page_size":"int"
+        "directmessagecreate": {
+            "path": "direct-message/create",
+            "method": "post",
+            "parameter": {
+                "type": "int",
+                "target_id": "str",
+                "chat_code": "str",
+                "content": "str",
+                "quote": "str",
+                "nonce": "str"
             }
         },
-        "channelview":{
-            "path":"/channel/view",
-            "method":"get",
-            "parameter":{
-                "target_id":"str"
+        "guildrolelist": {
+            "path": "/guild-role/list",
+            "method": "get",
+            "parameter": {
+                "guild_id": "str",
+                "page": "int",
+                "page_size": "int"
+            }
+        },
+        "channelview": {
+            "path": "/channel/view",
+            "method": "get",
+            "parameter": {
+                "target_id": "str"
             }
         }
     }

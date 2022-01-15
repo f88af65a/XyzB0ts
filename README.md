@@ -11,11 +11,6 @@
  1. [mirai-api-http](https://github.com/project-mirai/mirai-api-http)
  2. [kaiheila](https://github.com/kaiheila/api-docs)(api较少 需要自己加adapter)
 
-## 须知
- 为了能够兼容更多类型的bot，本项目各个部分可能都需要进行较大的调整  
- 最新的代码与功能会在dev分支中  
- 部分文档可能会落后于实现
-
 ## BOT的开黑啦频道
  [邀请链接](https://kaihei.co/LUTGj9)
 
@@ -35,8 +30,9 @@ from botsdk.util.BotPlugin import BotPlugin
 class plugin(BotPlugin):
     def init(self):
         self.name = "hello"
-        self.addTarget("GroupMessage", "hello", self.hello)
         self.addBotType("Mirai")
+        self.addTarget("GroupMessage", "hello", self.hello)
+
 
     async def hello(self, request):
         await request.sendMessage("hello")

@@ -3,34 +3,33 @@ import copy
 import json
 import time
 
-from botsdk.Bot import Bot
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotNotifyModule import getNotifyModule
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Error import printTraceBack
 from botsdk.util.HttpRequest import get
-from botsdk.util.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "bilibili"
         self.addTarget("GroupMessage", "anime", self.anime)
         self.addTarget("GroupMessage", "follower", self.follower)
+        self.addTarget("GROUP:1", "anime", self.anime)
+        self.addTarget("GROUP:1", "follower", self.follower)
+        self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
 
     def init(self, bot):
         for i in self.getConfig()["listen"]:
             self.addFuture(i, self.bilibiliGetDynamic(bot, i))
 
-    async def toNotify(self, notifyName, bot: Bot, messageChain: MessageChain):
+    async def toNotify(self, notifyName, bot, messageChain):
         notifyModule = getNotifyModule()
         notifySet = copy.deepcopy(notifyModule.notify(notifyName))
         for i in notifySet:
             await bot.sendMessageById(i, messageChain)
 
-    def dynamicCardAnlysis(self, jdata) -> str:
-        msg = MessageChain()
+    def dynamicCardAnlysis(self, jdata, msg):
         if "vest" in jdata:
             msg.text("[动态][UP:{0}]\n".format(jdata["user"]["uname"]
                      + jdata["sketch"]["title"])
@@ -41,8 +40,9 @@ class plugin(BotPlugin):
                     "[文章][UP:{0}]\n".format(jdata["author"]["name"])
                     + jdata["title"])
             else:
-                msg.text("[视频][UP:{0}]\n".format(jdata["owner"]["name"])
-                         + jdata["title"])
+                if "owner" in jdata:
+                    msg.text("[视频][UP:{0}]\n".format(jdata["owner"]["name"])
+                             + jdata["title"])
                 if "pic" in jdata:
                     msg.image(url=jdata["pic"])
                     msg.text("\n")
@@ -52,7 +52,7 @@ class plugin(BotPlugin):
             if "origin" in jdata:
                 msg.text("[转发][UP:{0}]\n".format(jdata["user"]["uname"])
                          + jdata["item"]["content"] + "\n")
-                msg += self.dynamicCardAnlysis(json.loads(jdata["origin"]))
+                self.dynamicCardAnlysis(json.loads(jdata["origin"]), msg)
             elif "description" in jdata["item"]:
                 msg.text("[动态][UP:{0}]\n".format(jdata["user"]["name"])
                          + jdata["item"]["description"])
@@ -64,7 +64,6 @@ class plugin(BotPlugin):
                          + jdata["item"]["content"])
             else:
                 msg.text("\n是未识别类型的新动态")
-        return msg
 
     async def bilibiliGetDynamic(self, bot, uid):
         dynamicId = set()
@@ -92,11 +91,13 @@ class plugin(BotPlugin):
                         localId.append(i["desc"]["dynamic_id"])
                         if (i["desc"]["dynamic_id"] not in dynamicId
                                 and i["desc"]["dynamic_id"] > maxDynamicId):
+                            dynamicChain = bot.makeMessageChain()
+                            self.dynamicCardAnlysis(
+                                json.loads(i["card"]), dynamicChain)
                             await self.toNotify(
                                 notifyName, bot,
-                                MessageChain().text("[是新动态捏]")
-                                + self.dynamicCardAnlysis(
-                                    json.loads(i["card"])))
+                                bot.makeMessageChain().text("[是新动态捏]")
+                                + dynamicChain)
                             dynamicId.add(i["desc"]["dynamic_id"])
                     maxDynamicId = max(maxDynamicId, max(localId))
                     dynamicId = set(localId)
@@ -128,7 +129,7 @@ class plugin(BotPlugin):
                 await request.sendMessage(printData)
                 return
 
-    async def follower(self, request: BotRequest):
+    async def follower(self, request):
         data = request.getFirstTextSplit()
         if len(data) < 2:
             request.sendMessage("uid呢，uid在哪里")

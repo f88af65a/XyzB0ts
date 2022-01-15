@@ -1,14 +1,13 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotNotifyModule import getNotifyModule
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Cookie import getCookieDriver
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "notify"
         self.addTarget("GroupMessage", "notify", self.manageNotify)
+        self.addBotType("Mirai")
         self.canDetach = True
 
     def init(self, bot):
@@ -18,7 +17,7 @@ class plugin(BotPlugin):
                 for j in allCookie[i]["notify"]:
                     getNotifyModule().addListen(i, j)
 
-    async def manageNotify(self, request: BotRequest):
+    async def manageNotify(self, request):
         "/notify [add/remove] 通知名"
         data = request.getFirstTextSplit()
         if len(data) < 3:

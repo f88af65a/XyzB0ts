@@ -1,4 +1,8 @@
 {
+    "config": {
+        "ownerRole":"OWNER",
+        "sleepTime": 0.01
+    },
     "api": {
         "verify": {
             "path": "/verify",
@@ -37,7 +41,8 @@
             "parameter": {
                 "sessionKey": "str",
                 "target": "int",
-                "messageChain": "list"
+                "messageChain": "list",
+                "quote":"int"
             }
         },
         "sendFriendMessage": {
@@ -47,7 +52,8 @@
                 "sessionKey": "str",
                 "target": "int",
                 "qq": "int",
-                "messageChain": "list"
+                "messageChain": "list",
+                "quote":"int"
             }
         },
         "mute": {

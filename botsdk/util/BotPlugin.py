@@ -17,10 +17,18 @@ class BotPlugin:
         self.uuid = uuid.uuid4()
         # 配置文件,在pluginInit中初始化
         self.config = None
-        # listener
+        # listenerk
         self.listener = {}
         # generalList
         self.generalList = []
+        # 兼容的bot类型
+        self.botSet = set()
+
+    def getBotSet(self):
+        return self.botSet
+
+    def addBotType(self, botType: str):
+        self.botSet.add(botType)
 
     def addType(self, typeName: str, func):
         if typeName not in self.getListener():
@@ -49,7 +57,6 @@ class BotPlugin:
             self.initPluginConfig()
             self.init(bot)
         except Exception:
-            self.clear()
             printTraceBack()
             return False
         return True
@@ -65,8 +72,12 @@ class BotPlugin:
     def init(self, bot):
         pass
 
-    # 手动清理bot使用的资源
-    def clear(self):
+    # 加载时调用
+    def onLoad(self):
+        pass
+
+    # 卸载时调用
+    def onUnload(self):
         pass
 
     def getName(self):

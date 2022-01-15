@@ -1,17 +1,17 @@
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.BotRequest import BotRequest
-from botsdk.util.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
-    "来自XyzB0ts\n项目地址https://github.com/f88af65a/XyzB0ts"
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "botInfo"
+        self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
+        self.addTarget("GroupMessage", "bot", self.botinfo)
+        self.addTarget("GROUP:1", "bot", self.botinfo)
         self.canDetach = True
 
-    def botinfo(self, request: BotRequest):
-        request.sendMessage(MessageChain().plain(
+    def botinfo(self, request):
+        request.sendMessage(request.makeMessageChain().plain(
             "来自XyzB0ts\n项目地址https://github.com/f88af65a/XyzB0ts"))
 
 

@@ -1,21 +1,18 @@
-from botsdk.Bot import Bot
 from botsdk.util.Cookie import getCookie
 from botsdk.util.Cookie import setCookie
 from botsdk.util.BotException import BotException
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.Request import Request
 
 
-class BotRequest(dict):
-    def __init__(self, data, responseChain, route=None):
-        super().__init__(responseChain)
-        self.data = data
-        self.route = route
-        self.bot = None
+class MiraiRequest(Request):
+    def init(self):
+        self.messageType = (
+            {"FriendMessage", "GroupMessage",
+             "TempMessage", "StrangerMessage",
+             "OtherClientMessage"})
 
-    def getBot(self):
-        if self.bot is None:
-            self.bot = Bot(*self.data["bot"])
-        return self.bot
+    def getSenderId(self):
+        return str(self["sender"]["id"])
 
     def getRoute(self):
         return self.route
@@ -31,9 +28,6 @@ class BotRequest(dict):
 
     def getMessageTime(self):
         return self["messageChain"][0]["time"]
-
-    def getData(self):
-        return (self.data, dict(self))
 
     def setControlData(self, controlData):
         self.data["controlData"] = controlData
@@ -62,9 +56,9 @@ class BotRequest(dict):
 
     def getId(self):
         if self["type"] == "GroupMessage":
-            return f"""Group:{self["sender"]["group"]["id"]}"""
+            return f"""QQ:Group:{self["sender"]["group"]["id"]}"""
         else:
-            return f'''User:{self["sender"]["id"]}'''
+            return f'''QQ:User:{self["sender"]["id"]}'''
 
     def getCookie(self, target: str = None):
         return getCookie(self.getId(), target)
@@ -72,25 +66,29 @@ class BotRequest(dict):
     def setCookie(self, target: str, cookie):
         setCookie(self.getId(), target, cookie)
 
-    def getSenderId(self):
-        return str(self["sender"]["id"])
-
     def getGroupId(self):
         return str(self["sender"]["group"]["id"])
 
     def getMessageChain(self):
-        return self["messageChain"]
+        if self.getType() in self.messageType:
+            return self["messageChain"]
+        return None
 
     def getFirst(self, messageType):
-        for i in self.getMessageChain()[1:]:
-            if i["type"] == messageType:
-                return i
+        if self.getType() in self.messageType:
+            for i in self.getMessageChain()[1:]:
+                if i["type"] == messageType:
+                    return i
         return None
 
     def getFirstText(self):
         if (re := self.getFirst("Plain")) is not None:
             return re["text"]
         return None
+
+    def setFirstText(self, s):
+        if (re := self.getFirst("Plain")) is not None:
+            re["text"] = s
 
     def getFirstTextSplit(self):
         if (re := self.getFirst("Plain")) is not None:
@@ -105,7 +103,7 @@ class BotRequest(dict):
 
     async def sendMessage(self, msgChain, quote=None):
         if type(msgChain) is str:
-            msgChain = MessageChain().plain(msgChain)
+            msgChain = self.makeMessageChain().plain(msgChain)
         if self.getType() == "FriendMessage":
             await self.getBot().sendFriendMessage(
                 int(self.getSenderId()), msgChain.getData(), quote)
@@ -130,3 +128,9 @@ class BotRequest(dict):
 
     async def recall(self, target):
         self.getBot().recall(int(target))
+
+    async def getRoles(self):
+        return {self["sender"]["permission"]}
+
+    def getUserId(self):
+        return "QQ:User:" + self.getSenderId()

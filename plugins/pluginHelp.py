@@ -1,107 +1,81 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
     '''/[help/info/load/reload/unload] 插件名'''
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "pluginHelp"
+        self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "help", self.helper)
         self.addTarget("GroupMessage", "load", self.load)
         self.addTarget("GroupMessage", "reload", self.reload)
         self.addTarget("GroupMessage", "unload", self.unload)
         self.addTarget("GroupMessage", "plugins", self.plugins)
         self.addTarget("GroupMessage", "targets", self.targets)
+        self.addTarget("GROUP:1", "help", self.helper)
+        self.addTarget("GROUP:1", "load", self.load)
+        self.addTarget("GROUP:1", "reload", self.reload)
+        self.addTarget("GROUP:1", "unload", self.unload)
+        self.addTarget("GROUP:1", "plugins", self.plugins)
+        self.addTarget("GROUP:1", "targets", self.targets)
 
-    async def helper(self, request: BotRequest):
-        """/help [plugin/target] [插件名/命令名]"""
+    async def helper(self, request):
+        """/help 命令名"""
         data = request.getFirstTextSplit()
-        if len(data) < 3:
-            await request.sendMessage(MessageChain().text("缺少参数"))
+        if len(data) < 2:
+            await request.sendMessage("缺少参数")
             return
         route = request.getPluginsManager()
-        if data[1] == "plugin":
-            if (re := route.getPlugin(data[2])) is not None:
-                await request.sendMessage(MessageChain().text(re.__doc__))
-                return
-        elif data[1] == "target":
-            if (re := route.getTarget(request.getType(), data[2])) is not None:
-                await request.sendMessage(MessageChain().text(re.__doc__))
-                return
+        if (re := route.getTarget(request.getType(), data[1])) is not None:
+            await request.sendMessage(re.__doc__)
         else:
-            await request.sendMessage(MessageChain().text("参数错误"))
-            return
-        await request.sendMessage(MessageChain().text("不存在"))
+            await request.sendMessage("不存在")
 
-    async def load(self, request: BotRequest):
+    async def load(self, request):
         data = request.getFirstTextSplit()
-        bot = request.getBot()
         route = request.getPluginsManager()
         if len(data) < 2:
-            await bot.sendGroupMessage(
-                request.getGroupId(),
-                MessageChain().text("缺少参数").getData())
+            await request.sendMessage("缺少参数")
             return
         path = data[1]
         re = route.loadPlugin(getConfig()["pluginsPath"] + path)
-        await bot.sendGroupMessage(
-            request.getGroupId(),
-            MessageChain().text("加载成功" if re else "加载失败").getData())
+        await request.sendMessage("加载成功" if re else "加载失败")
 
-    async def reload(self, request: BotRequest):
+    async def reload(self, request):
         data = request.getFirstTextSplit()
-        bot = request.getBot()
         route = request.getPluginsManager()
         if len(data) < 2:
-            await bot.sendGroupMessage(
-                request.getGroupId(),
-                MessageChain().text("缺少参数").getData())
+            await request.sendMessage("缺少参数")
             return
         targetPlugin = data[1]
         allName = route.getAllPluginName()
         if targetPlugin not in allName:
-            await bot.sendGroupMessage(
-                request.getGroupId(),
-                MessageChain().text("插件不存在").getData())
+            await request.sendMessage("插件不存在")
             return
         re = route.reLoadPlugin(targetPlugin)
-        await bot.sendGroupMessage(
-            request.getGroupId(),
-            MessageChain().text("加载成功" if re else "加载失败").getData())
+        await request.sendMessage("加载成功" if re else "加载失败")
 
-    async def unload(self, request: BotRequest):
+    async def unload(self, request):
         data = request.getFirstTextSplit()
-        bot = request.getBot()
         route = request.getPluginsManager()
         if len(data) < 2:
-            await bot.sendGroupMessage(
-                request.getGroupId(),
-                MessageChain().text("缺少参数").getData())
+            await request.sendMessage("缺少参数")
             return
         targetPlugin = data[1]
         allName = route.getAllPluginName()
         if targetPlugin not in allName:
-            await bot.sendGroupMessage(
-                request.getGroupId(),
-                MessageChain().text("插件不存在").getData())
+            await request.sendGroupMessage("插件不存在")
             return
         route.unLoadPlugin(targetPlugin)
-        await bot.sendGroupMessage(
-            request.getGroupId(),
-            MessageChain().text("卸载成功").getData())
+        await request.sendGroupMessage("卸载成功")
 
-    async def plugins(self, request: BotRequest):
-        bot = request.getBot()
+    async def plugins(self, request):
         route = request.getPluginsManager()
-        await bot.sendGroupMessage(
-            request.getGroupId(),
-            MessageChain().text(str(route.getAllPluginName())).getData())
+        await request.sendMessage(str(route.getAllPluginName()))
 
-    async def targets(self, request: BotRequest):
-        bot = request.getBot()
+    async def targets(self, request):
         route = request.getPluginsManager()
         allName = route.getAllPluginName()
         re = []
@@ -110,9 +84,7 @@ class plugin(BotPlugin):
             for j in listener:
                 for k in listener[j]["targetListener"]:
                     re.append("{}:{}".format(i, k))
-        await bot.sendGroupMessage(
-            request.getGroupId(),
-            MessageChain().text(str(re)).getData())
+        await request.sendMessage(str(re))
 
 
 def handle(*args, **kwargs):

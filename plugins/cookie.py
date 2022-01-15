@@ -1,21 +1,26 @@
 import json
 
-import botsdk.BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "cookie"
+        self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "cookie", self.cookie)
-        self.permissionSet = {"OWNER", "ADMINISTRATOR", "MEMBER"}
+        self.addTarget("GROUP:1", "cookie", self.cookie)
+        self.addTarget("GroupMessage", "id", self.id)
+        self.addTarget("GROUP:1", "id", self.id)
         self.canDetach = True
 
-    async def cookie(self, request: botsdk.BotRequest):
+    async def cookie(self, request):
         cookie = request.getCookie()
-        await request.sendMessage(MessageChain().text(json.dumps(cookie)))
+        await request.sendMessage(json.dumps(cookie))
+
+    async def id(self, request):
+        await request.sendMessage(
+            f"""{request.getId()} {request.getUserId()}""")
 
 
 def handle(*args, **kwargs):

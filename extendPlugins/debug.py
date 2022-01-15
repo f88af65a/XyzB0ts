@@ -3,10 +3,10 @@ from botsdk.util.JsonConfig import getConfig
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "debug"
         self.addFilter(self.deBugGroupCheck)
+        self.addBotType("Mirai")
 
     async def deBugGroupCheck(self, request):
         if getConfig()["debug"]:

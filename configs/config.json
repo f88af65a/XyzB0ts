@@ -1,7 +1,7 @@
 {
 	"appPath": "",
 	"pluginsPath": "plugins/",
-	"adapterPath": "adapter/",
+	"botPath": "bot/",
 	"sqlPath": "botsql.sql",
 	"localFilePath": "localFile/",
 	"workProcess": "4",
@@ -17,19 +17,27 @@
 	],
 	"account": [
 		{
-			"path": "localhost",
-			"port": "",
+			"botName": "",
+			"botType": "Mirai",
+			"path": "",
 			"qq": "",
 			"passwd": ""
+		},
+		{
+			"botName": "",
+			"botType": "Kaiheila",
+			"path": "https://www.kaiheila.cn/api/v3",
+			"authorizationType": "",
+			"token": ""
 		}
 	],
 	"cookieDriver": "SqliteCookie",
 	"systemCookie": {
 		"systemPermission": {
-			"load": "ADMINISTRATOR",
-			"reload": "ADMINISTRATOR",
-			"unload": "ADMINISTRATOR",
-			"config": "ADMINISTRATOR"
+			"load": ["System:Owner"],
+			"reload": ["System:Owner"],
+			"unload": ["System:Owner"],
+			"config": ["System:Owner"]
 		},
 		"user": {}
 	}

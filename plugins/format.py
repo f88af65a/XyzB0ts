@@ -1,6 +1,4 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
 
 
 class formatDict(dict):
@@ -11,36 +9,42 @@ class formatDict(dict):
 class plugin(BotPlugin):
     "/format key=word;key=word..."
 
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "format"
+        self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "format", self.setFormat)
+        self.addTarget("GROUP:1", "format", self.setFormat)
+        self.addTarget("GroupMessage", "say", self.say)
+        self.addTarget("GROUP:1", "say", self.say)
         self.addFormat(self.doFormat)
         self.canDetach = True
 
-    async def doFormat(self, request: BotRequest):
-        if request.getType() == "GroupMessage":
-            cookie = request.getCookie("format")
-            if cookie is None or request.getFirst("Plain") is None:
-                return
-            request.getFirst("Plain")["text"] = (
-                request.getFirst("Plain")["text"]
+    async def doFormat(self, request):
+        if ((re := request.getFirstText()) is None or not re
+           or (cookie := request.getCookie("format")) is None):
+            return
+        request.setFirstText(
+                request.getFirstText()
                 .format_map(formatDict(cookie))
-                )
+            )
 
-    async def setFormat(self, request: BotRequest):
+    async def setFormat(self, request):
         "/format [key=word]"
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            await request.sendMessage(MessageChain().plain("参数呢"))
+            await request.sendMessage(
+                request.makeMessageChain().plain("参数呢"))
             return
         data = data[1].split(";")
         for i in range(len(data)):
             if data[i] == "":
-                await request.sendMessage(MessageChain().plain("格式有误"))
+                await request.sendMessage(
+                    request.makeMessageChain().plain("格式有误"))
             data[i] = data[i].split("=")
             if len(data[i]) != 2 or data[i][0] == "":
-                await request.sendMessage(MessageChain().plain("格式有误"))
+                await request.sendMessage(
+                    request.makeMessageChain().plain("格式有误"))
                 return
         cookie = request.getCookie("format")
         if cookie is None:
@@ -52,7 +56,11 @@ class plugin(BotPlugin):
             else:
                 cookie[i[0]] = i[1]
         request.setCookie("format", cookie)
-        await request.sendMessage(MessageChain().plain("修改完成"))
+        await request.sendMessage(
+            request.makeMessageChain().plain("修改完成"))
+
+    async def say(self, request):
+        await request.sendMessage(request.getFirstText())
 
 
 def handle(*args, **kwargs):

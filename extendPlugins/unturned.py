@@ -1,24 +1,23 @@
 import asyncio
 import socket
 
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.name = "unturnedPlayerSize"
         self.addTarget("GroupMessage", "un", self.unSearch)
+        self.addTarget("GROUP:1", "un", self.unSearch)
+        self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.canDetach = True
 
-    async def unSearch(self, request: BotRequest):
+    async def unSearch(self, request):
         "/un 服务器ip [端口默认27015]"
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            await request.sendMessage(
-                MessageChain().plain(self.unSearch.__doc__))
+            await request.sendMessage(self.unSearch.__doc__)
             return
         searchData = (b"\xFF\xFF\xFF\xFF\x54\x53\x6F\x75\x72\x63\x65\x20"
                       b"\x45\x6E\x67\x69\x6E\x65\x20\x51\x75\x65\x72\x79\x00")
@@ -30,23 +29,23 @@ class plugin(BotPlugin):
                 try:
                     serPort = int(data[2])
                 except Exception:
-                    await request.sendMessage(MessageChain().plain("端口应为数字"))
+                    await request.sendMessage("端口应为数字")
                     return
             try:
                 await loop.sock_connect(sock, (serIp, int(serPort)))
             except Exception:
-                await request.sendMessage(MessageChain().plain("连接失败"))
+                await request.sendMessage("连接失败")
                 return
             try:
                 await loop.sock_sendall(sock, searchData)
             except Exception:
-                await request.sendMessage(MessageChain().plain("发送失败"))
+                await request.sendMessage("发送失败")
                 return
             re = None
             try:
                 re = await loop.sock_recv(sock, 1501)
             except Exception:
-                await request.sendMessage(MessageChain().plain("获取失败"))
+                await request.sendMessage("获取失败")
                 return
             if re[0:5] == b"\xff\xff\xff\xff\x41":
                 key = re[5:len(re)]
@@ -88,12 +87,11 @@ class plugin(BotPlugin):
                 serSize = str(int(re[0]))
                 serMaxSize = str(int(re[1]))
             except Exception:
-                await request.sendMessage(MessageChain().plain("解析出错"))
+                await request.sendMessage("解析出错")
                 return
             await request.sendMessage(
-                MessageChain().plain(
                     "服务器名:{0}\n服务器地图:{1}\n服务器人数:{2}/{3}".format(
-                        serName, serMap, serSize, serMaxSize)))
+                        serName, serMap, serSize, serMaxSize))
 
 
 def handle():

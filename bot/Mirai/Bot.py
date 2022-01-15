@@ -1,37 +1,23 @@
-import json
-
-import botsdk.util.HttpRequest
-from botsdk.util.Adapter import getAdapter
+from botsdk.BotModule.Bot import Bot
 from botsdk.util.BotException import BotException
 from botsdk.util.Error import debugPrint, exceptionExit
-from botsdk.util.MessageChain import MessageChain
+from botsdk.BotModule.MessageChain import MessageChain
 
 
-class Bot:
-    def __init__(self, path, port, qq, adapterName, sessionKey=None):
-        self.url = f"http://{path}:{port}"
-        self.path = path
-        self.port = port
-        self.qq = qq
-        self.adapterName = adapterName
-        self.adapter = getAdapter(adapterName, self.url)
-        if sessionKey is not None:
-            self.sessionKey = sessionKey
+class MiraiBot(Bot):
+    def init(self):
+        self.path = self.data["path"]
+        self.qq = self.data["qq"]
+        if "sessionKey" in self.data:
+            self.sessionKey = self.data["sessionKey"]
 
     # 非API
-
-    def getData(self):
-        return (self.path, self.port, self.qq,
-                self.adapterName, self.sessionKey)
 
     def getQq(self):
         return self.qq
 
     def getPath(self):
         return self.path
-
-    def getPort(self):
-        return self.port
 
     async def sendMessageById(
             self, id: str, messageChain: MessageChain, quote=None):
@@ -44,17 +30,10 @@ class Bot:
         else:
             raise BotException("Bot.sendMessageById遇到了不支持的类型")
 
-    async def post(self, path, data):
-        return json.loads(
-            await botsdk.util.HttpRequest.post(self.url + path, data))
-
-    async def get(self, path):
-        return json.loads(await botsdk.util.HttpRequest.get(self.url + path))
-
-    async def login(self, qq: int, authkey: str):
-        if await self.verify(authkey) is None:
+    async def login(self):
+        if await self.verify(self.data["passwd"]) is None:
             return 1
-        if await self.bind(qq) is None:
+        if await self.bind(self.qq) is None:
             return 2
         return 0
 
@@ -67,6 +46,7 @@ class Bot:
             return None
         if re["code"] == 0:
             self.sessionKey = re["session"]
+            self.data["sessionKey"] = self.sessionKey
         else:
             exceptionExit("账号验证失败")
         return re
@@ -90,21 +70,23 @@ class Bot:
 
     async def sendGroupMessage(
             self, target: int, messageChain: list, quote=None):
-        return await self.adapter.sendGroupMessage(
-            sessionKey=self.sessionKey,
-            target=target,
-            messageChain=messageChain,
-            quote=quote
-        )
+        kw = dict()
+        kw["sessionKey"] = self.sessionKey
+        kw["target"] = target
+        kw["messageChain"] = messageChain
+        if quote:
+            kw["quote"] = quote
+        return await self.adapter.sendGroupMessage(**kw)
 
     async def sendFriendMessage(
             self, target: int, messageChain: list, quote=None):
-        return await self.adapter.sendFriendMessage(
-            sessionKey=self.sessionKey,
-            target=target,
-            messageChain=messageChain,
-            quote=quote
-        )
+        kw = dict()
+        kw["sessionKey"] = self.sessionKey
+        kw["target"] = target
+        kw["messageChain"] = messageChain
+        if quote:
+            kw["quote"] = quote
+        return await self.adapter.sendFriendMessage(**kw)
 
     async def sendTempMessage(
             self, targetGroup: int, targetQq: int,
@@ -131,11 +113,17 @@ class Bot:
             target=target
         )
 
-    async def fetchMessage(self, count: int):
-        return await self.adapter.fetchMessage(
+    async def fetchMessage(self):
+        re = await self.adapter.fetchMessage(
             sessionKey=self.sessionKey,
-            count=str(count)
+            count=str(128)
         )
+        if re["code"] != 0:
+            return (1, re)
+        _readList = []
+        for i in range(0, len(re["data"])):
+            _readList.append(re["data"][i])
+        return (0, _readList)
 
     async def memberList(self, target: int):
         return await self.adapter.memberList(

@@ -1,24 +1,8 @@
-import copy
-
 from botsdk.util.BotException import BotException
+from botsdk.BotModule.MessageChain import MessageChain
 
 
-# 对MessageChain功能的基本封装
-class MessageChain:
-    def __init__(self, rhs=None):
-        if rhs is None:
-            self.data = list()
-        elif type(rhs) == list:
-            self.data = copy.deepcopy(rhs)
-        elif type(rhs) == MessageChain:
-            self.data = copy.deepcopy(rhs.getData())
-
-    def __add__(self, rhs):
-        return MessageChain(copy.deepcopy(self.getData() + rhs.getData()))
-
-    def text(self, data: str):
-        return self.plain(data)
-
+class MiraiMessageChain(MessageChain):
     def plain(self, data):
         self.data += [{"type": "Plain", "text": data}]
         return self

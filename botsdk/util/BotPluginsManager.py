@@ -46,6 +46,10 @@ class BotPluginsManager:
         except Exception:
             printTraceBack()
             return False
+        handle.onLoad()
+        # 检查是否是兼容的
+        if self.getBot().getBotType() not in handle.getBotSet():
+            return False
         # 检查名称是否重复
         if handle.getName() in self.plugins:
             return False
@@ -80,13 +84,14 @@ class BotPluginsManager:
                 for j in re.getListener()[i]["typeListener"]:
                     if (i in self.listener
                             and j in self.listener[i]["typeListener"]):
-                        del self.listener[i]["typeListener"][j]
+                        self.listener[i]["typeListener"].remove(j)
                 for j in re.getListener()[i]["targetListener"]:
                     if (i in self.listener
                             and j in self.listener[i]["targetListener"]):
                         del self.listener[i]["targetListener"][j]
             for i in re.getGeneralList():
                 self.generalList.remove(i)
+            self.plugins[pluginName].onUnload()
             del self.plugins[pluginName]
 
     def getListener(self):
@@ -130,3 +135,6 @@ class BotPluginsManager:
                 and target in self.getListener()["targetListener"]):
             return self.getListener()["typeListener"][target]
         return []
+
+    def getBot(self):
+        return self.bot

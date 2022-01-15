@@ -1,23 +1,22 @@
-from botsdk.BotRequest import BotRequest
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.MessageChain import MessageChain
 
 
 class plugin(BotPlugin):
-    def __init__(self):
-        super().__init__()
+    def onLoad(self):
         self.listenType = []
         self.listenTarget = [["GroupMessage", "空调", self.kongtiao]]
         self.name = "空调"
         self.info = "好热哦"
         self.help = "/空调"
+        self.addBotType("Mirai")
         self.canDetach = True
 
-    async def kongtiao(self, request: BotRequest):
+    async def kongtiao(self, request):
         bot = request.bot
         await bot.sendGroupMessage(
             request.getGroupId(),
-            MessageChain().text("https://ac.yunyoujun.cn/#/").getData())
+            request.makeMessageChain()
+            .text("https://ac.yunyoujun.cn/#/").getData())
 
 
 def handle(*args, **kwargs):

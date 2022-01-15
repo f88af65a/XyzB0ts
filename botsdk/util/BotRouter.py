@@ -1,15 +1,14 @@
 import asyncio
 import re
 
-from botsdk.BotRequest import BotRequest
+from botsdk.BotModule.MessageChain import MessageChain
 from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 from botsdk.util.BotPluginsManager import BotPluginsManager
+from botsdk.util.Error import asyncTraceBack
 from botsdk.util.HandlePacket import asyncHandlePacket
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.MessageChain import MessageChain
-from botsdk.util.MessageType import messageType
-from botsdk.util.Permission import getPermissionFromSystem, permissionCheck
-from botsdk.util.Permission import permissionCmp
+from botsdk.util.Permission import (getPermissionFromSystem, permissionCheck,
+                                    permissionCmp)
 
 
 class BotRouter:
@@ -21,14 +20,14 @@ class BotRouter:
         pass
 
     async def route(self, pluginsManager: BotPluginsManager,
-                    request: BotRequest,
+                    request,
                     concurrentModule: defaultBotConcurrentModule = None):
         pass
 
 
 class GeneralRouter(BotRouter):
     async def route(self, pluginsManager: BotPluginsManager,
-                    request: BotRequest,
+                    request,
                     concurrentModule: defaultBotConcurrentModule = None):
         for i in pluginsManager.getGeneralList():
             if (ret := await i[1](request)) is not None and ret is False:
@@ -39,7 +38,7 @@ class GeneralRouter(BotRouter):
 
 class TypeRouter(BotRouter):
     async def route(self, pluginsManager: BotPluginsManager,
-                    request: BotRequest,
+                    request,
                     concurrentModule: defaultBotConcurrentModule = None):
         if request.getType() in pluginsManager.getListener():
             listener = pluginsManager.getListener()
@@ -56,12 +55,12 @@ class TargetRouter(BotRouter):
              + "".join(["\\" + i for i in getConfig()["commandTarget"]])
              + r"])(\S+)( \S+)*$"))
 
+    @asyncTraceBack
     async def route(self, pluginsManager: BotPluginsManager,
-                    request: BotRequest,
+                    request,
                     concurrentModule: defaultBotConcurrentModule = None):
         # 类型判断与命令获取
-        if (request.getType() not in messageType
-                or (target := request.getFirstText()) is None):
+        if (target := request.getFirstText()) is None or not target:
             return False
         # 正则匹配
         reData = self.pattern.search(target)
@@ -74,8 +73,8 @@ class TargetRouter(BotRouter):
         if (ret := pluginsManager.getTarget(
                 request.getType(), target)) is not None:
             # 权限判断
-            if not permissionCheck(request, target):
-                await request.sendMessage(MessageChain().plain("权限限制"))
+            if not await permissionCheck(request, target):
+                await request.sendMessage("权限限制")
                 return
             controlData = {"size": 1, "wait": 0}
             if reData.group(1) is not None:
@@ -102,7 +101,8 @@ class TargetRouter(BotRouter):
                     request.getType(), target).__module__)
             # 路由
             if (concurrentModule is not None
-                    and ret.__self__.getCanDetach()):
+                    and ret.__self__.getCanDetach()
+                    and request.getBot().getCanDetach()):
                 # 多进程方式
                 concurrentModule.addTask(request.getData())
             else:

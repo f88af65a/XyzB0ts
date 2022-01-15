@@ -17,7 +17,7 @@ class handle(BotPlugin):
              + r"])(\S+)( \S+)*$"))
 
     async def switchCheck(self, request):
-        if (msg := request.getFirstText()) not in None and not msg:
+        if (msg := request.getFirstText()) is not None and not msg:
             return True
         reData = self.pattern.search(msg)
         # target获取
@@ -26,11 +26,11 @@ class handle(BotPlugin):
         target = reData.group(4)
         cookie = request.getCookie("switch")
         if ((target == "enable" or target == "disable")
-                and permissionCheck(request, target)):
+                and await permissionCheck(request, target)):
             if target == "enable":
                 cookie = True
             else:
                 cookie = False
             request.setCookie("switch", cookie)
-            request.sendMessage("修改完成")
+            await request.sendMessage("修改完成")
         return True if cookie else False

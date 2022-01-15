@@ -28,7 +28,7 @@ class plugin(BotPlugin):
             await request.sendMessage("缺少参数")
             return
         route = request.getPluginsManager()
-        if (re := route.getTarget(request.getType(), data[2])) is not None:
+        if (re := route.getTarget(request.getType(), data[1])) is not None:
             await request.sendMessage(re.__doc__)
         else:
             await request.sendMessage("不存在")

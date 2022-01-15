@@ -15,18 +15,19 @@ class plugin(BotPlugin):
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "format", self.setFormat)
         self.addTarget("GROUP:1", "format", self.setFormat)
+        self.addTarget("GroupMessage", "say", self.say)
+        self.addTarget("GROUP:1", "say", self.say)
         self.addFormat(self.doFormat)
         self.canDetach = True
 
     async def doFormat(self, request):
-        if request.getType() == "GroupMessage":
-            cookie = request.getCookie("format")
-            if cookie is None or request.getFirst("Plain") is None:
-                return
-            request.setFirstText(
-                    request.getFirstText()
-                    .format_map(formatDict(cookie))
-                )
+        if ((re := request.getFirstText()) is None or not re
+           or (cookie := request.getCookie("format")) is None):
+            return
+        request.setFirstText(
+                request.getFirstText()
+                .format_map(formatDict(cookie))
+            )
 
     async def setFormat(self, request):
         "/format [key=word]"
@@ -57,6 +58,9 @@ class plugin(BotPlugin):
         request.setCookie("format", cookie)
         await request.sendMessage(
             request.makeMessageChain().plain("修改完成"))
+
+    async def say(self, request):
+        await request.sendMessage(request.getFirstText())
 
 
 def handle(*args, **kwargs):

@@ -7,7 +7,6 @@ class plugin(BotPlugin):
         self.name = "rechat"
         self.addType("GroupMessage", self.rechat)
         self.addTarget("GroupMessage", "复读机", self.fuduji)
-        self.addTarget("GroupMessage", "say", self.say)
         self.reChatDict = {}
         self.canDetach = True
 
@@ -46,15 +45,6 @@ class plugin(BotPlugin):
             cookie["rechatState"] = newState
             request.setCookie("rechatState", cookie)
         await request.sendMessage("修改完成")
-
-    async def say(self, request):
-        chain = []
-        for i in request.getMessageChain()[1:]:
-            chain.append(dict())
-            for j in i:
-                if not (i["type"] == "Image" and j == "url"):
-                    chain[-1][j] = i[j]
-        await request.sendMessage(request.makeMessageChain(chain))
 
 
 def handle(*args, **kwargs):

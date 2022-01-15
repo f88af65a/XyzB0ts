@@ -27,9 +27,11 @@ class BotService:
             botType = getConfig()["account"][accountMark]["botType"]
             botPath = (getConfig()["botPath"] + botType).replace("/", ".")
             botName = getConfig()["account"][accountMark]["botName"]
+            debugPrint(f'''账号{botName}加载成功''', fromName="BotService")
             bot = getAttrFromModule(
                 botPath + ".Bot",
                 botType + "Bot")(getConfig()["account"][accountMark])
+            debugPrint(f'''账号{botName}初始化成功''', fromName="BotService")
             # 登录
             re = await bot.login()
             if re != 0:

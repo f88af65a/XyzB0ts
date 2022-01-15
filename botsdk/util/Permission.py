@@ -50,6 +50,18 @@ async def permissionCheck(request, target: str):
     return False
 
 
+async def roleCheck(request, roles):
+    requestRole = await request.getRoles() | {"*"}
+    userId = request.getUserId()
+    systemCookie = getConfig()["systemCookie"]
+    if userId in systemCookie["user"]:
+        requestRole |= set(systemCookie["user"][userId])
+    cookie = request.getCookie()
+    if "roles" in cookie and userId in cookie["roles"]:
+        requestRole |= set(cookie["roles"][userId])
+    return bool(requestRole & roles)
+
+
 def oldPermissionCheck(request, target: str):
     if (re := systemPermissionCheck(
             request, target, getConfig()["systemCookie"])) is not None:

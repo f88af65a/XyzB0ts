@@ -8,6 +8,8 @@ class plugin(BotPlugin):
         self.name = "hello"
         self.addTarget("GROUP:1", "hello", self.hello)
         self.addBotType("Kaiheila")
+        self.addTarget("GroupMessage", "hello", self.hello)
+        self.addBotType("Mirai")
         self.canDetach = True
 
     async def hello(self, request):

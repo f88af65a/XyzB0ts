@@ -7,7 +7,7 @@ class plugin(BotPlugin):
     def onLoad(self):
         self.name = "cookie"
         self.addTarget("GroupMessage", "cookie", self.cookie)
-        self.addTarget("Group:1", "cookie", self.cookie)
+        self.addTarget("GROUP:1", "cookie", self.cookie)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.canDetach = True

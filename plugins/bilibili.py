@@ -37,8 +37,9 @@ class plugin(BotPlugin):
                     "[文章][UP:{0}]\n".format(jdata["author"]["name"])
                     + jdata["title"])
             else:
-                msg.text("[视频][UP:{0}]\n".format(jdata["owner"]["name"])
-                         + jdata["title"])
+                if "owner" in jdata:
+                    msg.text("[视频][UP:{0}]\n".format(jdata["owner"]["name"])
+                             + jdata["title"])
                 if "pic" in jdata:
                     msg.image(url=jdata["pic"])
                     msg.text("\n")

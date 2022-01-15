@@ -1,6 +1,7 @@
 {
     "config": {
-        "ownerRole":"OWNER"
+        "ownerRole":"OWNER",
+        "sleepTime": 0.01
     },
     "api": {
         "verify": {

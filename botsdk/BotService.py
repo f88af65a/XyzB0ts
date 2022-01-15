@@ -61,6 +61,8 @@ class BotService:
                                 i, botRoute)),
                         self.loop
                         )
+                await asyncio.sleep(
+                    bot.getData()[0]["adapterConfig"]["config"]["sleepTime"])
 
     def run(self):
         self.loop = asyncio.new_event_loop()

@@ -47,4 +47,4 @@ class Timer:
             wakeList = self.getTimeOut()
             for i in wakeList:
                 asyncio.run_coroutine_threadsafe(loop, i)
-            await asyncio.sleep(thisTime + 0.001)
+            await asyncio.sleep(thisTime + 0.01)

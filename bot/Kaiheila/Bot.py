@@ -139,3 +139,6 @@ class KaiheilaBot(Bot):
 
     async def getServerRoles(self, serverId):
         return await self.adapter.guildrolelist(guild_id=serverId)
+
+    async def channelView(self, channelId):
+        return await self.adapter.channelview(target_id=channelId)

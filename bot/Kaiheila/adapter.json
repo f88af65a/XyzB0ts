@@ -29,6 +29,13 @@
                 "page":"int",
                 "page_size":"int"
             }
+        },
+        "channelview":{
+            "path":"/channel/view",
+            "method":"get",
+            "parameter":{
+                "target_id":"str"
+            }
         }
     }
 }

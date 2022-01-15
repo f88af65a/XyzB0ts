@@ -7,9 +7,9 @@ class plugin(BotPlugin):
     def onLoad(self):
         self.name = "saucenao"
         self.addTarget("GroupMessage", "saucenao", self.saucenao)
-        self.addTarget("GROUP:1", "saucenao", self.saucenao)
+        # self.addTarget("GROUP:1", "saucenao", self.saucenao)
         self.addBotType("Mirai")
-        self.addBotType("Kaiheila")
+        # self.addBotType("Kaiheila")
         self.saucenaoUrl = (
             "https://saucenao.com/search.php?db=999&"
             "output_type=2&numres=16&api_key={key}&url={url}"

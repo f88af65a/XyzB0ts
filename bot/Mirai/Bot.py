@@ -19,16 +19,20 @@ class MiraiBot(Bot):
     def getPath(self):
         return self.path
 
-    async def sendMessageById(
+    async def sendMessage(
             self, id: str, messageChain: MessageChain, quote=None):
-        messageType, target = id.split(":")
+        ids = id.split(":")
+        messageType = ids[1]
+        target = ids[2]
         target = int(target)
+        if type(messageChain) == str:
+            messageChain = self.makeMessageChain().text(messageChain)
         if messageType == "User":
             await self.sendFriendMessage(target, messageChain.getData(), quote)
         elif messageType == "Group":
             await self.sendGroupMessage(target, messageChain.getData(), quote)
         else:
-            raise BotException("Bot.sendMessageById遇到了不支持的类型")
+            raise BotException("Bot.sendMessage遇到了不支持的类型")
 
     async def login(self):
         if await self.verify(self.data["passwd"]) is None:

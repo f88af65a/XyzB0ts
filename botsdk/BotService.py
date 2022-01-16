@@ -53,16 +53,16 @@ class BotService:
                             fromName="BotService")
                         await asyncio.sleep(retrySize * 5)
                 for i in re[1]:
-                    asyncio.run_coroutine_threadsafe(
-                        botRoute.route(
-                            getAttrFromModule(
+                    request = getAttrFromModule(
                                 botPath + ".Request",
                                 botType + "Request")(
                                 {"bot": bot.getData(),
                                     "uuid": uuid.uuid4()},
-                                i, botRoute)),
-                        self.loop
-                        )
+                                i, botRoute)
+                    if ((canRoute := await bot.filter(request))
+                            or canRoute is None):
+                        asyncio.run_coroutine_threadsafe(
+                            botRoute.route(request), self.loop)
                 await asyncio.sleep(
                     bot.getData()[0]["adapterConfig"]["config"]["sleepTime"])
 

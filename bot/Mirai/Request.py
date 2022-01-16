@@ -102,18 +102,8 @@ class MiraiRequest(Request):
         return self["sender"]["group"]["permission"]
 
     async def sendMessage(self, msgChain, quote=None):
-        if type(msgChain) is str:
-            msgChain = self.makeMessageChain().plain(msgChain)
-        if self.getType() == "FriendMessage":
-            await self.getBot().sendFriendMessage(
-                int(self.getSenderId()), msgChain.getData(), quote)
-        elif self.getType() == "GroupMessage":
-            await self.getBot().sendGroupMessage(
-                int(self.getGroupId()), msgChain.getData(), quote),
-        elif self.getType() == "TempMessage":
-            await self.getBot().sendTempMessage(
-                int(self.getGroupId()), int(self.getSenderId()),
-                msgChain.getData(), quote)
+        await self.getBot().sendMessage(
+            self.getId(), msgChain, quote)
 
     async def sendNudge(self, target):
         nudgeType = None

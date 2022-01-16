@@ -25,12 +25,18 @@ class handle(BotPlugin):
             return True
         target = reData.group(4)
         cookie = request.getCookie("switch")
+        if not type(cookie) is dict:
+            cookie = dict()
         if ((target == "enable" or target == "disable")
-                and await permissionCheck(request, target)):
+                and await permissionCheck(request, target)
+                and (targetBot := request.getFirstText().split(" "))
+                and len(targetBot) > 1):
+            targetBot = targetBot[1]
             if target == "enable":
-                cookie = True
+                cookie[targetBot] = True
             else:
-                cookie = False
+                cookie[targetBot] = False
             request.setCookie("switch", cookie)
             await request.sendMessage("修改完成")
-        return True if cookie else False
+        botName = request.getBot().getBotName()
+        return True if (botName in cookie and cookie[botName]) else False

@@ -1,5 +1,6 @@
 import asyncio
 import time
+import json
 
 from botsdk.BotModule.Bot import Bot
 from botsdk.util.Error import debugPrint
@@ -88,6 +89,7 @@ class KaiheilaBot(Bot):
             self.sessionId = re["d"]["session_id"]
             self.state = 3
             debugPrint(self.getBotName() + "连接成功")
+            self.data["me"] = (await self.adapter.userme())["data"]
         return (0, [])
 
     async def connectedState(self):
@@ -145,3 +147,33 @@ class KaiheilaBot(Bot):
 
     async def channelView(self, channelId):
         return await self.adapter.channelview(target_id=channelId)
+
+    async def sendMessage(self, id, messageChain):
+        ids = id.split(":")
+        sendMethod = None
+        targetId = ids[-1]
+        if ids[1] == "Group":
+            sendMethod = self.sendGroupMessage
+        elif ids[1] == "User":
+            sendMethod = self.sendFriendMessage
+        if sendMethod is None:
+            return
+        if type(messageChain) == str:
+            await sendMethod(target_id=targetId, content=messageChain)
+        else:
+            await sendMethod(
+                type=10, target_id=targetId,
+                content=json.dumps(
+                    [
+                        {
+                            "type": "card",
+                            "theme": "secondary",
+                            "size": "lg",
+                            "modules": messageChain.getData()
+                        }
+                    ]
+                )
+            )
+
+    async def filter(self, request):
+        return not self.data["me"]["id"] == request["author_id"]

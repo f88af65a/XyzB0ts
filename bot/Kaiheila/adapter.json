@@ -48,6 +48,13 @@
             "parameter": {
                 "target_id": "str"
             }
+        },
+        "userme": {
+            "path": "/user/me",
+            "method": "get",
+            "parameter": {
+
+            }
         }
     }
 }

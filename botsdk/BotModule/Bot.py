@@ -50,6 +50,9 @@ class Bot:
     def getBotType(self):
         return self.botType
 
+    def getServiceType(self):
+        return self.data["serviceType"]
+
     def makeMessageChain(self, data=None):
         return getAttrFromModule(
             (getConfig()["botPath"]
@@ -81,4 +84,12 @@ class Bot:
 
     # 获取消息
     async def fetchMessage(self):
+        pass
+
+    # 发送消息接口
+    async def sendMessage(self, messageChain):
+        pass
+
+    # 路由前过滤
+    async def filter(self, request) -> bool:
         pass

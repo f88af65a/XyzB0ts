@@ -70,6 +70,10 @@ class Request(dict):
     def getFirstTextSplit(self):
         return self.getFirstText().split(" ")
 
+    async def sendMessage(self, messageChain):
+        await self.getBot().sendMessage(
+            self.getId(), messageChain)
+
     # needOverRide
     # 获取角色
     def getRoles(self):
@@ -89,10 +93,6 @@ class Request(dict):
 
     # 修改消息的首个字符串
     def setFirstText(self):
-        pass
-
-    # 发送消息
-    def sendMessage(self, messageChain):
         pass
 
     # 获取消息类型

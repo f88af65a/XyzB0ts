@@ -26,11 +26,15 @@ class handle(BotPlugin):
         target = reData.group(4)
         cookie = request.getCookie("switch")
         if ((target == "enable" or target == "disable")
-                and await permissionCheck(request, target)):
+                and await permissionCheck(request, target)
+                and (targetBot := request.getFirstText().split(" "))
+                and len(targetBot) > 1):
+            if targetBot not in cookie:
+                cookie[targetBot] = False
             if target == "enable":
-                cookie = True
+                cookie[targetBot] = True
             else:
-                cookie = False
+                cookie[targetBot] = False
             request.setCookie("switch", cookie)
             await request.sendMessage("修改完成")
         return True if cookie else False

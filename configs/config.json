@@ -37,7 +37,8 @@
 			"load": ["System:Owner"],
 			"reload": ["System:Owner"],
 			"unload": ["System:Owner"],
-			"config": ["System:Owner"]
+			"config": ["System:Owner"],
+			"say": ["System:Owner"]
 		},
 		"user": {}
 	}

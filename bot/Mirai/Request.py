@@ -103,7 +103,7 @@ class MiraiRequest(Request):
 
     async def sendMessage(self, msgChain, quote=None):
         await self.getBot().sendMessage(
-            self, self.getId(), msgChain, quote=quote)
+            self.getId(), msgChain, quote)
 
     async def sendNudge(self, target):
         nudgeType = None

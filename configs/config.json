@@ -19,6 +19,7 @@
 		{
 			"botName": "",
 			"botType": "Mirai",
+			"serviceType": "QQ",
 			"path": "",
 			"qq": "",
 			"passwd": ""
@@ -26,6 +27,7 @@
 		{
 			"botName": "",
 			"botType": "Kaiheila",
+			"serviceType": "Kaiheila",
 			"path": "https://www.kaiheila.cn/api/v3",
 			"authorizationType": "",
 			"token": ""

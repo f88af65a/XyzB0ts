@@ -50,6 +50,9 @@ class Bot:
     def getBotType(self):
         return self.botType
 
+    def getServiceType(self):
+        return self.data["serviceType"]
+
     def makeMessageChain(self, data=None):
         return getAttrFromModule(
             (getConfig()["botPath"]

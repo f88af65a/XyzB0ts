@@ -89,3 +89,7 @@ class Bot:
     # 发送消息接口
     async def sendMessage(self, messageChain):
         pass
+
+    # 路由前过滤
+    async def filter(self, request) -> bool:
+        pass

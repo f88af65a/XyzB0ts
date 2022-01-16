@@ -82,3 +82,7 @@ class Bot:
     # 获取消息
     async def fetchMessage(self):
         pass
+
+    # 发送消息接口
+    async def sendMessage(self, messageChain):
+        pass

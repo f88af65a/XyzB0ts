@@ -24,10 +24,13 @@ class plugin(BotPlugin):
         if ((re := request.getFirstText()) is None or not re
            or (cookie := request.getCookie("format")) is None):
             return
-        request.setFirstText(
-                request.getFirstText()
-                .format_map(formatDict(cookie))
-            )
+        try:
+            request.setFirstText(
+                    request.getFirstText()
+                    .format_map(formatDict(cookie))
+                )
+        except Exception:
+            pass
 
     async def setFormat(self, request):
         "/format [key=word]"

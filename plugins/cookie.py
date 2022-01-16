@@ -29,15 +29,16 @@ class plugin(BotPlugin):
         "acookie ID [new cookie]"
         data = request.getFirstText().split(" ")
         if len(data) < 2:
-            request.sendMessage("缺少参数")
+            await request.sendMessage("缺少参数")
         elif len(data) == 2:
-            request.sendMessage(getCookie(data[1]))
+            await request.sendMessage(str(getCookie(data[1])))
         else:
             try:
                 newCookie = data[2].split("=")
                 setCookie(data[1], newCookie[0], json.loads(newCookie[1]))
+                await request.sendMessage("修改完成")
             except Exception:
-                request.sendMessage("参数错误")
+                await request.sendMessage("参数错误")
 
 
 def handle(*args, **kwargs):

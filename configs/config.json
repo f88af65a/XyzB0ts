@@ -40,7 +40,9 @@
 			"reload": ["System:Owner"],
 			"unload": ["System:Owner"],
 			"config": ["System:Owner"],
-			"say": ["System:Owner"]
+			"say": ["System:Owner"],
+			"id": ["System:Owner"],
+			"acookie": ["System:Owner"]
 		},
 		"user": {}
 	}

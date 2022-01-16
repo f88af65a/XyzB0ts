@@ -89,7 +89,7 @@ class KaiheilaBot(Bot):
             self.sessionId = re["d"]["session_id"]
             self.state = 3
             debugPrint(self.getBotName() + "连接成功")
-            self.data["me"] = await self.adapter.userme()["data"]
+            self.data["me"] = (await self.adapter.userme())["data"]
         return (0, [])
 
     async def connectedState(self):

@@ -51,7 +51,7 @@
         },
         "userme": {
             "path": "/user/me",
-            "meth": "get",
+            "method": "get",
             "parameter": {
 
             }

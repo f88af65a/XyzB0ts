@@ -38,5 +38,5 @@ class handle(BotPlugin):
                 cookie[targetBot] = False
             request.setCookie("switch", cookie)
             await request.sendMessage("修改完成")
-        botType = request.getBot().getBotType()
-        return True if (botType in cookie and cookie[botType]) else False
+        botName = request.getBot().getBotName()
+        return True if (botName in cookie and cookie[botName]) else False

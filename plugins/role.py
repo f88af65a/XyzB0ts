@@ -24,7 +24,6 @@ class plugin(BotPlugin):
         cookie = request.getCookie("roles")
         if cookie is None:
             cookie = dict()
-        data[2] = f"""{request.getBot().getBotType()}:User:{data[2]}"""
         if data[2] not in cookie:
             cookie[data[2]] = []
         if data[1] == "ADD":

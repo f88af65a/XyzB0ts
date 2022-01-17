@@ -86,12 +86,14 @@ class plugin(BotPlugin):
         re = None
         if "on" in data:
             re = response[random.randint(0, len(response) - 1)]
-        else:
+        elif "sort" in data:
             response.sort(
                 key=lambda i: i["total_view"] + i["total_bookmarks"] * 20,
                 reverse=True)
             re = response[random.randint(
                 0, max(math.floor(len(response) * 0.5), 1))]
+        else:
+            re = response[random.randint(0, len(response) - 1)]
         msg = request.makeMessageChain().text(
             (f'''搜索到{len(response)}个作品\n作者:{re["user"]["name"]}\n标题:'''
              f'''{re["title"]}\n链接:www.pixiv.net/artworks/{re["id"]}\nVIEW:'''

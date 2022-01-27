@@ -19,10 +19,11 @@ class plugin(BotPlugin):
         self.thread = Thread(
             target=self.discordThreadFunc,
             args=(self.queue, self.stopQueue, self.getConfig()["token"]))
+        self.thread.run()
         bot.getTimer().addTimer(
-            plugin.checkQueue, (
+            plugin.checkQueue, [
                 bot, self.queue,
-                self.stopQueue, bot.getTimer()), 15)
+                self.stopQueue, bot.getTimer()], 15)
 
     def onUnload(self):
         if self.queue is not None:
@@ -37,9 +38,9 @@ class plugin(BotPlugin):
             if i.split(":")[0] == bot.getServiceType():
                 await bot.sendMessage(i, messageChain)
 
-    async def checkQueue(bot, queue, stopQueue, timer, id):
+    async def checkQueue(timerId, bot, queue, stopQueue, timer):
         if not stopQueue.empty():
-            timer.delTimer(id)
+            timer.delTimer(timerId)
         while not queue.empty():
             data = queue.get()
             plugin.toNotify(
@@ -66,7 +67,7 @@ class plugin(BotPlugin):
                 content = m['content']
                 queue.put(
                     [guildID, channelID, username, discriminator, content])
-        bot.gateway.run()
+        bot.gateway.run(auto_reconnect=True)
 
 
 def handle(*args, **kwargs):

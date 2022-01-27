@@ -10,13 +10,13 @@ class Timer:
         self.d = dict()
 
     # ratio:间隔,runSize:次数
-    def addTimer(self, func, args, ratio=1, runSize=-1):
+    def addTimer(self, func, args: list, ratio=1, runSize=-1):
         if ratio == 0:
             raise
         while (id := uuid.uuid4()) not in self.d:
             pass
         thisTime = time.time()
-        self.d[id] = (thisTime + ratio, func, ratio, runSize, args + [id])
+        self.d[id] = (thisTime + ratio, func, ratio, runSize, [id] + args)
         heapq.heappush(self.timerList, self.d[id])
 
     def delTimer(self, id):

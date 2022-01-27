@@ -20,9 +20,9 @@ class plugin(BotPlugin):
             target=self.discordThreadFunc,
             args=(self.queue, self.stopQueue, self.getConfig()["token"]))
         bot.getTimer().addTimer(
-            plugin.checkQueue(
+            plugin.checkQueue, (
                 bot, self.queue,
-                self.stopQueue, bot.getTimer()))
+                self.stopQueue, bot.getTimer()), 15)
 
     def onUnload(self):
         if self.queue is not None:

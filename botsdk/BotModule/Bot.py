@@ -29,6 +29,12 @@ class Bot:
     def __del__(self):
         self.destroy()
 
+    def setTimer(self, timer):
+        self.timer = timer
+
+    def getTimer(self):
+        return self.timer
+
     def setHandleModuleName(self, name):
         self.data["handleModuleName"] = name
 

@@ -31,6 +31,7 @@ class BotService:
             bot = getAttrFromModule(
                 botPath + ".Bot",
                 botType + "Bot")(getConfig()["account"][accountMark])
+            bot.setTimer(self.timer)
             debugPrint(f'''账号{botName}初始化成功''', fromName="BotService")
             # 登录
             re = await bot.login()

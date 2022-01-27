@@ -9,6 +9,7 @@ class Timer:
         self.timerList = list()
         self.d = dict()
 
+    # ratio:间隔,runSize:次数
     def addTimer(self, func, ratio=1, runSize=-1):
         if ratio == 0:
             raise
@@ -31,7 +32,7 @@ class Timer:
         re = []
         while len(self.timerList) > 0 and self.timerList[0][0] > thisTime:
             timer = heapq.heappop(self.timerList)
-            re.append(timer[1])
+            re.append([timer[1], timer[4]])
             if timer[3] != -1:
                 timer[3] -= 1
             if timer[3] != 0:
@@ -46,5 +47,5 @@ class Timer:
             thisTime = time.time()
             wakeList = self.getTimeOut()
             for i in wakeList:
-                asyncio.run_coroutine_threadsafe(loop, i)
+                asyncio.run_coroutine_threadsafe(loop, i[0](i[1]))
             await asyncio.sleep(thisTime + 0.01)

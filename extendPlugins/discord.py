@@ -17,9 +17,9 @@ class plugin(BotPlugin):
         self.queue = Queue()
         self.stopQueue = Queue()
         self.thread = Thread(
-            target=self.discordThreadFunc,
+            target=plugin.discordThreadFunc,
             args=(self.queue, self.stopQueue, self.getConfig()["token"]))
-        self.thread.run()
+        self.thread.start()
         bot.getTimer().addTimer(
             plugin.checkQueue, [
                 bot, self.queue,

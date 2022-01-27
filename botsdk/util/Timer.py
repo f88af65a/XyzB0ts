@@ -13,7 +13,7 @@ class Timer:
     def addTimer(self, func, args: list, ratio=1, runSize=-1):
         if ratio == 0:
             raise
-        while (id := uuid.uuid4()) not in self.d:
+        while (id := uuid.uuid4()) in self.d:
             pass
         thisTime = time.time()
         self.d[id] = (thisTime + ratio, func, ratio, runSize, [id] + args)

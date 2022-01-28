@@ -13,11 +13,11 @@ class Timer:
     def addTimer(self, func, args: list, ratio=1, runSize=-1):
         if ratio == 0:
             raise
-        while (id := uuid.uuid4()) in self.d:
+        while (uid := uuid.uuid4()) in self.d:
             pass
         thisTime = time.time()
-        self.d[id] = (thisTime + ratio, func, ratio, runSize, [id] + args)
-        heapq.heappush(self.timerList, self.d[id])
+        self.d[uid] = [thisTime + ratio, func, ratio, runSize, [uid] + args]
+        heapq.heappush(self.timerList, self.d[uid])
 
     def delTimer(self, id):
         for i in range(0, len(self.timerList)):
@@ -30,13 +30,14 @@ class Timer:
     def getTimeOut(self):
         thisTime = time.time()
         re = []
-        while len(self.timerList) > 0 and self.timerList[0][0] > thisTime:
+        while len(self.timerList) > 0 and self.timerList[0][0] < thisTime:
             timer = heapq.heappop(self.timerList)
             re.append([timer[1], timer[4]])
             if timer[3] != -1:
                 timer[3] -= 1
             if timer[3] != 0:
                 timer[0] += timer[2]
+                heapq.heappush(self.timerList, timer)
             else:
                 del self.d[timer[4]]
         return re
@@ -47,5 +48,5 @@ class Timer:
             thisTime = time.time()
             wakeList = self.getTimeOut()
             for i in wakeList:
-                asyncio.run_coroutine_threadsafe(loop, i[0](*i[1]))
-            await asyncio.sleep(thisTime + 0.01)
+                asyncio.run_coroutine_threadsafe(i[0](*i[1]), loop)
+            await asyncio.sleep(0.01 - (time.time() - thisTime))

@@ -23,7 +23,7 @@ class plugin(BotPlugin):
 
     def init(self, bot):
         self.url = self.getConfig()["hibiapiUrl"]
-        self.proxy = self.getConfig()["pixivProxy"]
+        self.proxy = self.getConfig()["proxy"]
 
     async def search(self, request):
         data = request.getFirstTextSplit()
@@ -113,9 +113,9 @@ class plugin(BotPlugin):
             imgType = re["image_urls"]["square_medium"]
         if imgType is None:
             await request.sendMessage(msg)
+        '''
         imgType = imgType.replace("https", "http")
         imgType = imgType.replace("i.pximg.net", self.proxy)
-        '''
         await request.sendMessage(
             msg.text("\n").image(url=imgType.replace("https", "http")))
         '''
@@ -126,6 +126,7 @@ class plugin(BotPlugin):
                     " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0."
                     "4606.61 Safari/537.36"),
                 'Referer': 'https://www.pixiv.net/'},
+            proxy=self.proxy,
             byte=True)
         if img is not None and len(img) != 0:
             fPath = (getConfig()["localFilePath"]

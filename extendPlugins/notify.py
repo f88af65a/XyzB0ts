@@ -34,7 +34,7 @@ class plugin(BotPlugin):
         elif data[1] == "remove":
             if data[2] in cookie:
                 cookie.remove(data[2])
-                getNotifyModule().removeListen(data[2])
+                getNotifyModule().removeListen(request.getId(), data[2])
                 request.setCookie("notify", cookie)
         else:
             await request.sendMessage(self.manageNotify.__doc__)

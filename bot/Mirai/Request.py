@@ -120,7 +120,9 @@ class MiraiRequest(Request):
         self.getBot().recall(int(target))
 
     async def getRoles(self):
-        return {self["sender"]["permission"]}
+        if "permission" in self["sender"]:
+            return {self["sender"]["permission"]}
+        return set()
 
     def getUserId(self):
         return "QQ:User:" + self.getSenderId()

@@ -20,17 +20,29 @@ class MiraiBot(Bot):
         return self.path
 
     async def sendMessage(
-            self, id: str, messageChain: MessageChain, quote=None):
+            self, id: str, messageChain: MessageChain,
+            quote=None, request=None):
         ids = id.split(":")
-        messageType = ids[1]
+        if request is None:
+            if ids[1] == "User":
+                messageType = "FriendMessage"
+            else:
+                messageType = "GroupMessage"
+        else:
+            messageType = request.getType()
         target = ids[2]
         target = int(target)
         if type(messageChain) == str:
             messageChain = self.makeMessageChain().text(messageChain)
-        if messageType == "User":
+        if messageType == "FriendMessage":
             await self.sendFriendMessage(target, messageChain.getData(), quote)
-        elif messageType == "Group":
+        elif messageType == "GroupMessage":
             await self.sendGroupMessage(target, messageChain.getData(), quote)
+        elif messageType == "TempMessage":
+            await self.sendTempMessage(
+                int(self["sender"]["group"]["id"]),
+                int(request.getSenderId()),
+                messageChain.getData(), quote)
         else:
             raise BotException("Bot.sendMessage遇到了不支持的类型")
 

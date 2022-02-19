@@ -11,7 +11,7 @@ class MiraiRequest(Request):
              "TempMessage", "StrangerMessage",
              "OtherClientMessage"})
         self.signalMessage = {
-            "FriendMessage", "TempMessage"
+            "FriendMessage"
         }
 
     def getSenderId(self):
@@ -58,7 +58,7 @@ class MiraiRequest(Request):
         return self["type"]
 
     def getId(self):
-        if self["type"] == "GroupMessage":
+        if self["type"] == "GroupMessage" or self["type"] == "TempMessage":
             return f"""QQ:Group:{self["sender"]["group"]["id"]}"""
         else:
             return f'''QQ:User:{self["sender"]["id"]}'''

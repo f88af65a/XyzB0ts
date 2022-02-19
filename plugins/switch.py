@@ -15,11 +15,10 @@ class handle(BotPlugin):
             (r"^(\[(\S*=\S*)&?\])?(["
              + "".join(["\\" + i for i in getConfig()["commandTarget"]])
              + r"])(\S+)( \S+)*$"))
-        self.needCheck = {"GROUP:1", "GroupMessage"}
 
     async def switchCheck(self, request):
         if (((msg := request.getFirstText()) is None and not msg)
-                or (request.getType() not in self.needCheck)):
+                or request.isSingle()):
             return True
         reData = self.pattern.search(msg)
         # target获取

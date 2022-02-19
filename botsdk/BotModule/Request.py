@@ -98,3 +98,6 @@ class Request(dict):
     # 获取消息类型
     def getType(self):
         pass
+
+    def isSingle(self):
+        pass

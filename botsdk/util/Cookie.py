@@ -11,6 +11,11 @@ elif driver == "SqliteCookie":
     import sqlite3
 
 
+'''
+系统部分信息会储存于System中
+'''
+
+
 class Cookie:
     def getAllCookie(self):
         pass

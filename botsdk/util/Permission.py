@@ -1,4 +1,4 @@
-from botsdk.util.Cookie import getCookieDriver
+from botsdk.util.Cookie import getCookieDriver, getCookie
 from botsdk.util.JsonConfig import getConfig
 
 '''
@@ -11,8 +11,10 @@ from botsdk.util.JsonConfig import getConfig
 '''
 
 
-async def permissionCheck(request, target: str):
-    requestRole = await request.getRoles() | {"*"}
+async def permissionCheck(
+        request, target: str,
+        add: set = set(), need: set = set()):
+    requestRole = await request.getRoles() | {"*"} | add
     userId = request.getUserId()
     systemCookie = getConfig()["systemCookie"]
     if userId in systemCookie["user"]:
@@ -30,6 +32,10 @@ async def permissionCheck(request, target: str):
     if "roles" in cookie and userId in cookie["roles"]:
         requestRole |= set(cookie["roles"][userId])
     childs = request.getId().split(":")[3:]
+    if request.isSingle():
+        cookie = getCookie("System", "permission")
+        if not cookie:
+            cookie = {"permission": {"*": "*"}}
     if "permission" not in cookie:
         return False
     cookie = cookie["permission"]

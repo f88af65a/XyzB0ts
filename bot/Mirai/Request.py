@@ -10,6 +10,9 @@ class MiraiRequest(Request):
             {"FriendMessage", "GroupMessage",
              "TempMessage", "StrangerMessage",
              "OtherClientMessage"})
+        self.signalMessage = {
+            "FriendMessage", "TempMessage"
+        }
 
     def getSenderId(self):
         return str(self["sender"]["id"])
@@ -126,3 +129,6 @@ class MiraiRequest(Request):
 
     def getUserId(self):
         return "QQ:User:" + self.getSenderId()
+
+    def isSingle(self):
+        return self.getType() in self.signalMessage

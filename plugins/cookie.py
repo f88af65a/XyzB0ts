@@ -11,10 +11,13 @@ class plugin(BotPlugin):
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "cookie", self.cookie)
         self.addTarget("GROUP:1", "cookie", self.cookie)
+        self.addTarget("FriendMessage", "cookie", self.cookie)
         self.addTarget("GroupMessage", "id", self.id)
         self.addTarget("GROUP:1", "id", self.id)
+        self.addTarget("FriendMessage", "id", self.id)
         self.addTarget("GroupMessage", "acookie", self.adminCookieControl)
         self.addTarget("GROUP:1", "acookie", self.adminCookieControl)
+        self.addTarget("FriendMessage", "acookie", self.adminCookieControl)
         self.canDetach = True
 
     async def cookie(self, request):

@@ -36,8 +36,7 @@ class plugin(BotPlugin):
         "/format [key=word]"
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            await request.sendMessage(
-                request.makeMessageChain().plain("参数呢"))
+            await request.sendMessage("参数呢")
             return
         data = data[1].split(";")
         for i in range(len(data)):
@@ -46,8 +45,7 @@ class plugin(BotPlugin):
                     request.makeMessageChain().plain("格式有误"))
             data[i] = data[i].split("=")
             if len(data[i]) != 2 or data[i][0] == "":
-                await request.sendMessage(
-                    request.makeMessageChain().plain("格式有误"))
+                await request.sendMessage("格式有误")
                 return
         cookie = request.getCookie("format")
         if cookie is None:
@@ -59,8 +57,7 @@ class plugin(BotPlugin):
             else:
                 cookie[i[0]] = i[1]
         request.setCookie("format", cookie)
-        await request.sendMessage(
-            request.makeMessageChain().plain("修改完成"))
+        await request.sendMessage("修改完成")
 
     async def say(self, request):
         await request.sendMessage(request.getFirstText())

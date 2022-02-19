@@ -19,7 +19,7 @@ class handle(BotPlugin):
             return
         for i in keyWord:
             if i in msg:
-                request.sendMessage(cookie[i])
+                await request.sendMessage(cookie[i])
 
     async def qaSet(self, request):
         "q&a [set/del] [关键字] [遇到关键字时触发的消息]"
@@ -35,9 +35,13 @@ class handle(BotPlugin):
         if len(data) == 4 and data[1] == "set":
             cookie[data[2]] = data[3]
             request.setCookie("q&a", cookie)
+            await request.sendMessage("设置成功")
         elif len(data) == 3 and data[1] == "del":
             if data[2] in cookie:
                 del cookie[data[2]]
                 request.setCookie("q&a", cookie)
+                await request.sendMessage("删除成功")
+                return
+            await request.sendMessage("不存在")
         else:
             await request.sendMessage("q&a [add/del] [关键字] [遇到关键字时触发的消息]")

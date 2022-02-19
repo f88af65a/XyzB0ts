@@ -20,12 +20,13 @@ class handle(BotPlugin):
         for i in keyWord:
             if i in msg:
                 await request.sendMessage(cookie[i])
+                break
 
     async def qaSet(self, request):
         "q&a [set/del] [关键字] [遇到关键字时触发的消息]"
         data = request.getFirstTextSplit()
         if len(data) == 1:
-            await request.sendMessage("q&a [add/del] [关键字] [遇到关键字时触发的消息]")
+            await request.sendMessage(self.qaSet.__doc__)
             return
         if len(data) > 4:
             data = data[0:3] + [" ".join(data[4:])]

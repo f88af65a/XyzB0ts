@@ -36,7 +36,7 @@ class plugin(BotPlugin):
         "/format [key=word]"
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            await request.sendMessage("参数呢")
+            await request.sendMessage(self.setFormat.__doc__)
             return
         data = data[1].split(";")
         for i in range(len(data)):

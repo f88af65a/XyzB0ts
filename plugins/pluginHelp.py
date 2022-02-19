@@ -22,32 +22,34 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:1", "targets", self.targets)
 
     async def helper(self, request):
-        """/help 命令名"""
+        """help 命令名"""
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            await request.sendMessage("缺少参数")
+            await request.sendMessage("help 命令名")
             return
         route = request.getPluginsManager()
         if (re := route.getTarget(request.getType(), data[1])) is not None:
             await request.sendMessage(re.__doc__)
         else:
-            await request.sendMessage("不存在")
+            await request.sendMessage("命令不存在")
 
     async def load(self, request):
+        '''load 插件名'''
         data = request.getFirstTextSplit()
         route = request.getPluginsManager()
         if len(data) < 2:
-            await request.sendMessage("缺少参数")
+            await request.sendMessage(self.load.__doc__)
             return
         path = data[1]
         re = route.loadPlugin(getConfig()["pluginsPath"] + path)
         await request.sendMessage("加载成功" if re else "加载失败")
 
     async def reload(self, request):
+        '''load 插件名'''
         data = request.getFirstTextSplit()
         route = request.getPluginsManager()
         if len(data) < 2:
-            await request.sendMessage("缺少参数")
+            await request.sendMessage(self.reload.__doc__)
             return
         targetPlugin = data[1]
         allName = route.getAllPluginName()
@@ -58,10 +60,11 @@ class plugin(BotPlugin):
         await request.sendMessage("加载成功" if re else "加载失败")
 
     async def unload(self, request):
+        '''unload 插件名'''
         data = request.getFirstTextSplit()
         route = request.getPluginsManager()
         if len(data) < 2:
-            await request.sendMessage("缺少参数")
+            await request.sendMessage(self.unload.__doc__)
             return
         targetPlugin = data[1]
         allName = route.getAllPluginName()
@@ -72,10 +75,12 @@ class plugin(BotPlugin):
         await request.sendGroupMessage("卸载成功")
 
     async def plugins(self, request):
+        '''plugins #打印所有插件'''
         route = request.getPluginsManager()
         await request.sendMessage(str(route.getAllPluginName()))
 
     async def targets(self, request):
+        '''targets #打印所有指令'''
         route = request.getPluginsManager()
         allName = route.getAllPluginName()
         re = []

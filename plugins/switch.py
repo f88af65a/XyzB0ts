@@ -36,11 +36,9 @@ class handle(BotPlugin):
             targetBot = targetBot[1]
             if target == "enable":
                 cookie[targetBot] = True
-                request.setCookie("switch", cookie)
-                await request.sendMessage("修改完成")
             else:
                 cookie[targetBot] = False
-                request.setCookie("switch", cookie)
-                await request.sendMessage("修改完成")
+            request.setCookie("switch", cookie)
+            await request.sendMessage("修改完成")
         botName = request.getBot().getBotName()
         return True if (botName in cookie and cookie[botName]) else False

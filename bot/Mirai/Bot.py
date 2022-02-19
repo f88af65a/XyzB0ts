@@ -40,7 +40,7 @@ class MiraiBot(Bot):
             await self.sendGroupMessage(target, messageChain.getData(), quote)
         elif messageType == "TempMessage":
             await self.sendTempMessage(
-                int(self["sender"]["group"]["id"]),
+                int(request["sender"]["group"]["id"]),
                 int(request.getSenderId()),
                 messageChain.getData(), quote)
         else:
@@ -107,13 +107,14 @@ class MiraiBot(Bot):
     async def sendTempMessage(
             self, targetGroup: int, targetQq: int,
             messageChain: list, quote=None):
-        return await self.adapter.sendTempMessage(
-            sessionKey=self.sessionKey,
-            qq=targetQq,
-            group=targetGroup,
-            messageChain=messageChain,
-            quote=quote
-        )
+        kw = dict()
+        kw["sessionKey"] = self.sessionKey
+        kw["qq"] = targetQq
+        kw["group"] = targetGroup
+        kw["messageChain"] = messageChain
+        if quote:
+            kw["quote"] = quote
+        return await self.adapter.sendTempMessage(**kw)
 
     async def sendNudge(self, target: int, subject: int, kind: str):
         return await self.adapter.sendNudge(

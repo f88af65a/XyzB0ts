@@ -70,9 +70,9 @@ class Request(dict):
     def getFirstTextSplit(self):
         return self.getFirstText().split(" ")
 
-    async def sendMessage(self, messageChain):
+    async def sendMessage(self, messageChain, request):
         await self.getBot().sendMessage(
-            self.getId(), messageChain)
+            self.getId(), messageChain, request)
 
     # needOverRide
     # 获取角色

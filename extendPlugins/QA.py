@@ -23,7 +23,7 @@ class handle(BotPlugin):
                 break
 
     async def qaSet(self, request):
-        "q&a [set/del] [关键字] [遇到关键字时触发的消息]"
+        "q&a [set/del/all] [关键字] [遇到关键字时触发的消息]"
         data = request.getFirstTextSplit()
         if len(data) == 1:
             await request.sendMessage(self.qaSet.__doc__)
@@ -33,7 +33,9 @@ class handle(BotPlugin):
         cookie = request.getCookie("q&a")
         if cookie is None:
             cookie = dict()
-        if len(data) == 4 and data[1] == "set":
+        if len(data) == 2 and data[1] == "all":
+            await request.sendMessage(",".join(list(cookie.keys())))
+        elif len(data) == 4 and data[1] == "set":
             cookie[data[2]] = data[3]
             request.setCookie("q&a", cookie)
             await request.sendMessage("设置成功")

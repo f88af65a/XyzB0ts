@@ -10,13 +10,13 @@ class handle(BotPlugin):
         self.canDetach = True
 
     async def checkMessage(self, request):
+        msg = request.getFirstText()
+        if not msg or not request.isMessage():
+            return
         cookie = request.getCookie("q&a")
         if cookie is None:
             return
         keyWord = list(cookie.keys())
-        msg = request.getFirstText()
-        if not msg or not request.isMessage():
-            return
         for i in keyWord:
             if i in msg:
                 await request.sendMessage(cookie[i])

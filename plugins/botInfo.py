@@ -10,9 +10,9 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:1", "bot", self.botinfo)
         self.canDetach = True
 
-    def botinfo(self, request):
-        request.sendMessage(request.makeMessageChain().plain(
-            "来自XyzB0ts\n项目地址https://github.com/f88af65a/XyzB0ts"))
+    async def botinfo(self, request):
+        request.sendMessage(
+            "来自XyzB0ts\n项目地址https://github.com/f88af65a/XyzB0ts")
 
 
 def handle(*args, **kwargs):

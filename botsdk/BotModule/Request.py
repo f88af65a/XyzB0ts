@@ -101,3 +101,6 @@ class Request(dict):
 
     def isSingle(self):
         pass
+
+    def isMessage(self):
+        pass

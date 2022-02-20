@@ -132,3 +132,6 @@ class MiraiRequest(Request):
 
     def isSingle(self):
         return self.getType() in self.signalMessage
+
+    def isMessage(self):
+        return self.getType() in self.self.messageType

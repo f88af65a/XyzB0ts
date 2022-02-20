@@ -15,7 +15,7 @@ class handle(BotPlugin):
             return
         keyWord = list(cookie.keys())
         msg = request.getFirstText()
-        if not msg:
+        if not msg or not request.isMessage():
             return
         for i in keyWord:
             if i in msg:

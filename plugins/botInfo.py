@@ -11,7 +11,7 @@ class plugin(BotPlugin):
         self.canDetach = True
 
     async def botinfo(self, request):
-        request.sendMessage(
+        await request.sendMessage(
             "来自XyzB0ts\n项目地址https://github.com/f88af65a/XyzB0ts")
 
 

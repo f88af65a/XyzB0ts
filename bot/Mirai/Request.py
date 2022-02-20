@@ -104,9 +104,9 @@ class MiraiRequest(Request):
     def getMyPermission(self):
         return self["sender"]["group"]["permission"]
 
-    async def sendMessage(self, msgChain, quote=None, request=None):
+    async def sendMessage(self, msgChain, quote=None):
         await self.getBot().sendMessage(
-            self.getId(), msgChain, quote, request)
+            self.getId(), msgChain, quote, self)
 
     async def sendNudge(self, target):
         nudgeType = None

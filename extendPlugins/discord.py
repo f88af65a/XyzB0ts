@@ -29,7 +29,7 @@ class plugin(BotPlugin):
         if self.queue is not None:
             self.queue.close()
         if self.thread is not None:
-            self.stopQueue.append("stop")
+            self.stopQueue.put("stop")
 
     async def toNotify(notifyName, bot, messageChain):
         notifyModule = getNotifyModule()

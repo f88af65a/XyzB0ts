@@ -23,7 +23,7 @@ class handle(BotPlugin):
                 break
 
     async def qaSet(self, request):
-        "q&a [set/del/all] [关键字] [遇到关键字时触发的消息]"
+        '''q&a [set/del/all] [关键字] [遇到关键字时触发的消息]'''
         data = request.getFirstTextSplit()
         if len(data) == 1:
             await request.sendMessage(self.qaSet.__doc__)

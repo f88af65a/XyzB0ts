@@ -34,7 +34,8 @@ class plugin(BotPlugin):
                 checkSet = set()
                 for j in listener:
                     for k in listener[j]["targetListener"]:
-                        if k in checkSet or not permissionCheck(request, k):
+                        if (k in checkSet
+                                or not await permissionCheck(request, k)):
                             continue
                         ret.append("{}: {}".format(
                             k,
@@ -43,7 +44,7 @@ class plugin(BotPlugin):
                         checkSet.add(k)
             await request.sendMessage("可用命令:\n" + "\n".join(ret))
         elif len(data) == 2:
-            if permissionCheck(request, data[1]):
+            if await permissionCheck(request, data[1]):
                 route = request.getPluginsManager()
                 if ((re := route.getTarget(request.getType(), data[1]))
                         is not None):

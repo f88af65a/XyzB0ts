@@ -12,10 +12,55 @@ from botsdk.util.JsonConfig import getConfig
 
 
 async def permissionCheck(
-        request, targets,
+        request, target: str,
         add: set = set(), need: set = set()):
-    if type(targets) is str:
-        targets = [targets]
+    requestRole = await request.getRoles() | {"*"} | add
+    userId = request.getUserId()
+    systemCookie = getConfig()["systemCookie"]
+    if userId in systemCookie["user"]:
+        requestRole |= set(systemCookie["user"][userId])
+    if "System:Owner" in requestRole:
+        return True
+    if target in systemCookie["systemPermission"]:
+        if set(systemCookie["systemPermission"][target]) & requestRole:
+            return True
+        else:
+            return False
+    if request.getBot().getOwnerRole() in requestRole:
+        return True
+    cookie = request.getCookie()
+    if "roles" in cookie and userId in cookie["roles"]:
+        requestRole |= set(cookie["roles"][userId])
+    childs = request.getId().split(":")[3:]
+    if request.isSingle():
+        cookie = getCookie("System", "permission")
+        if not cookie:
+            cookie = {"permission": {"*": "*"}}
+    if "permission" not in cookie:
+        return False
+    cookie = cookie["permission"]
+    m = 0
+    while True:
+        if ((target in cookie
+            and (permissionRoles := set(cookie[target]))
+            and (requestRole & permissionRoles
+                 or ("*" in permissionRoles
+                     and permissionRoles["*"] & requestRole)))
+           or ("*" in cookie and set(cookie["*"]) & requestRole)):
+            return True
+        if m < len(childs) and f":{childs[m]}" in cookie:
+            cookie = cookie[f":{childs[m]}"]
+            m += 1
+        else:
+            break
+    return False
+
+
+async def listPermissionCheck(
+        request, targets: list,
+        add: set = set(), need: set = set()):
+    ret = []
+    cookie = request.getCookie()
     for target in targets:
         requestRole = await request.getRoles() | {"*"} | add
         userId = request.getUserId()
@@ -23,15 +68,18 @@ async def permissionCheck(
         if userId in systemCookie["user"]:
             requestRole |= set(systemCookie["user"][userId])
         if "System:Owner" in requestRole:
+            ret.append(True)
             continue
         if target in systemCookie["systemPermission"]:
             if set(systemCookie["systemPermission"][target]) & requestRole:
+                ret.append(True)
                 continue
             else:
-                return False
+                ret.append(False)
+                continue
         if request.getBot().getOwnerRole() in requestRole:
+            ret.append(True)
             continue
-        cookie = request.getCookie()
         if "roles" in cookie and userId in cookie["roles"]:
             requestRole |= set(cookie["roles"][userId])
         childs = request.getId().split(":")[3:]
@@ -40,7 +88,8 @@ async def permissionCheck(
             if not cookie:
                 cookie = {"permission": {"*": "*"}}
         if "permission" not in cookie:
-            return False
+            ret.append(False)
+            continue
         cookie = cookie["permission"]
         m = 0
         while True:
@@ -50,14 +99,16 @@ async def permissionCheck(
                      or ("*" in permissionRoles
                          and permissionRoles["*"] & requestRole)))
                     or ("*" in cookie and set(cookie["*"]) & requestRole)):
+                ret.append(True)
                 continue
             if m < len(childs) and f":{childs[m]}" in cookie:
                 cookie = cookie[f":{childs[m]}"]
                 m += 1
             else:
                 break
-        return False
-    return True
+        ret.append(False)
+        continue
+    return ret
 
 
 async def roleCheck(request, roles):

@@ -16,7 +16,7 @@ class plugin(BotPlugin):
         '''#角色 ADD/DEL ID 角色'''
         data = request.getFirstTextSplit()
         if len(data) < 4:
-            await request.sendMessage("'''#角色 ADD/DEL ID 角色'''")
+            await request.sendMessage(self.role.__doc__)
             return
         if ":" in data[3]:
             await request.sendMessage("角色中不许包含:")
@@ -43,7 +43,7 @@ class plugin(BotPlugin):
         '''#权限 ADD/DEL 命令 角色'''
         data = request.getFirstTextSplit()
         if len(data) < 4:
-            await request.sendMessage("'''#权限 ADD/DEL 命令 角色'''")
+            await request.sendMessage(self.permission.__doc__)
             return
         if ":" in data[3]:
             await request.sendMessage("角色中不许包含:")

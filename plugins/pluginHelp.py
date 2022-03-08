@@ -41,13 +41,19 @@ class plugin(BotPlugin):
                             listener[j]["targetListener"][k].__doc__ if
                             listener[j]["targetListener"][k].__doc__ else "无"))
                         checkSet.add(k)
-            await request.sendMessage("可用命令:" + "\n".join(ret))
+            await request.sendMessage("可用命令:\n" + "\n".join(ret))
         elif len(data) == 2:
-            route = request.getPluginsManager()
-            if (re := route.getTarget(request.getType(), data[1])) is not None:
-                await request.sendMessage(re.__doc__)
+            if permissionCheck(request, data[1]):
+                route = request.getPluginsManager()
+                if ((re := route.getTarget(request.getType(), data[1]))
+                        is not None):
+                    await request.sendMessage(re.__doc__)
+                else:
+                    await request.sendMessage("命令不存在")
+            else:
+                await request.sendMessage("权限限制")
         else:
-            await request.sendMessage("命令不存在")
+            await request.sendMessage("???")
 
     async def load(self, request):
         '''load 插件名'''

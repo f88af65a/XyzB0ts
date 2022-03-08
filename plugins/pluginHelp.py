@@ -1,5 +1,6 @@
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.JsonConfig import getConfig
+from botsdk.util.Permission import permissionCheck
 
 
 class plugin(BotPlugin):
@@ -33,14 +34,14 @@ class plugin(BotPlugin):
                 checkSet = set()
                 for j in listener:
                     for k in listener[j]["targetListener"]:
-                        if k in checkSet:
+                        if k in checkSet or not permissionCheck(request, k):
                             continue
-                        ret.append("{} {}".format(
+                        ret.append("{}: {}".format(
                             k,
                             listener[j]["targetListener"][k].__doc__ if
                             listener[j]["targetListener"][k].__doc__ else "无"))
                         checkSet.add(k)
-            await request.sendMessage("\n".join(ret))
+            await request.sendMessage("可用命令:" + "\n".join(ret))
         elif len(data) == 2:
             route = request.getPluginsManager()
             if (re := route.getTarget(request.getType(), data[1])) is not None:

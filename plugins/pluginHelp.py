@@ -37,7 +37,7 @@ class plugin(BotPlugin):
                         if k not in checkDict:
                             checkDict[k] = listener[j]["targetListener"][k]
             targetList = list(checkDict.items())
-            permissionCheckList = listPermissionCheck(
+            permissionCheckList = await listPermissionCheck(
                 request, [i[0] for i in targetList])
             ret = []
             for i in range(len(targetList)):

@@ -31,14 +31,14 @@ class handle(BotPlugin):
         if ((target == "enable" or target == "disable")
                 and await permissionCheck(request, target)
                 and (targetBot := request.getFirstText().split(" "))
-                and len(targetBot) > 1
-                and targetBot == request.getBot().getBotName()):
+                and len(targetBot) > 1):
             targetBot = targetBot[1]
-            if target == "enable":
-                cookie[targetBot] = True
-            else:
-                cookie[targetBot] = False
-            request.setCookie("switch", cookie)
-            await request.sendMessage("修改完成")
+            if targetBot == request.getBot().getBotName():
+                if target == "enable":
+                    cookie[targetBot] = True
+                else:
+                    cookie[targetBot] = False
+                request.setCookie("switch", cookie)
+                await request.sendMessage("修改完成")
         botName = request.getBot().getBotName()
         return True if (botName in cookie and cookie[botName]) else False

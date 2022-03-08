@@ -30,9 +30,16 @@ class plugin(BotPlugin):
             ret = []
             for i in allName:
                 listener = route.getPlugin(i).getListener()
+                checkSet = set()
                 for j in listener:
                     for k in listener[j]["targetListener"]:
-                        ret.append("{} {}".format(k, k.__doc__))
+                        if k in checkSet:
+                            continue
+                        ret.append("{} {}".format(
+                            k,
+                            listener[j]["targetListener"][k].__doc__ if
+                            listener[j]["targetListener"][k].__doc__ else "无"))
+                        checkSet.add(k)
             await request.sendMessage("\n".join(ret))
         elif len(data) == 2:
             route = request.getPluginsManager()

@@ -29,13 +29,14 @@ class plugin(BotPlugin):
             route = request.getPluginsManager()
             allName = route.getAllPluginName()
             ret = []
-            checkSet = set()
+            checkDict = dict()
             for i in allName:
                 listener = route.getPlugin(i).getListener()
                 for j in listener:
                     for k in listener[j]["targetListener"]:
-                        checkSet.add([k, listener[j]["targetListener"][k]])
-            targetList = list(checkSet)
+                        if k not in checkDict:
+                            checkDict[k] = listener[j]["targetListener"][k]
+            targetList = list(checkDict.items())
             permissionCheckList = listPermissionCheck(
                 request, [i[0] for i in targetList])
             ret = []

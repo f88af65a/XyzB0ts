@@ -1,4 +1,5 @@
 import json
+import copy
 from botsdk.util.BotPlugin import BotPlugin
 
 
@@ -57,10 +58,10 @@ class handle(BotPlugin):
                             quoteMessageChain["data"]["messageChain"][1:])
                         qaMessageChain = []
                         for j in quoteMessageChain:
-                            qaMessageChain.append(j)
+                            qaMessageChain.append(copy.deepcopy(j))
                             if j["type"] == "Image":
-                                if "url" in qaMessageChain[j]:
-                                    del qaMessageChain[j]["url"]
+                                if "url" in qaMessageChain[-1]:
+                                    del qaMessageChain[-1]["url"]
                 cookie[data[2]] = json.dumps(qaMessageChain)
                 request.setCookie("q&a", cookie)
                 await request.sendMessage("设置成功")

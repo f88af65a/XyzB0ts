@@ -1,6 +1,6 @@
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.Permission import permissionCheck, listPermissionCheck
+from botsdk.util.Permission import permissionCheck
 
 
 class plugin(BotPlugin):
@@ -29,23 +29,19 @@ class plugin(BotPlugin):
             route = request.getPluginsManager()
             allName = route.getAllPluginName()
             ret = []
-            checkDict = dict()
             for i in allName:
                 listener = route.getPlugin(i).getListener()
+                checkSet = set()
                 for j in listener:
                     for k in listener[j]["targetListener"]:
-                        if k not in checkDict:
-                            checkDict[k] = listener[j]["targetListener"][k]
-            targetList = list(checkDict.items())
-            permissionCheckList = await listPermissionCheck(
-                request, [i[0] for i in targetList])
-            ret = []
-            for i in range(len(targetList)):
-                if permissionCheckList[i]:
-                    ret.append("{}: {}".format(
-                        targetList[i][0],
-                        targetList[i][1].__doc__ if targetList[i][1].__doc__
-                        else "无"))
+                        if (k in checkSet
+                                or not await permissionCheck(request, k)):
+                            continue
+                        ret.append("{}: {}".format(
+                            k,
+                            listener[j]["targetListener"][k].__doc__ if
+                            listener[j]["targetListener"][k].__doc__ else "无"))
+                        checkSet.add(k)
             await request.sendMessage("可用命令:\n" + "\n".join(ret))
         elif len(data) == 2:
             if await permissionCheck(request, data[1]):

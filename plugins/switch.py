@@ -31,7 +31,8 @@ class handle(BotPlugin):
         if ((target == "enable" or target == "disable")
                 and await permissionCheck(request, target)
                 and (targetBot := request.getFirstText().split(" "))
-                and len(targetBot) > 1):
+                and len(targetBot) > 1
+                and targetBot == request.getBot().getBotName()):
             targetBot = targetBot[1]
             if target == "enable":
                 cookie[targetBot] = True

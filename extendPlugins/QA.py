@@ -43,7 +43,8 @@ class handle(BotPlugin):
             cookie = dict()
         if len(data) == 2:
             if (data[1] == "all" or data[1] == "help"):
-                await request.sendMessage(",".join(list(cookie.keys())))
+                await request.sendMessage(
+                    "现有关键字:\n" + "\n".join(list(cookie.keys())))
                 return
         elif len(data) == 3:
             if data[1] == "set":

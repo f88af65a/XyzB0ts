@@ -7,11 +7,11 @@ class plugin(BotPlugin):
         self.listenTarget = [["GroupMessage", "空调", self.kongtiao]]
         self.name = "空调"
         self.info = "好热哦"
-        self.help = "/空调"
         self.addBotType("Mirai")
         self.canDetach = True
 
     async def kongtiao(self, request):
+        "空调 #来开启群空调"
         bot = request.bot
         await bot.sendGroupMessage(
             request.getGroupId(),

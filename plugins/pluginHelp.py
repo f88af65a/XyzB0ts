@@ -24,12 +24,20 @@ class plugin(BotPlugin):
     async def helper(self, request):
         """help 命令名"""
         data = request.getFirstTextSplit()
-        if len(data) < 2:
-            await request.sendMessage("help 命令名")
-            return
-        route = request.getPluginsManager()
-        if (re := route.getTarget(request.getType(), data[1])) is not None:
-            await request.sendMessage(re.__doc__)
+        if len(data) == 1:
+            route = request.getPluginsManager()
+            allName = route.getAllPluginName()
+            ret = []
+            for i in allName:
+                listener = route.getPlugin(i).getListener()
+                for j in listener:
+                    for k in listener[j]["targetListener"]:
+                        ret.append("{} {}".format(k, k.__doc__))
+            await request.sendMessage("\n".join(ret))
+        elif len(data) == 2:
+            route = request.getPluginsManager()
+            if (re := route.getTarget(request.getType(), data[1])) is not None:
+                await request.sendMessage(re.__doc__)
         else:
             await request.sendMessage("命令不存在")
 

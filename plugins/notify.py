@@ -18,7 +18,7 @@ class plugin(BotPlugin):
                     getNotifyModule().addListen(i, j)
 
     async def manageNotify(self, request):
-        "notify [add/remove] 通知名"
+        "notify [add/remove] 通知名 #监听通知"
         data = request.getFirstTextSplit()
         if len(data) < 3:
             await request.sendMessage(self.manageNotify.__doc__)

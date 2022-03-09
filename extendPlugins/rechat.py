@@ -29,9 +29,10 @@ class plugin(BotPlugin):
                 self.reChatDict[groupid] = chain
 
     async def fuduji(self, request):
+        '''复读机 [开启/关闭]'''
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            await request.sendMessage("/复读机 [开启/关闭]")
+            await request.sendMessage(self.fuduji.__doc__)
             return
         cookie = request.getCookie("rechatState")
         if cookie is None:

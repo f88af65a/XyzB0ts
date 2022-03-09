@@ -14,7 +14,7 @@ class plugin(BotPlugin):
         self.canDetach = True
 
     async def hello(self, request):
-        "#hello"
+        "hello #hello"
         await request.sendMessage("hello")
 
 

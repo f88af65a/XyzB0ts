@@ -13,7 +13,7 @@ class plugin(BotPlugin):
         self.canDetach = True
 
     async def random(self, request):
-        "/random 最小值 最大值"
+        '''random 最小值 最大值'''
         data = request.getFirstTextSplit()
         if len(data) < 3:
             await request.sendMessage(self.random.__doc__)

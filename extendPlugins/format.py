@@ -33,7 +33,7 @@ class plugin(BotPlugin):
             pass
 
     async def setFormat(self, request):
-        "/format [key=word]"
+        "format [key=word]"
         data = request.getFirstTextSplit()
         if len(data) < 2:
             await request.sendMessage(self.setFormat.__doc__)

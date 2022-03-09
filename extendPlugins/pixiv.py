@@ -26,9 +26,10 @@ class plugin(BotPlugin):
         self.proxy = self.getConfig()["proxy"]
 
     async def search(self, request):
+        '''pixiv.search 关键字 [sort/on] #搜索关键字'''
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            request.sendMessage("/pixiv.search 关键字")
+            request.sendMessage(self.search.__doc__)
             return
         response = []
         startMark = 1
@@ -65,6 +66,7 @@ class plugin(BotPlugin):
         await self.getImgFromList(data, response, request)
 
     async def rank(self, request):
+        '''pixiv.rank #根据排行榜随机出图'''
         rankType = ["day", "week", "month", "rookie", "original", "male"]
         url = (f'''{self.url}/api/pixiv/rank?RankingType='''
                f'''{rankType[random.randint(0,len(rankType) - 1)]}&date='''

@@ -60,6 +60,7 @@ class plugin(BotPlugin):
         await request.sendMessage("修改完成")
 
     async def say(self, request):
+        '''say [文本] #让bot复读消息'''
         await request.sendMessage(request.getFirstText())
 
 

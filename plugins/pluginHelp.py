@@ -92,10 +92,10 @@ class plugin(BotPlugin):
         targetPlugin = data[1]
         allName = route.getAllPluginName()
         if targetPlugin not in allName:
-            await request.sendGroupMessage("插件不存在")
+            await request.sendMessage("插件不存在")
             return
         route.unLoadPlugin(targetPlugin)
-        await request.sendGroupMessage("卸载成功")
+        await request.sendMessage("卸载成功")
 
     async def plugins(self, request):
         '''plugins #打印所有插件'''

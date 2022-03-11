@@ -34,10 +34,18 @@ class BotService:
             bot.setTimer(self.timer)
             debugPrint(f'''账号{botName}初始化成功''', fromName="BotService")
             # 登录
-            re = await bot.login()
-            if re != 0:
-                debugPrint(f'''{botName}登陆失败''', fromName="BotService")
-                return
+            loginRetry = 0
+            while True:
+                try:
+                    re = await bot.login()
+                except Exception:
+                    re = 1
+                if re != 0:
+                    debugPrint(
+                        f'''{botName}登陆失败 已重试{loginRetry}次''',
+                        fromName="BotService")
+                else:
+                    break
             debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
             # 初始化BotRoute
             botRoute = botsdk.BotRoute.BotRoute(
@@ -45,14 +53,33 @@ class BotService:
             while True:
                 retrySize = 0
                 while True:
-                    if (re := await bot.fetchMessage()) and re[0] == 0:
-                        break
-                    else:
-                        retrySize += 1
+                    try:
+                        if (re := await bot.fetchMessage()) and re[0] == 0:
+                            break
+                    except Exception:
+                        pass
+                    retrySize += 1
+                    debugPrint(
+                        f'''账号{botName}获取消息失败重试:{retrySize + 1}''',
+                        fromName="BotService")
+                    if retrySize >= 5:
+                        loginRetry = 0
+                        while True:
+                            try:
+                                re = await bot.login()
+                            except Exception:
+                                re = 1
+                            if re != 0:
+                                debugPrint(
+                                    f'''{botName}重登陆失败 已重试{loginRetry}次''',
+                                    fromName="BotService")
+                            else:
+                                break
                         debugPrint(
-                            f'''账号{botName}获取消息失败重试:{retrySize + 1}''',
+                            f'''账号{botName}重登陆成功''',
                             fromName="BotService")
-                        await asyncio.sleep(retrySize * 5)
+                        retrySize = 0
+                    await asyncio.sleep(retrySize * 5)
                 for i in re[1]:
                     request = getAttrFromModule(
                                 botPath + ".Request",

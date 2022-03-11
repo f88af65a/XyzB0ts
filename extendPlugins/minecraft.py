@@ -49,7 +49,7 @@ class plugin(BotPlugin):
             return
         if len(data) >= 2:
             serverIp = data[1]
-        if len(data) == 3:
+        if len(data) >= 3:
             if not (data[2].isnumeric()
                     and int(data[2]) >= 0
                     and int(data[2]) <= 65535):
@@ -102,6 +102,8 @@ class plugin(BotPlugin):
                     break
             responseData = json.loads(responseData)
             description = ""
+            if "text" in responseData["description"]:
+                description = responseData["description"]["text"]
             if "extra" in responseData["description"]:
                 for i in responseData["description"]["extra"]:
                     if "text" in i:

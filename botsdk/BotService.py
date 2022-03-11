@@ -75,11 +75,13 @@ class BotService:
                                     fromName="BotService")
                             else:
                                 break
+                            loginRetry += 1
+                            await asyncio.sleep(min(loginRetry * 5, 15))
                         debugPrint(
                             f'''账号{botName}重登陆成功''',
                             fromName="BotService")
-                        retrySize = 0
-                    await asyncio.sleep(retrySize * 5)
+                        break
+                    await asyncio.sleep(min(retrySize * 5, 15))
                 for i in re[1]:
                     request = getAttrFromModule(
                                 botPath + ".Request",

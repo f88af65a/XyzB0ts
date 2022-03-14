@@ -28,11 +28,11 @@ class plugin(BotPlugin):
         retMessage = self.helper.__doc__
         for i in range(1):
             if len(data) == 1:
-                route = request.getPluginsManager()
-                allName = route.getAllPluginName()
+                pluginManager = request.getPluginsManager()
+                allName = pluginManager.getAllPluginName()
                 ret = []
                 for i in allName:
-                    listener = route.getPlugin(i).getListener()
+                    listener = pluginManager.getPlugin(i).getListener()
                     checkSet = set()
                     if request.getType() in listener:
                         for k in listener[request.getType()]["targetListener"]:
@@ -51,7 +51,8 @@ class plugin(BotPlugin):
                 if not await permissionCheck(request, data[1]):
                     retMessage = "权限限制"
                     break
-                helpMessage = route.getTarget(request.getType(), data[1])
+                helpMessage = request.getPluginsManager().getTarget(
+                    request.getType(), data[1])
                 if helpMessage is None:
                     retMessage = "命令不存在"
                     break

@@ -10,6 +10,9 @@ class MiraiRequest(Request):
             {"FriendMessage", "GroupMessage",
              "TempMessage", "StrangerMessage",
              "OtherClientMessage"})
+        self.signalMessage = {
+            "FriendMessage"
+        }
 
     def getSenderId(self):
         return str(self["sender"]["id"])
@@ -55,7 +58,7 @@ class MiraiRequest(Request):
         return self["type"]
 
     def getId(self):
-        if self["type"] == "GroupMessage":
+        if self["type"] == "GroupMessage" or self["type"] == "TempMessage":
             return f"""QQ:Group:{self["sender"]["group"]["id"]}"""
         else:
             return f'''QQ:User:{self["sender"]["id"]}'''
@@ -103,7 +106,7 @@ class MiraiRequest(Request):
 
     async def sendMessage(self, msgChain, quote=None):
         await self.getBot().sendMessage(
-            self.getId(), msgChain, quote)
+            self.getId(), msgChain, quote, self)
 
     async def sendNudge(self, target):
         nudgeType = None
@@ -120,7 +123,15 @@ class MiraiRequest(Request):
         self.getBot().recall(int(target))
 
     async def getRoles(self):
-        return {self["sender"]["permission"]}
+        if "permission" in self["sender"]:
+            return {self["sender"]["permission"]}
+        return set()
 
     def getUserId(self):
         return "QQ:User:" + self.getSenderId()
+
+    def isSingle(self):
+        return self.getType() in self.signalMessage
+
+    def isMessage(self):
+        return self.getType() in self.messageType

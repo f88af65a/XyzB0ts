@@ -56,6 +56,17 @@
                 "quote":"int"
             }
         },
+        "sendTempMessage": {
+            "path": "/sendTempMessage",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "qq": "int",
+                "group": "int",
+                "messageChain": "list",
+                "quote":"int"
+            }
+        },
         "mute": {
             "path": "/mute",
             "method": "post",

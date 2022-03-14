@@ -23,12 +23,13 @@ class plugin(BotPlugin):
 
     def init(self, bot):
         self.url = self.getConfig()["hibiapiUrl"]
-        self.proxy = self.getConfig()["pixivProxy"]
+        self.proxy = self.getConfig()["proxy"]
 
     async def search(self, request):
+        '''pixiv.search 关键字 [sort/on] #搜索关键字'''
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            request.sendMessage("/pixiv.search 关键字")
+            request.sendMessage(self.search.__doc__)
             return
         response = []
         startMark = 1
@@ -65,6 +66,7 @@ class plugin(BotPlugin):
         await self.getImgFromList(data, response, request)
 
     async def rank(self, request):
+        '''pixiv.rank #根据排行榜随机出图'''
         rankType = ["day", "week", "month", "rookie", "original", "male"]
         url = (f'''{self.url}/api/pixiv/rank?RankingType='''
                f'''{rankType[random.randint(0,len(rankType) - 1)]}&date='''
@@ -86,12 +88,14 @@ class plugin(BotPlugin):
         re = None
         if "on" in data:
             re = response[random.randint(0, len(response) - 1)]
-        else:
+        elif "sort" in data:
             response.sort(
                 key=lambda i: i["total_view"] + i["total_bookmarks"] * 20,
                 reverse=True)
             re = response[random.randint(
                 0, max(math.floor(len(response) * 0.5), 1))]
+        else:
+            re = response[random.randint(0, len(response) - 1)]
         msg = request.makeMessageChain().text(
             (f'''搜索到{len(response)}个作品\n作者:{re["user"]["name"]}\n标题:'''
              f'''{re["title"]}\n链接:www.pixiv.net/artworks/{re["id"]}\nVIEW:'''
@@ -111,9 +115,9 @@ class plugin(BotPlugin):
             imgType = re["image_urls"]["square_medium"]
         if imgType is None:
             await request.sendMessage(msg)
+        '''
         imgType = imgType.replace("https", "http")
         imgType = imgType.replace("i.pximg.net", self.proxy)
-        '''
         await request.sendMessage(
             msg.text("\n").image(url=imgType.replace("https", "http")))
         '''
@@ -124,6 +128,7 @@ class plugin(BotPlugin):
                     " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0."
                     "4606.61 Safari/537.36"),
                 'Referer': 'https://www.pixiv.net/'},
+            proxy=self.proxy,
             byte=True)
         if img is not None and len(img) != 0:
             fPath = (getConfig()["localFilePath"]

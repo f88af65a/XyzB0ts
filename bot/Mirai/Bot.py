@@ -20,17 +20,29 @@ class MiraiBot(Bot):
         return self.path
 
     async def sendMessage(
-            self, id: str, messageChain: MessageChain, quote=None):
+            self, id: str, messageChain: MessageChain,
+            quote=None, request=None):
         ids = id.split(":")
-        messageType = ids[1]
+        if request is None:
+            if ids[1] == "User":
+                messageType = "FriendMessage"
+            else:
+                messageType = "GroupMessage"
+        else:
+            messageType = request.getType()
         target = ids[2]
         target = int(target)
         if type(messageChain) == str:
             messageChain = self.makeMessageChain().text(messageChain)
-        if messageType == "User":
+        if messageType == "FriendMessage":
             await self.sendFriendMessage(target, messageChain.getData(), quote)
-        elif messageType == "Group":
+        elif messageType == "GroupMessage":
             await self.sendGroupMessage(target, messageChain.getData(), quote)
+        elif messageType == "TempMessage":
+            await self.sendTempMessage(
+                int(request["sender"]["group"]["id"]),
+                int(request.getSenderId()),
+                messageChain.getData(), quote)
         else:
             raise BotException("Bot.sendMessage遇到了不支持的类型")
 
@@ -95,13 +107,14 @@ class MiraiBot(Bot):
     async def sendTempMessage(
             self, targetGroup: int, targetQq: int,
             messageChain: list, quote=None):
-        return await self.adapter.sendTempMessage(
-            sessionKey=self.sessionKey,
-            qq=targetQq,
-            group=targetGroup,
-            messageChain=messageChain,
-            quote=quote
-        )
+        kw = dict()
+        kw["sessionKey"] = self.sessionKey
+        kw["qq"] = targetQq
+        kw["group"] = targetGroup
+        kw["messageChain"] = messageChain
+        if quote:
+            kw["quote"] = quote
+        return await self.adapter.sendTempMessage(**kw)
 
     async def sendNudge(self, target: int, subject: int, kind: str):
         return await self.adapter.sendNudge(

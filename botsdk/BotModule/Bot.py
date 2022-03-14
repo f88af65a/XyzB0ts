@@ -29,6 +29,12 @@ class Bot:
     def __del__(self):
         self.destroy()
 
+    def setTimer(self, timer):
+        self.timer = timer
+
+    def getTimer(self):
+        return self.timer
+
     def setHandleModuleName(self, name):
         self.data["handleModuleName"] = name
 
@@ -87,7 +93,7 @@ class Bot:
         pass
 
     # 发送消息接口
-    async def sendMessage(self, messageChain):
+    async def sendMessage(self, messageChain, request):
         pass
 
     # 路由前过滤

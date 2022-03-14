@@ -1,7 +1,7 @@
 # XyzB0ts
  一个简单的bot框架  
- 通过简单的约定实现了对不同bot接口的统一抽象，实现了在一个框架中运行不同的bot  
- 通过简单的api能够快速的上手bot功能的开发
+ 通过简单的约定实现了对不同bot接口的统一抽象，实现了在一个框架中运行多个相同或不同的bot  
+ 通过简单的api能够快速的进行bot功能的开发
 
 ## 框架主要功能
  1. 插件支持
@@ -28,18 +28,22 @@ from botsdk.util.BotPlugin import BotPlugin
 
 
 class plugin(BotPlugin):
-    def init(self):
+    def onLoad(self):
         self.name = "hello"
         self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
+        self.addTarget("GROUP:1", "hello", self.hello)
         self.addTarget("GroupMessage", "hello", self.hello)
-
+        self.addTarget("FriendMessage", "hello", self.hello)
+        self.canDetach = True
 
     async def hello(self, request):
+        "hello #hello"
         await request.sendMessage("hello")
 
 
-def handle():
-    return plugin()
+def handle(*args, **kwargs):
+    return plugin(*args, **kwargs)
 
 ```
 

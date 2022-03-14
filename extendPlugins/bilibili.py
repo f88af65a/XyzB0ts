@@ -18,6 +18,7 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:1", "follower", self.follower)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
+        self.canDetach = True
 
     def init(self, bot):
         for i in self.getConfig()["listen"]:
@@ -27,7 +28,8 @@ class plugin(BotPlugin):
         notifyModule = getNotifyModule()
         notifySet = copy.deepcopy(notifyModule.notify(notifyName))
         for i in notifySet:
-            await bot.sendMessage(i, messageChain)
+            if i.split(":")[0] == bot.getServiceType():
+                await bot.sendMessage(i, messageChain)
 
     def dynamicCardAnlysis(self, jdata, msg):
         if "vest" in jdata:
@@ -105,6 +107,7 @@ class plugin(BotPlugin):
                 printTraceBack()
 
     async def anime(self, request):
+        '''anime #看看叔叔今天更新什么番'''
         response = await get(
             "https://bangumi.bilibili.com/web_api/timeline_global")
         if response is None:
@@ -130,6 +133,7 @@ class plugin(BotPlugin):
                 return
 
     async def follower(self, request):
+        '''follower [b站uid] #看看有多少粉丝了'''
         data = request.getFirstTextSplit()
         if len(data) < 2:
             request.sendMessage("uid呢，uid在哪里")

@@ -83,3 +83,6 @@ class KaiheilaRequest(Request):
     # 获取消息类型
     def getType(self):
         return f"""{self["channel_type"]}:{self["type"]}"""
+
+    def isSingle(self):
+        return False

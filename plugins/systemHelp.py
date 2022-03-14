@@ -13,9 +13,10 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:1", "config", self.configHelp)
 
     async def configHelp(self, request):
+        '''config [reload]'''
         data = request.getFirstTextSplit()
         if len(data) < 2:
-            await request.sendMessage("缺少参数")
+            await request.sendMessage("config [reload]")
             return
         if data[1] == "reload":
             botsdk.util.JsonConfig.reload()

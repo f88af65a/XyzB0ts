@@ -18,7 +18,7 @@ class plugin(BotPlugin):
                     getNotifyModule().addListen(i, j)
 
     async def manageNotify(self, request):
-        "/notify [add/remove] 通知名"
+        "notify [add/remove] 通知名 #监听通知"
         data = request.getFirstTextSplit()
         if len(data) < 3:
             await request.sendMessage(self.manageNotify.__doc__)
@@ -34,7 +34,7 @@ class plugin(BotPlugin):
         elif data[1] == "remove":
             if data[2] in cookie:
                 cookie.remove(data[2])
-                getNotifyModule().removeListen(data[2])
+                getNotifyModule().removeListen(request.getId(), data[2])
                 request.setCookie("notify", cookie)
         else:
             await request.sendMessage(self.manageNotify.__doc__)

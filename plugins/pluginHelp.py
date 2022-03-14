@@ -25,38 +25,40 @@ class plugin(BotPlugin):
     async def helper(self, request):
         """help 命令名"""
         data = request.getFirstTextSplit()
-        if len(data) == 1:
-            route = request.getPluginsManager()
-            allName = route.getAllPluginName()
-            ret = []
-            for i in allName:
-                listener = route.getPlugin(i).getListener()
-                checkSet = set()
-                if request.getType() in listener:
-                    for k in listener[request.getType()]["targetListener"]:
-                        if (k in checkSet
-                                or not await permissionCheck(request, k)):
-                            continue
-                        ret.append("{}: {}".format(
-                            k,
-                            listener[request.getType()]
-                            ["targetListener"][k].__doc__ if
-                            listener[request.getType()]
-                            ["targetListener"][k].__doc__ else "无"))
-                        checkSet.add(k)
-            await request.sendMessage("可用命令:\n" + "\n".join(ret))
-        elif len(data) == 2:
-            if await permissionCheck(request, data[1]):
+        retMessage = self.helper.__doc__
+        for i in range(1):
+            if len(data) == 1:
                 route = request.getPluginsManager()
-                if ((re := route.getTarget(request.getType(), data[1]))
-                        is not None):
-                    await request.sendMessage(re.__doc__)
-                else:
-                    await request.sendMessage("命令不存在")
+                allName = route.getAllPluginName()
+                ret = []
+                for i in allName:
+                    listener = route.getPlugin(i).getListener()
+                    checkSet = set()
+                    if request.getType() in listener:
+                        for k in listener[request.getType()]["targetListener"]:
+                            if (k in checkSet
+                                    or not await permissionCheck(request, k)):
+                                continue
+                            ret.append("{}: {}".format(
+                                k,
+                                listener[request.getType()]
+                                ["targetListener"][k].__doc__ if
+                                listener[request.getType()]
+                                ["targetListener"][k].__doc__ else "无"))
+                            checkSet.add(k)
+                retMessage = "可用命令:\n" + "\n".join(ret)
+            elif len(data) == 2:
+                if not await permissionCheck(request, data[1]):
+                    retMessage = "权限限制"
+                    break
+                helpMessage = route.getTarget(request.getType(), data[1])
+                if helpMessage is None:
+                    retMessage = "命令不存在"
+                    break
+                retMessage = helpMessage.__doc__
             else:
-                await request.sendMessage("权限限制")
-        else:
-            await request.sendMessage("???")
+                retMessage = "过多的参数"
+        await request.sendMessage(retMessage)
 
     async def load(self, request):
         '''load 插件名'''

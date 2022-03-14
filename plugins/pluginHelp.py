@@ -31,8 +31,8 @@ class plugin(BotPlugin):
                 pluginManager = request.getPluginsManager()
                 allName = pluginManager.getAllPluginName()
                 ret = []
-                for i in allName:
-                    listener = pluginManager.getPlugin(i).getListener()
+                for j in allName:
+                    listener = pluginManager.getPlugin(j).getListener()
                     checkSet = set()
                     if request.getType() in listener:
                         for k in listener[request.getType()]["targetListener"]:

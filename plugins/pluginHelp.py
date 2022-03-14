@@ -32,15 +32,15 @@ class plugin(BotPlugin):
             for i in allName:
                 listener = route.getPlugin(i).getListener()
                 checkSet = set()
-                for j in listener:
-                    for k in listener[j]["targetListener"]:
+                if request.getType() in listener:
+                    for k in listener[request.getType()]["targetListener"]:
                         if (k in checkSet
                                 or not await permissionCheck(request, k)):
                             continue
                         ret.append("{}: {}".format(
                             k,
-                            listener[j]["targetListener"][k].__doc__ if
-                            listener[j]["targetListener"][k].__doc__ else "无"))
+                            listener[request.getType()]["targetListener"][k].__doc__ if
+                            listener[request.getType()]["targetListener"][k].__doc__ else "无"))
                         checkSet.add(k)
             await request.sendMessage("可用命令:\n" + "\n".join(ret))
         elif len(data) == 2:

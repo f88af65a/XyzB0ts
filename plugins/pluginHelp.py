@@ -39,8 +39,10 @@ class plugin(BotPlugin):
                             continue
                         ret.append("{}: {}".format(
                             k,
-                            listener[request.getType()]["targetListener"][k].__doc__ if
-                            listener[request.getType()]["targetListener"][k].__doc__ else "无"))
+                            listener[request.getType()]
+                            ["targetListener"][k].__doc__ if
+                            listener[request.getType()]
+                            ["targetListener"][k].__doc__ else "无"))
                         checkSet.add(k)
             await request.sendMessage("可用命令:\n" + "\n".join(ret))
         elif len(data) == 2:

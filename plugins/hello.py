@@ -2,8 +2,6 @@ from botsdk.util.BotPlugin import BotPlugin
 
 
 class plugin(BotPlugin):
-    "/hello"
-
     def onLoad(self):
         self.name = "hello"
         self.addBotType("Mirai")

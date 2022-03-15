@@ -7,8 +7,7 @@ class plugin(BotPlugin):
     def onLoad(self):
         self.name = "memberJoin"
         self.addType("MemberJoinEvent", self.memberJoin)
-        self.listenTarget = [[
-            "GroupMessage", "setMemberJoin", self.setMemberJoin]]
+        self.addTarget("GroupMessage", "setMemberJoin", self.setMemberJoin)
         self.addBotType("Mirai")
         self.canDetach = True
 
@@ -46,10 +45,12 @@ class plugin(BotPlugin):
                 await request.sendMessage("设置成功")
 
     async def memberJoin(self, request):
-        cookie = request.getCookie("memberJoin")
+        cookie = request.getCookie(
+            "memberJoin",
+            id=f'''QQ:Group:{request["member"]["group"]["id"]}''')
         if not cookie:
             return
-        request.sendMessage("cookie")
+        await request.sendMessage("cookie")
 
 
 def handle():

@@ -50,7 +50,9 @@ class plugin(BotPlugin):
             id=f'''QQ:Group:{request["member"]["group"]["id"]}''')
         if not cookie:
             return
-        await request.sendMessage("cookie")
+        await request.getBot().sendGroupMessage(
+            int(request["member"]["group"]["id"]),
+            json.loads(cookie))
 
 
 def handle():

@@ -9,6 +9,8 @@ if (driver := getConfig()["cookieDriver"]) == "RedisCookie":
     import redis
 elif driver == "SqliteCookie":
     import sqlite3
+elif driver == "aioRedisCookie":
+    import aioredis
 
 
 '''
@@ -25,6 +27,12 @@ class Cookie:
 
     def setCookie(self, id: str, key: str, value):
         pass
+
+    async def asyncGetCookie(self, id: str, key: str = None):
+        return self.getCookie(id, key)
+
+    async def asyncSetCookie(self, id: str, key: str, value):
+        self.setCookie(id, key, value)
 
 
 class SqliteCookie(Cookie):
@@ -128,6 +136,12 @@ class RedisCookie(Cookie):
         self.setCookieByDict(id, cookie)
 
 
+class aioRedisCookie(Cookie):
+    def __init__(self):
+        self.sql = aioredis.Redis(
+            host="localhost", port=6379, decode_responses=True, db=0)
+
+
 cookieDriver = None
 
 
@@ -146,3 +160,11 @@ def getCookie(id: str, key: str = None):
 
 def setCookie(id: str, key: str, value):
     getCookieDriver().setCookie(id, key, value)
+
+
+async def asyncGetCookie(id: str, key: str = None):
+    return await getCookieDriver().asyncGetCookie(id, key)
+
+
+async def asyncSetCookie(id: str, key: str, value):
+    await getCookieDriver().asyncSetCookie(id, key, value)

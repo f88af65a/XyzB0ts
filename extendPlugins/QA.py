@@ -47,7 +47,14 @@ class handle(BotPlugin):
                     "现有关键字:\n" + "\n".join(list(cookie.keys())))
                 return
         elif len(data) == 3:
-            if data[1] == "set":
+            if data[1] == "del":
+                if data[2] in cookie:
+                    del cookie[data[2]]
+                    request.setCookie("q&a", cookie)
+                    await request.sendMessage("删除成功")
+                    return
+                await request.sendMessage("关键字不存在")
+            elif data[1] == "set":
                 messageChain = request.getMessageChain()
                 for i in messageChain:
                     if i["type"] == "Quote":
@@ -70,12 +77,5 @@ class handle(BotPlugin):
             cookie[data[2]] = data[3]
             request.setCookie("q&a", cookie)
             await request.sendMessage("设置成功")
-        elif len(data) == 3 and data[1] == "del":
-            if data[2] in cookie:
-                del cookie[data[2]]
-                request.setCookie("q&a", cookie)
-                await request.sendMessage("删除成功")
-                return
-            await request.sendMessage("不存在")
         else:
-            await request.sendMessage("q&a [add/del] [关键字] [遇到关键字时触发的消息]")
+            await request.sendMessage(self.qaSet.__doc__)

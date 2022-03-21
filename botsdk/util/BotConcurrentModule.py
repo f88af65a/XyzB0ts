@@ -1,75 +1,36 @@
 import asyncio
+import concurrent.futures
 import importlib
-import threading
-from multiprocessing import Process, Queue
 
-from botsdk.util.BotException import BotException
-from botsdk.util.Error import debugPrint, printTraceBack
-from botsdk.util.HandlePacket import asyncHandlePacket
-from botsdk.util.JsonConfig import getConfig
 from botsdk.BotModule.Request import getRequest
+from botsdk.util.BotException import BotException
+from botsdk.util.Error import printTraceBack
 
 
-# 线程默认运行函数
-def workThreadRun(loop):
+def concurrentHandle(data):
     try:
-        debugPrint("线程初始化")
-        asyncio.set_event_loop(loop)
-        debugPrint("线程进入循环")
-        loop.run_forever()
+        loop = asyncio.get_event_loop()
     except Exception:
-        printTraceBack("线程异常退出")
+        loop = asyncio.new_event_loop()
+    loop.run_until_complete(_concurrentHandle(data, loop))
 
 
 # 进程循环函数
-async def workProcessRun(queue, threadList):
-    debugPrint("进程进入循环")
-    useThreadCount = 0
-    while True:
+async def _concurrentHandle(data, loop):
+    try:
+        request = getRequest(data)
+        module = importlib.reload(
+            importlib.import_module(request.getHandleModuleName()))
+        plugin = getattr(module, "handle")()
+        if not plugin.initBySystem(request.getBot()):
+            return
         try:
-            try:
-                data = queue.get_nowait()
-            except Exception:
-                await asyncio.sleep(0.05)
-                continue
-            request = getRequest(data)
-            module = importlib.reload(
-                importlib.import_module(request.getHandleModuleName()))
-            plugin = getattr(module, "handle")()
-            if not plugin.initBySystem(request.getBot()):
-                continue
-            try:
-                asyncio.run_coroutine_threadsafe(
-                    asyncHandlePacket(
-                        (plugin.getListener()[request.getType()]
-                            ["targetListener"][request.getTarget()]),
-                        request),
-                    threadList[useThreadCount][1])
-                useThreadCount += 1
-                if useThreadCount == len(threadList):
-                    useThreadCount = 0
-            except Exception:
-                printTraceBack()
+            await (plugin.getListener()[request.getType()]
+                   ["targetListener"][request.getTarget()])(request)
         except Exception:
             printTraceBack()
-
-
-# 进程初始化函数
-def workProcessInit(queue, threadSize):
-    debugPrint("新进程初始化")
-    threadList = []
-    debugPrint("线程创建中")
-    for i in range(threadSize):
-        loop = asyncio.new_event_loop()
-        threadList.append(
-            [threading.Thread(target=workThreadRun, args=(loop, )), loop])
-    for i in threadList:
-        i[0].start()
-    debugPrint("线程创建完成")
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    debugPrint("进程初始化完成")
-    loop.run_until_complete(workProcessRun(queue, threadList))
+    except Exception:
+        printTraceBack()
 
 
 class BotConcurrentModule:
@@ -85,17 +46,11 @@ class BotConcurrentModule:
 
 class defaultBotConcurrentModule(BotConcurrentModule):
     def __init__(self, processSize, threadSize):
-        if processSize * threadSize == 0:
+        if processSize == 0:
             raise BotException("错误的进程/线程数量")
-        self.processSize = processSize
-        self.threadSize = threadSize
-        self.processList = []
-        self.queue = Queue()
-        for i in range(int(getConfig()["workProcess"])):
-            self.processList.append(Process(
-                target=workProcessInit, args=(self.queue, threadSize)))
-        for i in self.processList:
-            i.start()
+        self.processPool = concurrent.futures.ProcessPoolExecutor(
+            max_workers=processSize
+        )
 
     def addTask(self, data):
-        self.queue.put(data)
+        self.processPool.submit(concurrentHandle, data)

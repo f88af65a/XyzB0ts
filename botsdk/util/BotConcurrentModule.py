@@ -7,6 +7,16 @@ from botsdk.util.BotException import BotException
 from botsdk.util.Error import printTraceBack
 
 
+def asyncRunInThreadHandle(func, *args, **kwargs):
+    def _handle():
+        try:
+            loop = asyncio.get_event_loop()
+        except Exception:
+            loop = asyncio.new_event_loop()
+        loop.run_until_complete(func(*args, **kwargs))
+    return _handle
+
+
 def concurrentHandle(data):
     try:
         loop = asyncio.get_event_loop()
@@ -43,6 +53,12 @@ class BotConcurrentModule:
     def addTask(self, data):
         pass
 
+    def runInThread(self, func, *args, **kwargs):
+        pass
+
+    def asyncRunInThread(self, func, *args, **kwargs):
+        pass
+
 
 class defaultBotConcurrentModule(BotConcurrentModule):
     def __init__(self, processSize, threadSize):
@@ -51,6 +67,17 @@ class defaultBotConcurrentModule(BotConcurrentModule):
         self.processPool = concurrent.futures.ProcessPoolExecutor(
             max_workers=processSize
         )
+        self.threadPool = concurrent.futures.ThreadPoolExecutor(
+            max_workers=threadSize
+        )
 
     def addTask(self, data):
         self.processPool.submit(concurrentHandle, data)
+
+    def runInThread(self, func, *args, **kwargs):
+        self.threadPool.submit(func, *args, **kwargs)
+
+    def asyncRunInThread(self, func, *args, **kwargs):
+        self.runInThread(
+            asyncRunInThreadHandle(func, *args, **kwargs)
+            )

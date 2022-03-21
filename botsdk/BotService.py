@@ -108,3 +108,9 @@ class BotService:
                 self.loop)
         asyncio.run_coroutine_threadsafe(self.timer.timerLoop(), self.loop)
         self.loop.run_forever()
+
+    def runInThread(self, func, *args, **kwargs):
+        self.concurrentModule.runInThread(func, *args, **kwargs)
+
+    def asyncRunInThread(self, func, *args, **kwargs):
+        self.concurrentModule.asyncRunInThread(func, *args, **kwargs)

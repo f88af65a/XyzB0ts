@@ -25,7 +25,6 @@ def concurrentHandle(data):
     loop.run_until_complete(_concurrentHandle(data, loop))
 
 
-# 进程循环函数
 async def _concurrentHandle(data, loop):
     try:
         request = getRequest(data)

@@ -9,25 +9,31 @@ class plugin(BotPlugin):
         self.name = "invite"
         self.addBotType("Mirai")
         self.addType("BotInvitedJoinGroupRequestEvent", self.groupInvite)
-        self.addType("NewFriendRequestEvent", self.groupInvite)
+        self.addType("NewFriendRequestEvent", self.friendRequest)
         self.canDetach = True
 
     async def groupInvite(self, request):
         request.getBot().BotInvitedJoinGroupRequestEvent(
-            eventId=request["eventId"],
-            fromId=request["fromId"],
-            groupId=request["groupId"],
-            operate=(0 if permissionCheck(request, "System:Owner") else 1),
-            message=""
+            {
+                "eventId": request["eventId"],
+                "fromId": request["fromId"],
+                "groupId": request["groupId"],
+                "operate":
+                    (0 if permissionCheck(request, "System:Owner") else 1),
+                "message": ""
+            }
         )
 
     async def friendRequest(self, request):
         request.getBot().NewFriendRequestEvent(
-            eventId=request["eventId"],
-            fromId=request["fromId"],
-            groupId=request["groupId"],
-            operate=(0 if permissionCheck(request, "System:Owner") else 1),
-            message=""
+            {
+                "eventId": request["eventId"],
+                "fromId": request["fromId"],
+                "groupId": request["groupId"],
+                "operate":
+                    (0 if permissionCheck(request, "System:Owner") else 1),
+                "message": ""
+            }
         )
 
 

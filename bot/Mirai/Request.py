@@ -15,6 +15,8 @@ class MiraiRequest(Request):
         }
 
     def getSenderId(self):
+        if self.getType() == "NewFriendRequestEvent":
+            return self["fromId"]
         return str(self["sender"]["id"])
 
     def getRoute(self):
@@ -123,7 +125,7 @@ class MiraiRequest(Request):
         self.getBot().recall(int(target))
 
     async def getRoles(self):
-        if "permission" in self["sender"]:
+        if "sender" in self and "permission" in self["sender"]:
             return {self["sender"]["permission"]}
         return set()
 

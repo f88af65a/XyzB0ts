@@ -19,7 +19,7 @@ async def permissionCheck(
     systemCookie = getConfig()["systemCookie"]
     if userId in systemCookie["user"]:
         requestRole |= set(systemCookie["user"][userId])
-    if "System:Owner" in requestRole:
+    if "System:Owner" in requestRole or requestRole & need:
         return True
     if target in systemCookie["systemPermission"]:
         if set(systemCookie["systemPermission"][target]) & requestRole:

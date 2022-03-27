@@ -13,25 +13,27 @@ class plugin(BotPlugin):
         self.canDetach = True
 
     async def groupInvite(self, request):
-        request.getBot().BotInvitedJoinGroupRequestEvent(
+        await request.getBot().BotInvitedJoinGroupRequestEvent(
             {
                 "eventId": request["eventId"],
                 "fromId": request["fromId"],
                 "groupId": request["groupId"],
                 "operate":
-                    (0 if permissionCheck(request, "System:Owner") else 1),
+                    (0 if await
+                        permissionCheck(request, "System:Owner") else 1),
                 "message": ""
             }
         )
 
     async def friendRequest(self, request):
-        request.getBot().NewFriendRequestEvent(
+        await request.getBot().NewFriendRequestEvent(
             {
                 "eventId": request["eventId"],
                 "fromId": request["fromId"],
                 "groupId": request["groupId"],
                 "operate":
-                    (0 if permissionCheck(request, "System:Owner") else 1),
+                    (0 if await
+                        permissionCheck(request, "System:Owner") else 1),
                 "message": ""
             }
         )

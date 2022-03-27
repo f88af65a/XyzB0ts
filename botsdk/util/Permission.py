@@ -32,6 +32,7 @@ async def permissionCheck(
     if "roles" in cookie and userId in cookie["roles"]:
         requestRole |= set(cookie["roles"][userId])
     childs = request.getId().split(":")[3:]
+    # single Check
     if request.isSingle():
         cookie = getCookie("System", "permission")
         if not cookie:

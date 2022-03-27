@@ -16,7 +16,7 @@ class MiraiRequest(Request):
 
     def getSenderId(self):
         if self.getType() == "NewFriendRequestEvent":
-            return self["fromId"]
+            return str(self["fromId"])
         return str(self["sender"]["id"])
 
     def getRoute(self):
@@ -60,10 +60,11 @@ class MiraiRequest(Request):
         return self["type"]
 
     def getId(self):
-        if self["type"] == "FriendMessage":
-            return f'''QQ:User:{self["sender"]["id"]}'''
-        else:
+        if ((msgtype := self.getType()) == "GroupMessage"
+                or msgtype == "TempMessage"):
             return f"""QQ:Group:{self["sender"]["group"]["id"]}"""
+        else:
+            return f'''QQ:User:{self.getSenderId()}'''
 
     def getCookie(self, target: str = None, id=None):
         return getCookie(id if id else self.getId(), target)

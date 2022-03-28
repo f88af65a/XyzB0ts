@@ -75,7 +75,7 @@ class Request(dict):
             self.getId(), messageChain, request)
 
     # needOverRide
-    # 获取角色
+    # 获取请求数据中的角色
     def getRoles(self):
         pass
 
@@ -104,3 +104,10 @@ class Request(dict):
 
     def isMessage(self):
         pass
+
+    def userFormat(self, userId):
+        pass
+
+    def groupFormat(self, groupId):
+        pass
+

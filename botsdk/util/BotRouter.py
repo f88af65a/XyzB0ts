@@ -1,14 +1,12 @@
 import asyncio
 import re
 
-from botsdk.BotModule.MessageChain import MessageChain
 from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
 from botsdk.util.BotPluginsManager import BotPluginsManager
 from botsdk.util.Error import asyncTraceBack
 from botsdk.util.HandlePacket import asyncHandlePacket
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.Permission import (getPermissionFromSystem, permissionCheck,
-                                    permissionCmp)
+from botsdk.util.Permission import permissionCheck
 
 
 class BotRouter:
@@ -77,10 +75,11 @@ class TargetRouter(BotRouter):
                 await request.sendMessage("权限限制")
                 return
             controlData = {"size": 1, "wait": 0}
+            '''
             if reData.group(1) is not None:
                 # 控制字段权限判断
                 if not permissionCmp(
-                        str(getPermissionFromSystem(request.getSenderId())),
+                        str(getPermissionFromSystem(request.getUserId())),
                         "ADMINISTRATOR"):
                     await request.sendMessage(
                         MessageChain().plain("使用控制字段权限不足"))
@@ -94,6 +93,7 @@ class TargetRouter(BotRouter):
                         return
                     else:
                         controlData[controlLineSplit[0]] = controlLineSplit[1]
+            '''
             request.setControlData(controlData)
             # 设置处理模块名
             request.setHandleModuleName(

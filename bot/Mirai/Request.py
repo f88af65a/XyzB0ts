@@ -14,11 +14,6 @@ class MiraiRequest(Request):
             "FriendMessage"
         }
 
-    def getSenderId(self):
-        if self.getType() == "NewFriendRequestEvent":
-            return str(self["fromId"])
-        return str(self["sender"]["id"])
-
     def getRoute(self):
         return self.route
 
@@ -132,10 +127,21 @@ class MiraiRequest(Request):
         return ret
 
     def getUserId(self):
-        return "QQ:User:" + self.getSenderId()
+        userId = None
+        if self.getType() == "NewFriendRequestEvent":
+            userId = self["fromId"]
+        else:
+            userId = self["sender"]["id"]
+        return self.userFormat(str(userId))
 
     def isSingle(self):
         return self.getType() in self.signalMessage
 
     def isMessage(self):
         return self.getType() in self.messageType
+
+    def userFormat(self, userId):
+        return f"QQ:User:{userId}"
+
+    def groupFormat(self, groupId):
+        return f"QQ:Group:{groupId}"

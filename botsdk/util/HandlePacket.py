@@ -11,20 +11,20 @@ endCallBackTask = []
 
 def asyncStartHandleNotify(func, *args, **kwargs):
     request = args[0]
-    debugPrint(("[IN]"
-                f'''[{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}]'''
-                f'''[{func.__name__}]'''
-                f"[{request.getFirstTextSplit()[0]}][{request.getUuid()}]"
-                f"[{request.getId()}][START] time={time.time()}"))
+    debugPrint((f'''[{func.__name__}]'''
+                f"[{request.getFirstTextSplit()[0]}]"
+                "[START]"
+                f'''{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}'''
+                ))
 
 
 def asyncEndHandleNotify(func, *args, **kwargs):
     request = args[0]
-    debugPrint(("[OUT]"
-                f'''[{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}]'''
-                f'''[{func.__name__}]'''
-                f"[{request.getFirstTextSplit()[0]}][{request.getUuid()}]"
-                f"[{request.getId()}][END] time={time.time()}"))
+    debugPrint((f'''[{func.__name__}]'''
+                f"[{request.getFirstTextSplit()[0]}]"
+                "[END]"
+                f'''{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}'''
+                ))
 
 
 def addToStartCallBack(func):

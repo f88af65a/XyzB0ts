@@ -136,9 +136,3 @@ class MiraiRequest(Request):
 
     def isMessage(self):
         return self.getType() in self.messageType
-
-    def userFormat(self, userId):
-        return f"QQ:User:{str(userId)}"
-
-    def groupFormat(self, groupId):
-        return f"QQ:Group:{str(groupId)}"

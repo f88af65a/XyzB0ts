@@ -74,6 +74,12 @@ class Request(dict):
         await self.getBot().sendMessage(
             self.getId(), messageChain, request)
 
+    def userFormat(self, userId):
+        return f"{self.getBot().getServiceType()}:User:{userId}"
+
+    def groupFormat(self, groupId):
+        return f"{self.getBot().getServiceType()}:Group:{groupId}"
+
     # needOverRide
     # 获取请求数据中的角色
     def getRoles(self):
@@ -104,10 +110,4 @@ class Request(dict):
         pass
 
     def isMessage(self):
-        pass
-
-    def userFormat(self, userId):
-        pass
-
-    def groupFormat(self, groupId):
         pass

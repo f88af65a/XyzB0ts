@@ -31,14 +31,19 @@ async def permissionCheck(
     # Onwer权限判断
     if request.getBot().getOwnerRole() in requestRole:
         return True
-    cookie = request.getCookie()
-    if "roles" in cookie and userId in cookie["roles"]:
-        requestRole |= set(cookie["roles"][userId])
-    childs = request.getId().split(":")[3:]
+    # 确认id
     # 判断为群或者好友聊天获取不同的cookie
     localId = request.getId()
     if request.isSingle():
         localId = "System"
+    # 角色判断
+    cookie = request.getCookie("roles", localId)
+    if cookie and userId in cookie:
+        requestRole |= set(cookie[userId])
+    if requestRole & need:
+        return True
+    childs = request.getId().split(":")[3:]
+    # 根据permissionpp判断
     cookie = request.getCookie("permission", localId)
     if not cookie:
         return False

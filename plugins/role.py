@@ -7,7 +7,9 @@ class plugin(BotPlugin):
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "角色", self.role)
+        self.addTarget("FriendMessage", "角色", self.role)
         self.addTarget("GroupMessage", "权限", self.permission)
+        self.addTarget("FriendMessage", "权限", self.permission)
         self.addTarget("GROUP:1", "角色", self.role)
         self.addTarget("GROUP:1", "权限", self.permission)
         self.canDetach = True
@@ -21,7 +23,10 @@ class plugin(BotPlugin):
         if ":" in data[3]:
             await request.sendMessage("角色中不许包含:")
             return
-        cookie = request.getCookie("roles")
+        localId = request.getId()
+        if request.isSingle():
+            localId = "System"
+        cookie = request.getCookie("roles", localId)
         if cookie is None:
             cookie = dict()
         data[2] = f"""{request.getBot().getServiceType()}:User:{data[2]}"""
@@ -36,7 +41,7 @@ class plugin(BotPlugin):
         else:
             await request.sendMessage("你干啥呢")
             return
-        request.setCookie("roles", cookie)
+        request.setCookie("roles", cookie, localId)
         await request.sendMessage("修改完成")
 
     async def permission(self, request):
@@ -48,7 +53,10 @@ class plugin(BotPlugin):
         if ":" in data[3]:
             await request.sendMessage("角色中不许包含:")
             return
-        cookie = request.getCookie("permission")
+        localId = request.getId()
+        if request.isSingle():
+            localId = "System"
+        cookie = request.getCookie("roles", localId)
         if cookie is None:
             cookie = dict()
         childs = request.getId().split(":")[3:]
@@ -67,7 +75,7 @@ class plugin(BotPlugin):
         else:
             await request.sendMessage("你干啥呢")
             return
-        request.setCookie("permission", cookie)
+        request.setCookie("permission", cookie, localId)
         await request.sendMessage("修改完成")
 
 

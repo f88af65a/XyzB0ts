@@ -37,11 +37,11 @@ class Request(dict):
     def getData(self):
         return (self.data, dict(self))
 
-    def getCookie(self, target: str = None):
-        return getCookie(self.getId(), target)
+    def getCookie(self, target: str = None, id=None):
+        return getCookie(id if id else self.getId(), target)
 
-    def setCookie(self, target: str, cookie):
-        setCookie(self.getId(), target, cookie)
+    def setCookie(self, target: str, cookie, id=None):
+        setCookie(id if id else self.getId(), target, cookie)
 
     def setHandleModuleName(self, name):
         self.data["handleModuleName"] = name
@@ -80,6 +80,7 @@ class Request(dict):
         pass
 
     # 获取发送者的BotId
+    # 可能返回None(
     def getUserId(self):
         pass
 
@@ -110,4 +111,3 @@ class Request(dict):
 
     def groupFormat(self, groupId):
         pass
-

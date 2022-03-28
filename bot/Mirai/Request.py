@@ -1,5 +1,3 @@
-from botsdk.util.Cookie import getCookie
-from botsdk.util.Cookie import setCookie
 from botsdk.util.BotException import BotException
 from botsdk.BotModule.Request import Request
 
@@ -57,15 +55,9 @@ class MiraiRequest(Request):
     def getId(self):
         if ((msgtype := self.getType()) == "GroupMessage"
                 or msgtype == "TempMessage"):
-            return f"""QQ:Group:{self["sender"]["group"]["id"]}"""
+            return self.groupFormat(self["sender"]["group"]["id"])
         else:
-            return f'''QQ:User:{self.getSenderId()}'''
-
-    def getCookie(self, target: str = None, id=None):
-        return getCookie(id if id else self.getId(), target)
-
-    def setCookie(self, target: str, cookie):
-        setCookie(self.getId(), target, cookie)
+            return self.getUserId()
 
     def getGroupId(self):
         return str(self["sender"]["group"]["id"])
@@ -128,10 +120,15 @@ class MiraiRequest(Request):
 
     def getUserId(self):
         userId = None
-        if self.getType() == "NewFriendRequestEvent":
+        msgType = self.getType()
+        if (msgType == "NewFriendRequestEvent"
+                or msgType == "BotInvitedJoinGroupRequestEvent"):
             userId = self["fromId"]
         else:
-            userId = self["sender"]["id"]
+            try:
+                userId = self["sender"]["id"]
+            except Exception:
+                return None
         return self.userFormat(str(userId))
 
     def isSingle(self):
@@ -141,7 +138,7 @@ class MiraiRequest(Request):
         return self.getType() in self.messageType
 
     def userFormat(self, userId):
-        return f"QQ:User:{userId}"
+        return f"QQ:User:{str(userId)}"
 
     def groupFormat(self, groupId):
-        return f"QQ:Group:{groupId}"
+        return f"QQ:Group:{str(groupId)}"

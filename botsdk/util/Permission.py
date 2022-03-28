@@ -16,6 +16,9 @@ async def permissionCheck(
         add: set = set(), need: set = set()):
     requestRole = await request.getRoles() | {"*"} | add
     userId = request.getUserId()
+    if userId is None:
+        return False
+    # 系统权限判断
     systemCookie = getConfig()["systemCookie"]
     if userId in systemCookie["user"]:
         requestRole |= set(systemCookie["user"][userId])
@@ -26,17 +29,18 @@ async def permissionCheck(
             return True
         else:
             return False
+    # Onwer权限判断
     if request.getBot().getOwnerRole() in requestRole:
         return True
     cookie = request.getCookie()
     if "roles" in cookie and userId in cookie["roles"]:
         requestRole |= set(cookie["roles"][userId])
     childs = request.getId().split(":")[3:]
-    # single Check
+    # 判断为群或者好友聊天获取不同的cookie
     if request.isSingle():
         cookie = getCookie("System", "permission")
         if not cookie:
-            cookie = {"permission": {"*": "*"}}
+            cookie = {}
     if "permission" not in cookie:
         return False
     cookie = cookie["permission"]

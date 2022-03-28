@@ -22,10 +22,10 @@ def concurrentHandle(data):
         loop = asyncio.get_event_loop()
     except Exception:
         loop = asyncio.new_event_loop()
-    loop.run_until_complete(_concurrentHandle(data, loop))
+    loop.run_until_complete(_concurrentHandle(data))
 
 
-async def _concurrentHandle(data, loop):
+async def _concurrentHandle(data):
     try:
         request = getRequest(data)
         module = importlib.reload(

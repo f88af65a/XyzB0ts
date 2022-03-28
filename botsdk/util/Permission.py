@@ -77,14 +77,3 @@ async def roleCheck(request, roles, add=set()):
     if cookie and userId in cookie:
         requestRole |= set(cookie[userId])
     return bool(requestRole & roles)
-
-
-helpDict = {"OWNER": 3, "ADMINISTRATOR": 2, "MEMBER": 1, "None": -1}
-
-
-def markToInt(mark: str):
-    return helpDict[mark]
-
-
-def permissionCmp(f, s):
-    return helpDict[str(f)] > helpDict[str(s)]

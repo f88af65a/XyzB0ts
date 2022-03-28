@@ -1,4 +1,3 @@
-from botsdk.util.Cookie import getCookieDriver, getCookie
 from botsdk.util.JsonConfig import getConfig
 
 '''
@@ -37,13 +36,12 @@ async def permissionCheck(
         requestRole |= set(cookie["roles"][userId])
     childs = request.getId().split(":")[3:]
     # 判断为群或者好友聊天获取不同的cookie
+    localId = request.getId()
     if request.isSingle():
-        cookie = getCookie("System", "permission")
-        if not cookie:
-            cookie = {}
-    if "permission" not in cookie:
+        localId = "System"
+    cookie = request.getCookie("permission", localId)
+    if not cookie:
         return False
-    cookie = cookie["permission"]
     m = 0
     while True:
         if ((target in cookie
@@ -71,21 +69,6 @@ async def roleCheck(request, roles):
     if "roles" in cookie and userId in cookie["roles"]:
         requestRole |= set(cookie["roles"][userId])
     return bool(requestRole & roles)
-
-
-def oldPermissionCheck(request, target: str):
-    if (re := systemPermissionCheck(
-            request, target, getConfig()["systemCookie"])) is not None:
-        return re
-    if getSystemPermissionAndCheck(
-            request.getSenderId(), "ADMINISTRATOR"):
-        return True
-    if request.getType() == "GroupMessage":
-        cookie = getCookieDriver().getCookieByDict(request.getId())
-        if not (groupPermissionCheck(request, target, cookie)
-                or groupMemberPermissionCheck(request, target, cookie)):
-            return False
-    return True
 
 
 helpDict = {"OWNER": 3, "ADMINISTRATOR": 2, "MEMBER": 1, "None": -1}

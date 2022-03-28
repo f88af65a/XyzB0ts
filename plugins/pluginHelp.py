@@ -10,6 +10,7 @@ class plugin(BotPlugin):
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "help", self.helper)
+        self.addTarget("FriendMessage", "help", self.helper)
         self.addTarget("GroupMessage", "load", self.load)
         self.addTarget("GroupMessage", "reload", self.reload)
         self.addTarget("GroupMessage", "unload", self.unload)

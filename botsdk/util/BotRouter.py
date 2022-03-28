@@ -77,7 +77,7 @@ class TargetRouter(BotRouter):
             controlData = {"size": 1, "wait": 0}
             if reData.group(1) is not None:
                 # 控制字段权限判断
-                if not roleCheck(
+                if not await roleCheck(
                         request,
                         {"System:Owner", "System:ADMINISTRATOR"}):
                     await request.sendMessage("使用控制字段权限不足")

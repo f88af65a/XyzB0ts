@@ -64,15 +64,18 @@ async def permissionCheck(
     return False
 
 
-async def roleCheck(request, roles):
-    requestRole = await request.getRoles() | {"*"}
+async def roleCheck(request, roles, add=set()):
+    requestRole = await request.getRoles() | {"*"} | add
     userId = request.getUserId()
     systemCookie = getConfig()["systemCookie"]
     if userId in systemCookie["user"]:
         requestRole |= set(systemCookie["user"][userId])
-    cookie = request.getCookie()
-    if "roles" in cookie and userId in cookie["roles"]:
-        requestRole |= set(cookie["roles"][userId])
+    localId = request.getId()
+    if request.isSingle():
+        localId = "System"
+    cookie = request.getCookie("roles", localId)
+    if cookie and userId in cookie:
+        requestRole |= set(cookie[userId])
     return bool(requestRole & roles)
 
 

@@ -56,7 +56,7 @@ class plugin(BotPlugin):
         localId = request.getId()
         if request.isSingle():
             localId = "System"
-        cookie = request.getCookie("roles", localId)
+        cookie = request.getCookie("permission", localId)
         if cookie is None:
             cookie = dict()
         childs = request.getId().split(":")[3:]

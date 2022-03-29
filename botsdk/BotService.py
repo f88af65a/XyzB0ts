@@ -50,7 +50,7 @@ class BotService:
             debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
             # 初始化BotRoute
             botRoute = botsdk.BotRoute.BotRoute(
-                bot, BotPluginsManager(bot), concurrentModule)
+                bot, BotPluginsManager(bot), self, concurrentModule)
             # eventLoop
             while True:
                 retrySize = 0

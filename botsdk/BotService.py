@@ -1,5 +1,6 @@
 import asyncio
 import uuid
+import random
 
 import botsdk.BotModule.Bot
 import botsdk.BotModule.Request
@@ -72,7 +73,7 @@ class BotService:
                                 ret = 1
                             if ret != 0:
                                 debugPrint(
-                                    f'''{botName}重登陆失败 已重试{loginRetry}次''',
+                                    f'''账号{botName}重登失败重试:{loginRetry}次''',
                                     fromName="BotService")
                             else:
                                 break
@@ -83,9 +84,10 @@ class BotService:
                             fromName="BotService")
                     else:
                         debugPrint(
-                            f'''账号{botName}获取消息失败重试:{retrySize + 1}''',
+                            f'''账号{botName}获取消息失败重试:{retrySize + 1}次''',
                             fromName="BotService")
-                        await asyncio.sleep(2)
+                        await asyncio.sleep(
+                            random.random() + random.randint(1, 2))
                 for i in ret[1]:
                     request = getAttrFromModule(
                                 botPath + ".Request",

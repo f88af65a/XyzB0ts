@@ -16,21 +16,21 @@ class plugin(BotPlugin):
     async def randomImg(self, request):
         '''#mirlkoi.random 从mirlkoi获取一张随机图'''
         try:
-            ret = json.loads(get("https://iw233.cn/API/Random.php?type=json"))
-            request.sendMessage(
+            ret = json.loads((await get("https://iw233.cn/API/Random.php?type=json")).encode("utf8"))
+            await request.sendMessage(
                 request.makeMessageChain().image(url=ret["pic"]))
         except Exception:
-            request.sendMessage("获取失败")
+            await request.sendMessage("获取失败")
             return
 
     async def mirlkoiImg(self, request):
         '''#mirlkoi 从mirlkoi获取一张精品图'''
         try:
-            ret = json.loads(get("https://iw233.cn/API/MirlKoi.php?type=json"))
-            request.sendMessage(
+            ret = json.loads((await get("https://iw233.cn/API/MirlKoi.php?type=json")).encode("utf8"))
+            await request.sendMessage(
                 request.makeMessageChain().image(url=ret["pic"]))
         except Exception:
-            request.sendMessage("获取失败")
+            await request.sendMessage("获取失败")
             return
 
 

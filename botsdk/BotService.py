@@ -2,7 +2,7 @@ import asyncio
 import uuid
 import random
 
-from . import BotRoute
+from .BotRoute import BotRoute
 from .util.BotConcurrentModule import defaultBotConcurrentModule
 from .util.BotPluginsManager import BotPluginsManager
 from .util.Error import debugPrint

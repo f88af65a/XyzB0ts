@@ -43,6 +43,10 @@ def processWorkFunction(queue):
 
 
 async def _processWorkFunction(queue):
+    global threadSize
+    localThreadPool = concurrent.futures.ThreadPoolExecutor(
+                max_workers=threadSize
+            )
     while True:
         data = queue.get()
         try:
@@ -89,7 +93,8 @@ class defaultBotConcurrentModule(BotConcurrentModule):
         self.queue = SimpleQueue()
         for i in range(int(getConfig()["workProcess"])):
             self.processList.append(Process(
-                target=processWorkFunction, args=(self.queue, threadSize)))
+                target=processWorkFunction, args=(self.queue,)))
+            self.processList[-1].start()
         global threadPool
         self.threadPool = threadPool
 

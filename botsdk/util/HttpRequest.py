@@ -10,8 +10,7 @@ localData.conn = None
 
 async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
     global localData
-    conn = getattr(localData, "conn", None)
-    if conn is None:
+    if getattr(localData, "conn", None) is None:
         localData.conn = aiohttp.TCPConnector()
     try:
         timeout = aiohttp.ClientTimeout(total=timeout)
@@ -34,13 +33,13 @@ async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
 
 
 async def post(url, data, headers=None, byte=None, timeout: int = 15):
-    global conn
-    if conn is None:
-        conn = aiohttp.TCPConnector()
+    global localData
+    if getattr(localData, "conn", None) is None:
+        localData.conn = aiohttp.TCPConnector()
     try:
         timeout = aiohttp.ClientTimeout(total=timeout)
         async with aiohttp.ClientSession(
-                connector=conn,
+                connector=localData.conn,
                 connector_owner=False,
                 timeout=timeout) as session:
             async with session.post(url, data=json.dumps(data).encode("utf8"),

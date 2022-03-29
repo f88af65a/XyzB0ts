@@ -32,14 +32,6 @@ def asyncRunInThread(func, *args, **kwargs):
         )
 
 
-def concurrentHandle(data):
-    try:
-        loop = asyncio.get_event_loop()
-    except Exception:
-        loop = asyncio.new_event_loop()
-    loop.run_until_complete(_concurrentHandle(data))
-
-
 async def _concurrentHandle(data):
     try:
         request = getRequest(data)
@@ -58,6 +50,15 @@ async def _concurrentHandle(data):
             pass
     except Exception:
         pass
+
+
+def concurrentHandle(data):
+    try:
+        loop = asyncio.get_event_loop()
+    except Exception:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+    loop.run_until_complete(_concurrentHandle(data))
 
 
 class BotConcurrentModule:

@@ -81,7 +81,7 @@ class BotService:
                         debugPrint(
                             f'''账号{botName}重登陆成功''',
                             fromName="BotService")
-                        break
+                        continue
                     await asyncio.sleep(min(retrySize * 5, 15))
                 for i in ret[1]:
                     request = getAttrFromModule(

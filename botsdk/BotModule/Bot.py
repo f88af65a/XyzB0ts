@@ -1,6 +1,6 @@
 import json
 
-from botsdk.BotModule.Adapter import getAdapter
+from ..util.GetModule import getAdapter
 from botsdk.util.JsonConfig import getConfig
 from botsdk.util.Tool import getAttrFromModule
 

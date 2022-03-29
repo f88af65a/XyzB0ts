@@ -20,9 +20,11 @@ class MiraiBot(Bot):
         return self.path
 
     async def sendMessage(
-            self, id: str, messageChain: MessageChain,
-            quote=None, request=None):
-        ids = id.split(":")
+            self,
+            messageChain: MessageChain,
+            request=None,
+            quote=None):
+        ids = request.getId().split(":")
         if request is None:
             if ids[1] == "User":
                 messageType = "FriendMessage"

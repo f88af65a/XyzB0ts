@@ -1,5 +1,5 @@
 from botsdk.util.Cookie import getCookie, setCookie
-from botsdk.BotModule.Bot import getBot
+from ..util.GetModule import getBot
 from ..util.BotConcurrentModule import asyncRunInThread
 
 
@@ -71,10 +71,12 @@ class Request(dict):
     def getFirstTextSplit(self):
         return self.getFirstText().split(" ")
 
-    async def sendMessage(self, messageChain, request):
+    async def sendMessage(self, messageChain, *args, **kwargs):
         asyncRunInThread(
             self.getBot().sendMessage,
-            self.getId(), messageChain, request
+            messageChain,
+            self,
+            *args, **kwargs
             )
 
     def userFormat(self, userId):

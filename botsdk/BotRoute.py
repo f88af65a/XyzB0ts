@@ -33,8 +33,7 @@ class BotRoute:
         return self.botService
 
     def runInThread(self, func, *args, **kwargs):
-        self.getBotService().runInThread(func, *args, **kwargs)
-        return True
+        return self.getBotService().runInThread(func, *args, **kwargs)
 
     def asyncRunInThread(self, func, *args, **kwargs):
         self.getBotService().asyncRunInThread(func, *args, **kwargs)

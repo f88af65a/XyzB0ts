@@ -4,7 +4,6 @@ import importlib
 
 from botsdk.BotModule.Request import getRequest
 from botsdk.util.BotException import BotException
-from botsdk.util.Error import printTraceBack
 from JsonConfig import getConfig
 
 threadSize = getConfig()["workThread"]
@@ -48,9 +47,9 @@ async def _concurrentHandle(data):
             await (plugin.getListener()[request.getType()]
                    ["targetListener"][request.getTarget()])(request)
         except Exception:
-            printTraceBack()
+            pass
     except Exception:
-        printTraceBack()
+        pass
 
 
 class BotConcurrentModule:

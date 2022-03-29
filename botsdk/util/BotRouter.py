@@ -17,32 +17,37 @@ class BotRouter:
     def init(self):
         pass
 
-    async def route(self, pluginsManager: BotPluginsManager,
+    async def route(self,
+                    pluginsManager: BotPluginsManager,
                     request,
                     concurrentModule: defaultBotConcurrentModule = None):
         pass
 
 
 class GeneralRouter(BotRouter):
-    async def route(self, pluginsManager: BotPluginsManager,
+    async def route(self,
+                    pluginsManager: BotPluginsManager,
                     request,
                     concurrentModule: defaultBotConcurrentModule = None):
         for i in pluginsManager.getGeneralList():
+            if request.getBot().getBotType() not in i[1].__self__.botSet:
+                continue
             if (ret := await i[1](request)) is not None and ret is False:
                 return False
-            await asyncio.sleep(0)
         return True
 
 
 class TypeRouter(BotRouter):
-    async def route(self, pluginsManager: BotPluginsManager,
+    async def route(self,
+                    pluginsManager: BotPluginsManager,
                     request,
                     concurrentModule: defaultBotConcurrentModule = None):
         if request.getType() in pluginsManager.getListener():
             listener = pluginsManager.getListener()
             for i in listener[request.getType()]["typeListener"]:
+                if request.getBot().getBotType() not in i.__self__.botSet:
+                    continue
                 await i(request)
-                await asyncio.sleep(0)
         return True
 
 
@@ -54,7 +59,8 @@ class TargetRouter(BotRouter):
              + r"])(\S+)( \S+)*$"))
 
     @asyncTraceBack
-    async def route(self, pluginsManager: BotPluginsManager,
+    async def route(self,
+                    pluginsManager: BotPluginsManager,
                     request,
                     concurrentModule: defaultBotConcurrentModule = None):
         # 类型判断与命令获取
@@ -70,6 +76,9 @@ class TargetRouter(BotRouter):
         # 命令判断
         if (ret := pluginsManager.getTarget(
                 request.getType(), target)) is not None:
+            # 判断类型是否正确
+            if request.getBot().getBotType() not in ret.__self__.botSet:
+                return True
             # 权限判断
             if not await permissionCheck(request, target):
                 await request.sendMessage("权限限制")

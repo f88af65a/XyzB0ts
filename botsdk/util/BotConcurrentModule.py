@@ -34,21 +34,7 @@ def asyncRunInThread(func, *args, **kwargs):
         )
 
 
-def processWorkFunction(queue):
-    global threadSize
-    processThreadPool = []
-    processQueue = SimpleQueue
-    for _ in range(threadSize):
-        processThreadPool.append(
-            Thread(target=threadWorkFunction,
-                   args=(processQueue,)))
-        processThreadPool[-1].start()
-    while True:
-        data = queue.get()
-        processQueue.put(data)
-
-
-async def threadWorkFunction(queue):
+def threadWorkFunction(queue):
     async def _threadWorkFunction():
         while True:
             data = queue.get()
@@ -74,7 +60,21 @@ async def threadWorkFunction(queue):
     except Exception:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-    loop.run_until_complete(_threadWorkFunction(queue))
+    loop.run_until_complete(_threadWorkFunction())
+
+
+def processWorkFunction(queue):
+    global threadSize
+    processThreadPool = []
+    processQueue = SimpleQueue
+    for _ in range(threadSize):
+        processThreadPool.append(
+            Thread(target=threadWorkFunction,
+                   args=(processQueue,)))
+        processThreadPool[-1].start()
+    while True:
+        data = queue.get()
+        processQueue.put(data)
 
 
 class BotConcurrentModule:

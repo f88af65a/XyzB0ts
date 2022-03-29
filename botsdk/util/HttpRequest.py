@@ -12,11 +12,9 @@ localData = local()
 async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
     global localData
     if getattr(localData, "conn", None) is None:
-        resolver = AsyncResolver(nameservers=["223.5.5.5"])
         localData.conn = aiohttp.TCPConnector(
             ttl_dns_cache=300,
-            limit=0,
-            resolver=resolver
+            limit=0
             )
     try:
         timeout = aiohttp.ClientTimeout(total=timeout)

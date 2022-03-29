@@ -5,6 +5,7 @@ import importlib
 from .GetModule import getRequest
 from .BotException import BotException
 from .JsonConfig import getConfig
+from multiprocessing import SimpleQueue, Process
 
 threadSize = getConfig()["workThread"]
 threadPool = concurrent.futures.ThreadPoolExecutor(
@@ -18,7 +19,7 @@ def asyncRunInThreadHandle(func, *args, **kwargs):
     except Exception:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-    loop.run_until_complete(func(*args, **kwargs))
+    asyncio.run(func(*args, **kwargs))
 
 
 def runInThread(func, *args, **kwargs):
@@ -32,33 +33,35 @@ def asyncRunInThread(func, *args, **kwargs):
         )
 
 
-async def _concurrentHandle(data):
-    try:
-        request = getRequest(data)
-        module = importlib.reload(
-            importlib.import_module(request.getHandleModuleName()))
-        plugin = getattr(module, "handle")()
-        if not plugin.initBySystem(request.getBot()):
-            return
-        try:
-            asyncRunInThread(
-                plugin.getListener()[request.getType()]
-                ["targetListener"][request.getTarget()],
-                request
-                )
-        except Exception:
-            pass
-    except Exception:
-        pass
-
-
-def concurrentHandle(data):
+def processWorkFunction(queue):
     try:
         loop = asyncio.get_event_loop()
     except Exception:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-    loop.run_until_complete(_concurrentHandle(data))
+    loop.run_until_complete(_processWorkFunction(queue))
+
+
+async def _processWorkFunction(queue):
+    while True:
+        data = queue.get()
+        try:
+            request = getRequest(data)
+            module = importlib.reload(
+                importlib.import_module(request.getHandleModuleName()))
+            plugin = getattr(module, "handle")()
+            plugin.onLoad()
+            if not plugin.initBySystem(request.getBot()):
+                return
+            try:
+                await (plugin.getListener()[request.getType()]
+                       ["targetListener"][request.getTarget()])(
+                    request
+                    )
+            except Exception:
+                pass
+        except Exception:
+            pass
 
 
 class BotConcurrentModule:
@@ -82,14 +85,16 @@ class defaultBotConcurrentModule(BotConcurrentModule):
     def __init__(self, processSize, threadSize):
         if processSize == 0:
             raise BotException("错误的进程/线程数量")
-        self.processPool = concurrent.futures.ProcessPoolExecutor(
-            max_workers=processSize
-        )
+        self.processList = []
+        self.queue = SimpleQueue()
+        for i in range(int(getConfig()["workProcess"])):
+            self.processList.append(Process(
+                target=processWorkFunction, args=(self.queue, threadSize)))
         global threadPool
         self.threadPool = threadPool
 
     def addTask(self, data):
-        self.processPool.submit(concurrentHandle, data)
+        self.queue.put(data)
 
     def runInThread(self, func, *args, **kwargs):
         self.threadPool.submit(func, *args, **kwargs)
@@ -97,4 +102,4 @@ class defaultBotConcurrentModule(BotConcurrentModule):
     def asyncRunInThread(self, func, *args, **kwargs):
         self.runInThread(
             asyncRunInThreadHandle(func, *args, **kwargs)
-            )
+        )

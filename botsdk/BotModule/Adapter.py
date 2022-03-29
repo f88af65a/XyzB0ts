@@ -4,13 +4,6 @@ import sys
 
 from botsdk.util.BotException import BotException
 from botsdk.util.JsonConfig import getConfig
-from botsdk.util.Tool import getAttrFromModule
-
-
-def getAdapter(data):
-    return getAttrFromModule(
-        getConfig()["botPath"].replace("/", ".")
-        + data["botType"] + ".Adapter", f"""{data["botType"]}Adapter""")(data)
 
 
 class Adapter:

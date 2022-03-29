@@ -1,5 +1,3 @@
-from botsdk.util.Cookie import getCookie
-from botsdk.util.Cookie import setCookie
 from botsdk.util.BotException import BotException
 from botsdk.BotModule.Request import Request
 
@@ -13,9 +11,6 @@ class MiraiRequest(Request):
         self.signalMessage = {
             "FriendMessage"
         }
-
-    def getSenderId(self):
-        return str(self["sender"]["id"])
 
     def getRoute(self):
         return self.route
@@ -58,16 +53,11 @@ class MiraiRequest(Request):
         return self["type"]
 
     def getId(self):
-        if self["type"] == "GroupMessage" or self["type"] == "TempMessage":
-            return f"""QQ:Group:{self["sender"]["group"]["id"]}"""
+        if ((msgtype := self.getType()) == "GroupMessage"
+                or msgtype == "TempMessage"):
+            return self.groupFormat(self["sender"]["group"]["id"])
         else:
-            return f'''QQ:User:{self["sender"]["id"]}'''
-
-    def getCookie(self, target: str = None):
-        return getCookie(self.getId(), target)
-
-    def setCookie(self, target: str, cookie):
-        setCookie(self.getId(), target, cookie)
+            return self.getUserId()
 
     def getGroupId(self):
         return str(self["sender"]["group"]["id"])
@@ -104,9 +94,13 @@ class MiraiRequest(Request):
     def getMyPermission(self):
         return self["sender"]["group"]["permission"]
 
+    '''
     async def sendMessage(self, msgChain, quote=None):
         await self.getBot().sendMessage(
-            self.getId(), msgChain, quote, self)
+            msgChain,
+            self,
+            quote)
+    '''
 
     async def sendNudge(self, target):
         nudgeType = None
@@ -123,12 +117,23 @@ class MiraiRequest(Request):
         self.getBot().recall(int(target))
 
     async def getRoles(self):
-        if "permission" in self["sender"]:
-            return {self["sender"]["permission"]}
-        return set()
+        ret = set()
+        if "sender" in self and "permission" in self["sender"]:
+            ret |= {self["sender"]["permission"]}
+        return ret
 
     def getUserId(self):
-        return "QQ:User:" + self.getSenderId()
+        userId = None
+        msgType = self.getType()
+        if (msgType == "NewFriendRequestEvent"
+                or msgType == "BotInvitedJoinGroupRequestEvent"):
+            userId = self["fromId"]
+        else:
+            try:
+                userId = self["sender"]["id"]
+            except Exception:
+                return None
+        return self.userFormat(str(userId))
 
     def isSingle(self):
         return self.getType() in self.signalMessage

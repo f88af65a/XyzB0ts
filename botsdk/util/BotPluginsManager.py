@@ -1,8 +1,8 @@
 import importlib
 import os
 
-from botsdk.util.Error import debugPrint, printTraceBack
-from botsdk.util.JsonConfig import getConfig
+from .Error import debugPrint, printTraceBack
+from .JsonConfig import getConfig
 
 
 class BotPluginsManager:

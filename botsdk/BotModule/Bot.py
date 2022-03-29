@@ -1,15 +1,8 @@
 import json
 
-from botsdk.BotModule.Adapter import getAdapter
+from ..util.GetModule import getAdapter
 from botsdk.util.JsonConfig import getConfig
 from botsdk.util.Tool import getAttrFromModule
-
-
-def getBot(data):
-    return getAttrFromModule(
-                (getConfig()["botPath"]
-                 + data[0]["botType"]).replace("/", ".") + ".Bot",
-                data[0]["botType"] + "Bot")(*data)
 
 
 class Bot:
@@ -89,13 +82,15 @@ class Bot:
         pass
 
     # 获取消息
+    # 返回值
+    # (0成功/1异常，成功为消息列表/失败为返回的消息)
     async def fetchMessage(self):
         pass
 
     # 发送消息接口
-    async def sendMessage(self, messageChain, request):
+    async def sendMessage(self, messageChain, request=None, id=None):
         pass
 
-    # 路由前过滤
+    # 路由前过滤 返回True则可以继续执行
     async def filter(self, request) -> bool:
-        pass
+        return True

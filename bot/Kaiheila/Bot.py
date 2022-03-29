@@ -84,7 +84,7 @@ class KaiheilaBot(Bot):
         if re is None or re["s"] != 1 or re["d"]["code"] != 0:
             debugPrint(re)
             await self.adapter.wsDisconnect()
-            self.state = 1
+            self.state = 0
         else:
             self.sessionId = re["d"]["session_id"]
             self.state = 3
@@ -176,4 +176,4 @@ class KaiheilaBot(Bot):
             )
 
     async def filter(self, request):
-        return not self.data["me"]["id"] == request["author_id"]
+        return not (self.data["me"]["id"] == request["author_id"])

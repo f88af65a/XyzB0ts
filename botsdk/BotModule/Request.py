@@ -1,15 +1,6 @@
 from botsdk.util.Cookie import getCookie, setCookie
-from botsdk.util.Tool import getAttrFromModule
-from botsdk.util.JsonConfig import getConfig
-from botsdk.BotModule.Bot import getBot
-
-
-def getRequest(data):
-    return getAttrFromModule(
-        ((getConfig()["botPath"]
-         + data[0]["bot"][0]["botType"]).replace("/", ".")
-         + ".Request"),
-        data[0]["bot"][0]["botType"] + "Request")(*data)
+from ..util.GetModule import getBot
+from ..util.RunInThread import asyncRunInThread
 
 
 class Request(dict):
@@ -37,11 +28,21 @@ class Request(dict):
     def getData(self):
         return (self.data, dict(self))
 
-    def getCookie(self, target: str = None):
-        return getCookie(self.getId(), target)
+    def getCookie(self, target: str = None, id=None):
+        if "cookie" not in self.data:
+            self.data["cookie"] = getCookie(self.getId())
+        if id is None:
+            if target is None:
+                return self.data["cookie"]
+            if target in self.data["cookie"]:
+                return self.data["cookie"][target]
+            return None
+        return getCookie(id, target)
 
-    def setCookie(self, target: str, cookie):
-        setCookie(self.getId(), target, cookie)
+    def setCookie(self, target: str, cookie, id=None):
+        if "cookie" in self.data and id is None:
+            self.data["cookie"][target] = cookie
+        setCookie(id if id else self.getId(), target, cookie)
 
     def setHandleModuleName(self, name):
         self.data["handleModuleName"] = name
@@ -70,16 +71,34 @@ class Request(dict):
     def getFirstTextSplit(self):
         return self.getFirstText().split(" ")
 
-    async def sendMessage(self, messageChain, request):
+    async def sendMessage(self, messageChain, id=None):
+        asyncRunInThread(
+            self.getBot().sendMessage,
+            messageChain,
+            request=self,
+            id=id
+            )
+
+    async def syncSendMessage(self, messageChain, *args, **kwargs):
         await self.getBot().sendMessage(
-            self.getId(), messageChain, request)
+            messageChain,
+            self,
+            *args, **kwargs
+            )
+
+    def userFormat(self, userId):
+        return f"{self.getBot().getServiceType()}:User:{userId}"
+
+    def groupFormat(self, groupId):
+        return f"{self.getBot().getServiceType()}:Group:{groupId}"
 
     # needOverRide
-    # 获取角色
+    # 获取请求数据中的角色
     def getRoles(self):
         pass
 
     # 获取发送者的BotId
+    # 可能返回None(
     def getUserId(self):
         pass
 

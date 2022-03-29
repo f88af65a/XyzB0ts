@@ -35,7 +35,7 @@ def threadWorkFunction(queue):
     async def _threadWorkFunction(queue):
         while True:
             data = queue.get()
-            unPackRequestAndRun(data)
+            await unPackRequestAndRun(data)
     try:
         loop = asyncio.get_event_loop()
     except Exception:

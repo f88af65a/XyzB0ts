@@ -103,6 +103,7 @@ class BotService:
                     if (await bot.filter(request)):
                         asyncio.run_coroutine_threadsafe(
                             botRoute.route(request), self.loop)
+                await asyncio.sleep(0)
 
     def run(self):
         self.loop = asyncio.new_event_loop()

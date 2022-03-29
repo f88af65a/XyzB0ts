@@ -1,3 +1,4 @@
+import asyncio
 from botsdk.util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
 from botsdk.BotModule.Request import Request
 from botsdk.util.TimeTest import asyncTimeTest
@@ -20,6 +21,7 @@ class BotRoute:
                     self.pluginsManager, request,
                     self.concurrentModule)) is not None and re is False:
                 return
+            await asyncio.sleep(0)
 
     def getPluginsManager(self):
         return self.pluginsManager
@@ -32,6 +34,7 @@ class BotRoute:
 
     def runInThread(self, func, *args, **kwargs):
         self.getBotService().runInThread(func, *args, **kwargs)
+        return True
 
     def asyncRunInThread(self, func, *args, **kwargs):
         self.getBotService().asyncRunInThread(func, *args, **kwargs)

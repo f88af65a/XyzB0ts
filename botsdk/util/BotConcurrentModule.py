@@ -4,7 +4,7 @@ import importlib
 
 from botsdk.BotModule.Request import getRequest
 from botsdk.util.BotException import BotException
-from JsonConfig import getConfig
+from .JsonConfig import getConfig
 
 threadSize = getConfig()["workThread"]
 threadPool = concurrent.futures.ThreadPoolExecutor(

@@ -3,7 +3,7 @@ import os
 from botsdk.util.BotException import BotException
 
 config = None
-configDirPath = "./configs/"
+configDirPath = "configs/"
 
 
 def reload():
@@ -16,7 +16,6 @@ def load():
         with open(configDirPath + "config.json") as configFile:
             config = json.loads(configFile.read())
     except Exception:
-        print("Config.json读取出错")
         raise BotException("配置文件读取出错")
     return True
 

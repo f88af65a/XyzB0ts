@@ -67,12 +67,13 @@ class plugin(BotPlugin):
 
     async def rank(self, request):
         '''pixiv.rank #根据排行榜随机出图'''
-        rankType = ["day", "week", "month", "rookie", "original", "male"]
+        rankType = ["day", "week", "month", "week_rookie",
+                    "week_original", "day_male", "day_female"]
         url = (f'''{self.url}/api/pixiv/rank?RankingType='''
-               f'''{rankType[random.randint(0,len(rankType) - 1)]}&date='''
+               f'''{rankType[random.randint(0, len(rankType) - 1)]}&date='''
                f'''{time.strftime(
                    "%Y-%m-%d", time.localtime(
-                       time.time() - random.randint(1,14)
+                       time.time() - random.randint(0, 30)
                        * (60 * 60 * 24)))}''')
         response = await get(url)
         if response is None:

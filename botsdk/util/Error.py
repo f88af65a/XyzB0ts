@@ -1,7 +1,7 @@
 import traceback
 
 from botsdk.util.JsonConfig import getConfig
-from .BotConcurrentModule import runInThread
+from .RunInThread import runInThread
 
 
 def debugPrint(msg: str, fromName=None, exception=None, level=5):

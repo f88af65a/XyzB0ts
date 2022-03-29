@@ -1,6 +1,6 @@
 from botsdk.util.Cookie import getCookie, setCookie
 from ..util.GetModule import getBot
-from ..util.BotConcurrentModule import asyncRunInThread
+from ..util.RunInThread import asyncRunInThread
 
 
 class Request(dict):

@@ -1,38 +1,13 @@
 import asyncio
-import concurrent.futures
 import importlib
 from multiprocessing import Process, SimpleQueue
 from threading import Thread
 
 from .BotException import BotException
 from .GetModule import getRequest
-from .JsonConfig import getConfig
 from .HandlePacket import asyncHandlePacket
-
-threadSize = getConfig()["workThread"]
-threadPool = concurrent.futures.ThreadPoolExecutor(
-                max_workers=threadSize
-            )
-
-
-def asyncRunInThreadHandle(func, *args, **kwargs):
-    try:
-        loop = asyncio.get_event_loop()
-    except Exception:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-    asyncio.run(func(*args, **kwargs))
-
-
-def runInThread(func, *args, **kwargs):
-    global threadPool
-    threadPool.submit(func, *args, **kwargs)
-
-
-def asyncRunInThread(func, *args, **kwargs):
-    runInThread(
-        asyncRunInThreadHandle, func, *args, **kwargs
-        )
+from .JsonConfig import getConfig
+from .RunInThread import asyncRunInThreadHandle, threadPool
 
 
 def threadWorkFunction(queue):
@@ -106,14 +81,12 @@ class defaultBotConcurrentModule(BotConcurrentModule):
             self.processList.append(Process(
                 target=processWorkFunction, args=(self.queue,)))
             self.processList[-1].start()
-        global threadPool
-        self.threadPool = threadPool
 
     def addTask(self, data):
         self.queue.put(data)
 
     def runInThread(self, func, *args, **kwargs):
-        self.threadPool.submit(func, *args, **kwargs)
+        threadPool.submit(func, *args, **kwargs)
 
     def asyncRunInThread(self, func, *args, **kwargs):
         self.runInThread(

@@ -66,10 +66,11 @@ class BotService:
                         loginRetry = 0
                         while True:
                             try:
-                                re = await bot.login()
+                                # TypeError: 'int' object is not subscriptable
+                                ret = await bot.login()
                             except Exception:
-                                re = 1
-                            if re != 0:
+                                ret = 1
+                            if ret != 0:
                                 debugPrint(
                                     f'''{botName}重登陆失败 已重试{loginRetry}次''',
                                     fromName="BotService")
@@ -82,7 +83,7 @@ class BotService:
                             fromName="BotService")
                         break
                     await asyncio.sleep(min(retrySize * 5, 15))
-                for i in re[1]:
+                for i in ret[1]:
                     request = getAttrFromModule(
                                 botPath + ".Request",
                                 botType + "Request")(

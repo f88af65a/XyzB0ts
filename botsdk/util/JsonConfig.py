@@ -10,11 +10,6 @@ def reload():
     return load()
 
 
-def getConfig():
-    global config
-    return config
-
-
 def load():
     global config
     try:
@@ -27,6 +22,11 @@ def load():
 
 
 load()
+
+
+def getConfig():
+    global config
+    return config
 
 
 def checkLocalFile():

@@ -15,7 +15,7 @@
  [邀请链接](https://kaihei.co/LUTGj9)
 
 # 快速开始
- [BOT部署](/docs/TOUSE.MD)  
+ [部署与依赖](/docs/TOUSE.MD)  
  [插件制作](/docs/HOWTOSTART.MD)
 
 ## 一些链接

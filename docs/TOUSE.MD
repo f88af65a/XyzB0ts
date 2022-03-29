@@ -3,11 +3,15 @@
  BOT开发环境为python3.10
 
 ### 依赖
- 当前依赖:
  ```
+ Python >= 3.9
+
+ 框架依赖:
  aiohttp
- pillow
  sqlite3/redis
+
+ 插件依赖:
+ 请查看插件的import
  ```
 
 ### 部署

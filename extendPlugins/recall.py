@@ -10,7 +10,7 @@ class plugin(BotPlugin):
         self.canDetach = True
 
     async def recall(self, request):
-        '''#recall 撤回一条消息'''
+        '''#recall 撤回被回复的消息'''
         message = request.getMessageChain()
         for i in message[1:]:
             if i["type"] == "Quote":
@@ -22,7 +22,9 @@ class plugin(BotPlugin):
                 except Exception:
                     await request.sendMessage("撤回失败")
                 return
-        await request.sendMessage("能回复吗，没有这个能力，再发下去，要输越南了")
+        await request.sendMessage(
+            "能撤回吗，没有这个能力，再发下去，要输越南了，回复都不会，找个班上吧。"
+            )
 
 
 def handle(*args, **kwargs):

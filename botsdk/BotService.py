@@ -67,7 +67,6 @@ class BotService:
                         # reLoginLoop
                         while True:
                             try:
-                                # TypeError: 'int' object is not subscriptable
                                 ret = await bot.login()
                             except Exception:
                                 ret = 1

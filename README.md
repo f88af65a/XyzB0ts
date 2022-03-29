@@ -20,7 +20,7 @@
 
 # 快速开始
 
- [BOT部署](/docs/TOUSE.MD)
+ [BOT部署](/docs/TOUSE.MD)  
  [插件制作](/docs/HOWTOSTART.MD)
 
 ## 一些链接

@@ -54,7 +54,7 @@ class BotService:
                 retrySize = 0
                 while True:
                     try:
-                        if (re := await bot.fetchMessage()) and re[0] == 0:
+                        if (ret := await bot.fetchMessage()) and ret[0] == 0:
                             break
                     except Exception:
                         pass

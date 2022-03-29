@@ -61,9 +61,6 @@ class BotService:
                     except Exception:
                         pass
                     retrySize += 1
-                    debugPrint(
-                        f'''账号{botName}获取消息失败重试:{retrySize + 1}''',
-                        fromName="BotService")
                     if retrySize >= 5:
                         loginRetry = 0
                         # reLoginLoop
@@ -85,7 +82,10 @@ class BotService:
                             f'''账号{botName}重登陆成功''',
                             fromName="BotService")
                     else:
-                        await asyncio.sleep(min(retrySize * 5, 15))
+                        debugPrint(
+                            f'''账号{botName}获取消息失败重试:{retrySize + 1}''',
+                            fromName="BotService")
+                        await asyncio.sleep(2)
                 for i in ret[1]:
                     request = getAttrFromModule(
                                 botPath + ".Request",

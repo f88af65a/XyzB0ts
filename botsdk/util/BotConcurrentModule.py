@@ -10,34 +10,38 @@ from .JsonConfig import getConfig
 from .RunInThread import asyncRunInThreadHandle, threadPool
 
 
+async def unPackRequestAndRun(data):
+    try:
+        request = getRequest(data)
+        module = importlib.reload(
+            importlib.import_module(request.getHandleModuleName()))
+        plugin = getattr(module, "handle")()
+        plugin.onLoad()
+        if not plugin.initBySystem(request.getBot()):
+            return
+        try:
+            await asyncHandlePacket(
+                    plugin.getListener()[request.getType()]
+                    ["targetListener"][request.getTarget()],
+                    request
+                    )
+        except Exception:
+            pass
+    except Exception:
+        pass
+
+
 def threadWorkFunction(queue):
-    async def _threadWorkFunction():
+    async def _threadWorkFunction(queue):
         while True:
             data = queue.get()
-            try:
-                request = getRequest(data)
-                module = importlib.reload(
-                    importlib.import_module(request.getHandleModuleName()))
-                plugin = getattr(module, "handle")()
-                plugin.onLoad()
-                if not plugin.initBySystem(request.getBot()):
-                    return
-                try:
-                    await asyncHandlePacket(
-                            plugin.getListener()[request.getType()]
-                            ["targetListener"][request.getTarget()],
-                            request
-                            )
-                except Exception:
-                    pass
-            except Exception:
-                pass
+            unPackRequestAndRun(data)
     try:
         loop = asyncio.get_event_loop()
     except Exception:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-    loop.run_until_complete(_threadWorkFunction())
+    loop.run_until_complete(_threadWorkFunction(queue))
 
 
 def processWorkFunction(queue):

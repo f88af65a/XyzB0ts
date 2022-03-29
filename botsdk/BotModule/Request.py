@@ -1,16 +1,6 @@
 from botsdk.util.Cookie import getCookie, setCookie
-from botsdk.util.Tool import getAttrFromModule
-from botsdk.util.JsonConfig import getConfig
 from botsdk.BotModule.Bot import getBot
 from ..util.BotConcurrentModule import asyncRunInThread
-
-
-def getRequest(data):
-    return getAttrFromModule(
-        ((getConfig()["botPath"]
-         + data[0]["bot"][0]["botType"]).replace("/", ".")
-         + ".Request"),
-        data[0]["bot"][0]["botType"] + "Request")(*data)
 
 
 class Request(dict):

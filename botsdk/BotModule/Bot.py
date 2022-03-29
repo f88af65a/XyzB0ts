@@ -5,13 +5,6 @@ from botsdk.util.JsonConfig import getConfig
 from botsdk.util.Tool import getAttrFromModule
 
 
-def getBot(data):
-    return getAttrFromModule(
-                (getConfig()["botPath"]
-                 + data[0]["botType"]).replace("/", ".") + ".Bot",
-                data[0]["botType"] + "Bot")(*data)
-
-
 class Bot:
     def __init__(self, data, botService=None):
         self.data = data

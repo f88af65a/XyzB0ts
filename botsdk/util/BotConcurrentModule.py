@@ -2,8 +2,8 @@ import asyncio
 import concurrent.futures
 import importlib
 
-from botsdk.BotModule.Request import getRequest
-from botsdk.util.BotException import BotException
+from .GetModule import getRequest
+from .BotException import BotException
 from .JsonConfig import getConfig
 
 threadSize = getConfig()["workThread"]

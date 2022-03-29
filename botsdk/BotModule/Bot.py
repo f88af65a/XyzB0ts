@@ -89,6 +89,8 @@ class Bot:
         pass
 
     # 获取消息
+    # 返回值
+    # (0成功/1异常，成功为消息列表/失败为返回的消息)
     async def fetchMessage(self):
         pass
 

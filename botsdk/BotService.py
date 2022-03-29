@@ -58,7 +58,13 @@ class BotService:
                 while True:
                     try:
                         if (ret := await bot.fetchMessage()) and ret[0] == 0:
-                            break
+                            if not len(ret[1]):
+                                await asyncio.sleep(
+                                    bot.getData()[0]
+                                    ["adapterConfig"]["config"]["sleepTime"])
+                                continue
+                            else:
+                                break
                     except Exception:
                         pass
                     retrySize += 1
@@ -98,8 +104,6 @@ class BotService:
                             or canRoute is None):
                         asyncio.run_coroutine_threadsafe(
                             botRoute.route(request), self.loop)
-                await asyncio.sleep(
-                    bot.getData()[0]["adapterConfig"]["config"]["sleepTime"])
 
     def run(self):
         self.loop = asyncio.new_event_loop()

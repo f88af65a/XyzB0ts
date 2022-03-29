@@ -50,8 +50,10 @@ class BotService:
             # 初始化BotRoute
             botRoute = botsdk.BotRoute.BotRoute(
                 bot, BotPluginsManager(bot), concurrentModule)
+            # eventLoop
             while True:
                 retrySize = 0
+                # fetchMessageLoop
                 while True:
                     try:
                         if (ret := await bot.fetchMessage()) and ret[0] == 0:
@@ -64,6 +66,7 @@ class BotService:
                         fromName="BotService")
                     if retrySize >= 5:
                         loginRetry = 0
+                        # reLoginLoop
                         while True:
                             try:
                                 # TypeError: 'int' object is not subscriptable
@@ -81,8 +84,8 @@ class BotService:
                         debugPrint(
                             f'''账号{botName}重登陆成功''',
                             fromName="BotService")
-                        continue
-                    await asyncio.sleep(min(retrySize * 5, 15))
+                    else:
+                        await asyncio.sleep(min(retrySize * 5, 15))
                 for i in ret[1]:
                     request = getAttrFromModule(
                                 botPath + ".Request",

@@ -1,5 +1,5 @@
 import time
-from botsdk.util.Error import debugPrint
+from .Error import debugPrint
 
 
 def timeTest(func):

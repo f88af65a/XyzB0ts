@@ -1,6 +1,6 @@
 import traceback
 
-from botsdk.util.JsonConfig import getConfig
+from .JsonConfig import getConfig
 from .RunInThread import runInThread
 
 

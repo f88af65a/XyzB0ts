@@ -1,8 +1,9 @@
 import asyncio
-from botsdk.util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
-from botsdk.BotModule.Request import Request
-from botsdk.util.TimeTest import asyncTimeTest
-from botsdk.util.Error import asyncTraceBack
+
+from .BotModule.Request import Request
+from .util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
+from .util.Error import asyncTraceBack
+from .util.TimeTest import asyncTimeTest
 
 
 class BotRoute:

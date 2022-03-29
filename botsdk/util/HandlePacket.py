@@ -1,9 +1,10 @@
-import time
 import asyncio
+import time
 
-from botsdk.util.Error import asyncTraceBack, debugPrint, printTraceBack
-from botsdk.BotModule.MessageChain import MessageChain
-from botsdk.util.TimeTest import asyncTimeTest
+from .Error import asyncTraceBack, debugPrint, printTraceBack
+
+from ..BotModule.MessageChain import MessageChain
+from .TimeTest import asyncTimeTest
 
 startCallBackTask = []
 endCallBackTask = []

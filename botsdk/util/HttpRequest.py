@@ -1,8 +1,9 @@
 import json
+from threading import local
 
 import aiohttp
+
 from .Error import debugPrint, printTraceBack
-from threading import local
 
 localData = local()
 

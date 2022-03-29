@@ -2,16 +2,14 @@ import asyncio
 import uuid
 import random
 
-import botsdk.BotModule.Bot
-import botsdk.BotModule.Request
-import botsdk.BotRoute
-from botsdk.util.BotConcurrentModule import defaultBotConcurrentModule
-from botsdk.util.BotPluginsManager import BotPluginsManager
-from botsdk.util.Error import debugPrint
-from botsdk.util.JsonConfig import getConfig
-from botsdk.util.Tool import getAttrFromModule
-from botsdk.util.Timer import Timer
-from botsdk.util.Error import asyncTraceBack
+from . import BotRoute
+from .util.BotConcurrentModule import defaultBotConcurrentModule
+from .util.BotPluginsManager import BotPluginsManager
+from .util.Error import debugPrint
+from .util.JsonConfig import getConfig
+from .util.Tool import getAttrFromModule
+from .util.Timer import Timer
+from .util.Error import asyncTraceBack
 
 
 class BotService:
@@ -49,7 +47,7 @@ class BotService:
                     break
             debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
             # 初始化BotRoute
-            botRoute = botsdk.BotRoute.BotRoute(
+            botRoute = BotRoute(
                 bot, BotPluginsManager(bot), self, concurrentModule)
             # eventLoop
             while True:

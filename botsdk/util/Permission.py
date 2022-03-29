@@ -1,4 +1,4 @@
-from botsdk.util.JsonConfig import getConfig
+from .JsonConfig import getConfig
 
 '''
  一次Rquest的权限判断由发送者的角色、在Cookie中保存的角色和系统添加的角色

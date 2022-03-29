@@ -1,6 +1,7 @@
 import json
 import os
-from botsdk.util.BotException import BotException
+
+from .BotException import BotException
 
 config = None
 configDirPath = "configs/"

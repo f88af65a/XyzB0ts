@@ -2,7 +2,7 @@ import base64
 import json
 import sys
 
-from botsdk.util.JsonConfig import getConfig
+from .JsonConfig import getConfig
 
 
 if (driver := getConfig()["cookieDriver"]) == "RedisCookie":

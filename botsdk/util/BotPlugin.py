@@ -3,7 +3,7 @@ import json
 import os
 import uuid
 
-from botsdk.util.Error import printTraceBack
+from .Error import printTraceBack
 
 
 class BotPlugin:

@@ -79,6 +79,13 @@ class Request(dict):
             *args, **kwargs
             )
 
+    async def syncSendMessage(self, messageChain, *args, **kwargs):
+        await self.getBot().sendMessage(
+            messageChain,
+            self,
+            *args, **kwargs
+            )
+
     def userFormat(self, userId):
         return f"{self.getBot().getServiceType()}:User:{userId}"
 

@@ -5,7 +5,6 @@ from .Error import debugPrint, printTraceBack
 from threading import local
 
 localData = local()
-localData.conn = None
 
 
 async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):

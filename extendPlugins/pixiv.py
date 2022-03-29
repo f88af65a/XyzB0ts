@@ -142,7 +142,7 @@ class plugin(BotPlugin):
             image = image.convert("RGB")
             image.save(fPath)
             msg.text("\n").image(path=getConfig()["appPath"] + fPath)
-            await request.sendMessage(msg)
+            await request.syncSendMessage(msg)
             os.remove(fPath)
         else:
             await request.sendMessage(msg)

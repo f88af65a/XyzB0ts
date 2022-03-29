@@ -22,6 +22,7 @@ class Cookie:
     def getAllCookie(self):
         pass
 
+    # 存在则返回，不存在返回None
     def getCookie(self, id: str, key: str = None):
         pass
 

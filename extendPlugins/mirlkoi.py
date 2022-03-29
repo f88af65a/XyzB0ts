@@ -14,10 +14,24 @@ class plugin(BotPlugin):
         self.canDetach = True
 
     async def randomImg(self, request):
-        pass
+        '''#mirlkoi.random 从mirlkoi获取一张随机图'''
+        try:
+            ret = json.loads(get("https://iw233.cn/API/Random.php?type=json"))
+            request.sendMessage(
+                request.makeMessageChain().image(url=ret["pic"]))
+        except Exception:
+            request.sendMessage("获取失败")
+            return
 
     async def mirlkoiImg(self, request):
-        pass
+        '''#mirlkoi 从mirlkoi获取一张精品图'''
+        try:
+            ret = json.loads(get("https://iw233.cn/API/MirlKoi.php?type=json"))
+            request.sendMessage(
+                request.makeMessageChain().image(url=ret["pic"]))
+        except Exception:
+            request.sendMessage("获取失败")
+            return
 
 
 def handle(*args, **kwargs):

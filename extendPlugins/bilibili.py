@@ -29,7 +29,7 @@ class plugin(BotPlugin):
         notifySet = copy.deepcopy(notifyModule.notify(notifyName))
         for i in notifySet:
             if i.split(":")[0] == bot.getServiceType():
-                await bot.sendMessage(i, messageChain)
+                await bot.sendMessage(messageChain, id=i)
 
     def dynamicCardAnlysis(self, jdata, msg):
         if "vest" in jdata:

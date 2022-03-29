@@ -2,7 +2,6 @@ import json
 from threading import local
 
 import aiohttp
-from aiohttp.resolver import AsyncResolver
 
 from .Error import debugPrint, printTraceBack
 

@@ -2,6 +2,7 @@ import json
 from threading import local
 
 import aiohttp
+from aiohttp.resolver import AsyncResolver
 
 from .Error import debugPrint, printTraceBack
 
@@ -11,7 +12,12 @@ localData = local()
 async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
     global localData
     if getattr(localData, "conn", None) is None:
-        localData.conn = aiohttp.TCPConnector()
+        resolver = AsyncResolver(nameservers=["223.5.5.5"])
+        localData.conn = aiohttp.TCPConnector(
+            ttl_dns_cache=300,
+            limit=0,
+            resolver=resolver
+            )
     try:
         timeout = aiohttp.ClientTimeout(total=timeout)
         async with aiohttp.ClientSession(

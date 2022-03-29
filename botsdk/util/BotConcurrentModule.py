@@ -12,11 +12,6 @@ threadPool = concurrent.futures.ThreadPoolExecutor(
             )
 
 
-def runInThread(func, *args, **kwargs):
-    global threadPool
-    threadPool.submit(func, *args, **kwargs)
-
-
 def asyncRunInThreadHandle(func, *args, **kwargs):
     def _handle():
         try:
@@ -25,6 +20,17 @@ def asyncRunInThreadHandle(func, *args, **kwargs):
             loop = asyncio.new_event_loop()
         loop.run_until_complete(func(*args, **kwargs))
     return _handle
+
+
+def runInThread(func, *args, **kwargs):
+    global threadPool
+    threadPool.submit(func, *args, **kwargs)
+
+
+def asyncRunInThread(func, *args, **kwargs):
+    runInThread(
+        asyncRunInThreadHandle(func, *args, **kwargs)
+        )
 
 
 def concurrentHandle(data):
@@ -44,8 +50,11 @@ async def _concurrentHandle(data):
         if not plugin.initBySystem(request.getBot()):
             return
         try:
-            await (plugin.getListener()[request.getType()]
-                   ["targetListener"][request.getTarget()])(request)
+            asyncRunInThread(
+                plugin.getListener()[request.getType()]
+                ["targetListener"][request.getTarget()],
+                request
+                )
         except Exception:
             pass
     except Exception:

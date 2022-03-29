@@ -2,6 +2,7 @@ from botsdk.util.Cookie import getCookie, setCookie
 from botsdk.util.Tool import getAttrFromModule
 from botsdk.util.JsonConfig import getConfig
 from botsdk.BotModule.Bot import getBot
+from ..util.BotConcurrentModule import asyncRunInThread
 
 
 def getRequest(data):
@@ -49,6 +50,8 @@ class Request(dict):
         return getCookie(id, target)
 
     def setCookie(self, target: str, cookie, id=None):
+        if "cookie" in self.data and id is None:
+            self.data["cookie"][target] = cookie
         setCookie(id if id else self.getId(), target, cookie)
 
     def setHandleModuleName(self, name):
@@ -79,8 +82,10 @@ class Request(dict):
         return self.getFirstText().split(" ")
 
     async def sendMessage(self, messageChain, request):
-        await self.getBot().sendMessage(
-            self.getId(), messageChain, request)
+        asyncRunInThread(
+            self.getBot().sendMessage,
+            self.getId(), messageChain, request
+            )
 
     def userFormat(self, userId):
         return f"{self.getBot().getServiceType()}:User:{userId}"

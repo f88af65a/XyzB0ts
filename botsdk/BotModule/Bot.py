@@ -91,6 +91,6 @@ class Bot:
     async def sendMessage(self, messageChain, request):
         pass
 
-    # 路由前过滤
+    # 路由前过滤 返回True则可以继续执行
     async def filter(self, request) -> bool:
         pass

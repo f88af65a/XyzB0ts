@@ -1,21 +1,22 @@
 import json
 
 import aiohttp
-from botsdk.util.Error import debugPrint, printTraceBack
+from .Error import debugPrint, printTraceBack
+from threading import local
 
-
-conn = None
+localData = local()
+localData.conn = None
 
 
 async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
-    global conn
-    if conn is None:
-        conn = aiohttp.TCPConnector()
+    global localData
+    if localData.conn is None:
+        localData.conn = aiohttp.TCPConnector()
     try:
         timeout = aiohttp.ClientTimeout(total=timeout)
         async with aiohttp.ClientSession(
                 headers=headers,
-                connector=conn,
+                connector=localData.conn,
                 connector_owner=False,
                 timeout=timeout) as session:
             async with session.get(

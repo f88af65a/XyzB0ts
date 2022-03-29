@@ -100,8 +100,7 @@ class BotService:
                                 {"bot": bot.getData(),
                                     "uuid": uuid.uuid4()},
                                 i, botRoute)
-                    if ((canRoute := await bot.filter(request))
-                            or canRoute is None):
+                    if (await bot.filter(request)):
                         asyncio.run_coroutine_threadsafe(
                             botRoute.route(request), self.loop)
 

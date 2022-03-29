@@ -176,4 +176,4 @@ class KaiheilaBot(Bot):
             )
 
     async def filter(self, request):
-        return not self.data["me"]["id"] == request["author_id"]
+        return not (self.data["me"]["id"] == request["author_id"])

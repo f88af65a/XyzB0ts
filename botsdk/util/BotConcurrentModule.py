@@ -41,10 +41,9 @@ def threadWorkFunction(queue):
 
 
 def processWorkFunction(queue):
-    global threadSize
     processThreadPool = []
     processQueue = SimpleQueue()
-    for _ in range(threadSize):
+    for _ in range(getConfig()["workThread"]):
         processThreadPool.append(
             Thread(target=threadWorkFunction,
                    args=(processQueue,)))

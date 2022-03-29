@@ -7,6 +7,7 @@ from threading import Thread
 from .BotException import BotException
 from .GetModule import getRequest
 from .JsonConfig import getConfig
+from .HandlePacket import asyncHandlePacket
 
 threadSize = getConfig()["workThread"]
 threadPool = concurrent.futures.ThreadPoolExecutor(
@@ -47,10 +48,11 @@ def threadWorkFunction(queue):
                 if not plugin.initBySystem(request.getBot()):
                     return
                 try:
-                    await (plugin.getListener()[request.getType()]
-                           ["targetListener"][request.getTarget()])(
-                           request
-                           )
+                    await asyncHandlePacket(
+                            plugin.getListener()[request.getType()]
+                            ["targetListener"][request.getTarget()],
+                            request
+                            )
                 except Exception:
                     pass
             except Exception:

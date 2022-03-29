@@ -93,4 +93,4 @@ class Bot:
 
     # 路由前过滤 返回True则可以继续执行
     async def filter(self, request) -> bool:
-        pass
+        return True

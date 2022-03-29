@@ -2,6 +2,7 @@ from botsdk.util.Cookie import getCookie, setCookie
 from ..util.GetModule import getBot
 from ..util.BotConcurrentModule import asyncRunInThread
 
+
 class Request(dict):
     def __init__(self, data, responseChain, route=None):
         super().__init__(responseChain)

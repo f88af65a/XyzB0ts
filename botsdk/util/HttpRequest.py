@@ -10,7 +10,8 @@ localData.conn = None
 
 async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
     global localData
-    if localData.conn is None:
+    conn = getattr(localData, "conn", None)
+    if conn is None:
         localData.conn = aiohttp.TCPConnector()
     try:
         timeout = aiohttp.ClientTimeout(total=timeout)

@@ -13,13 +13,11 @@ threadPool = concurrent.futures.ThreadPoolExecutor(
 
 
 def asyncRunInThreadHandle(func, *args, **kwargs):
-    def _handle():
-        try:
-            loop = asyncio.get_event_loop()
-        except Exception:
-            loop = asyncio.new_event_loop()
-        loop.run_until_complete(func(*args, **kwargs))
-    return _handle
+    try:
+        loop = asyncio.get_event_loop()
+    except Exception:
+        loop = asyncio.new_event_loop()
+    loop.run_until_complete(func(*args, **kwargs))
 
 
 def runInThread(func, *args, **kwargs):
@@ -29,7 +27,7 @@ def runInThread(func, *args, **kwargs):
 
 def asyncRunInThread(func, *args, **kwargs):
     runInThread(
-        asyncRunInThreadHandle(func, *args, **kwargs)
+        asyncRunInThreadHandle, func, *args, **kwargs
         )
 
 

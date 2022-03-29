@@ -43,7 +43,7 @@ class BotService:
                     re = 1
                 if re != 0:
                     debugPrint(
-                        f'''{botName}登陆失败 已重试{loginRetry}次''',
+                        f'''账号{botName}登陆失败 已重试{loginRetry}次''',
                         fromName="BotService")
                 else:
                     break

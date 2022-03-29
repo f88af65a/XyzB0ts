@@ -70,11 +70,12 @@ class plugin(BotPlugin):
         rankType = ["day", "week", "month", "week_rookie",
                     "week_original", "day_male", "day_female"]
         url = (f'''{self.url}/api/pixiv/rank?RankingType='''
-               f'''{rankType[random.randint(0, len(rankType) - 1)]}&date='''
-               f'''{time.strftime(
+               f'''{rankType[random.randint(0, len(rankType) - 1)]}'''
+               f'''&date={time.strftime(
                    "%Y-%m-%d", time.localtime(
                        time.time() - random.randint(0, 30)
-                       * (60 * 60 * 24)))}''')
+                       * (60 * 60 * 24)))}'''
+               f'''&page={random.randint(1, 2)}&size=50''')
         response = await get(url)
         if response is None:
             await request.sendMessage("响应超时")

@@ -1,3 +1,4 @@
+from pydantic import NoneIsAllowedError
 from botsdk.util.Cookie import getCookie, setCookie
 from botsdk.util.Tool import getAttrFromModule
 from botsdk.util.JsonConfig import getConfig
@@ -38,7 +39,11 @@ class Request(dict):
         return (self.data, dict(self))
 
     def getCookie(self, target: str = None, id=None):
-        return getCookie(id if id else self.getId(), target)
+        if "cookie" not in self.data:
+            self.data["cookie"] = getCookie(self.getId)
+        if id is None:
+            return self.data["cookie"][target]
+        return getCookie(id, target)
 
     def setCookie(self, target: str, cookie, id=None):
         setCookie(id if id else self.getId(), target, cookie)

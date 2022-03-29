@@ -41,8 +41,10 @@ class Request(dict):
         if "cookie" not in self.data:
             self.data["cookie"] = getCookie(self.getId())
         if id is None:
-            if target in self.data["cookie"]:
+            if target is None:
                 return self.data["cookie"]
+            if target in self.data["cookie"]:
+                return self.data["cookie"][target]
             return None
         return getCookie(id, target)
 

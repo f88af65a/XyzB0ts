@@ -23,8 +23,12 @@ class MiraiBot(Bot):
             self,
             messageChain: MessageChain,
             request=None,
+            id=None,
             quote=None):
-        ids = request.getId().split(":")
+        if id is None:
+            ids = request.getId().split(":")
+        else:
+            ids = id.split(":")
         if request is None:
             if ids[1] == "User":
                 messageType = "FriendMessage"

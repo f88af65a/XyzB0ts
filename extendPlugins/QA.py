@@ -11,6 +11,43 @@ class handle(BotPlugin):
         self.addBotType("Mirai")
         self.canDetach = True
 
+    def makeMapByList(self, keyList):
+        tot = 1
+        tree = list()
+        tree[0] = dict()
+        firstChar = dict()
+        for _ in range(2):
+            for i in range(len(keyList)):
+                if len(i) == 0:
+                    continue
+                startList = [0]
+                if i[0] in firstChar:
+                    startList += firstChar[i[0]]
+                if i[0] not in tree[0]:
+                    tree.append(dict())
+                    tree[0][i[0]] = tot
+                    if i[0] not in firstChar:
+                        firstChar[i[0]] = list()
+                    firstChar[i[0]].append(tot)
+                    tot += 1
+                for j in startList:
+                    nodeMark = j
+                    for k in range(1, len(i)):
+                        if i[k] not in tree[nodeMark]:
+                            tree.append(dict())
+                            tree[nodeMark][i[k]] = tot
+                            if i[k] not in firstChar:
+                                firstChar[i[k]] = list()
+                            firstChar[i[k]].append(tot)
+                            tot += 1
+                        if k == len(i) - 1:
+                            if "end" not in tree[nodeMark]:
+                                tree[nodeMark]["end"] = set()
+                            tree[nodeMark]["end"].add(i)
+                        nodeMark = tree[nodeMark][i[k]]
+
+        return tree
+
     async def checkMessage(self, request):
         msg = request.getFirstText()
         if not msg or not request.isMessage():
@@ -18,17 +55,23 @@ class handle(BotPlugin):
         cookie = request.getCookie("q&a")
         if cookie is None:
             return
-        keyWord = list(cookie.keys())
-        for i in keyWord:
-            if i in msg:
-                try:
-                    messageChain = json.loads(cookie[i])
-                    bot = request.getBot()
-                    groupid = request.getGroupId()
-                    await bot.sendGroupMessage(groupid, messageChain)
-                except Exception:
-                    await request.sendMessage(cookie[i])
-                break
+        keyList = list(cookie.keys())
+        keyTree = self.makeMapByList(keyList)
+        nodeMark = 0
+        hitSet = set()
+        for i in msg:
+            if i not in keyTree[nodeMark]:
+                nodeMark = 0
+                continue
+            if "end" in keyTree[nodeMark]:
+                hitSet.add(keyTree[nodeMark]["end"])
+            nodeMark = keyTree[nodeMark][i]
+        for i in hitSet:
+            try:
+                messageChain = json.loads(cookie[i])
+            except Exception:
+                messageChain = cookie[i]
+            await request.sendMessage(messageChain)
 
     async def qaSet(self, request):
         '''q&a [set/del/all/help] [关键字] [遇到关键字时触发的消息]'''

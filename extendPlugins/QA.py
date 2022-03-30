@@ -70,6 +70,8 @@ class handle(BotPlugin):
             if "end" in keyTree[nodeMark]:
                 hitSet |= keyTree[nodeMark]["end"]
             nodeMark = keyTree[nodeMark][i]
+        if "end" in keyTree[nodeMark]:
+            hitSet |= keyTree[nodeMark]["end"]
         for i in hitSet:
             try:
                 messageChain = json.loads(cookie[i])

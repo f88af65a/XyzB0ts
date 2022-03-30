@@ -10,8 +10,11 @@ class handle(BotPlugin):
         self.addFormat(self.checkMessage)
         self.addBotType("Mirai")
         self.canDetach = True
+        self.cache = dict()
 
     def makeMapByList(self, keyList):
+        if (jsonKeyList := json.dumps(keyList)) in  self.cache:
+            return self.cache[jsonKeyList]
         tot = 1
         tree = list()
         tree.append(dict())
@@ -45,7 +48,7 @@ class handle(BotPlugin):
                                 tree[nodeMark]["end"] = set()
                             tree[nodeMark]["end"].add(i)
                         nodeMark = tree[nodeMark][i[k]]
-
+        self.cache[jsonKeyList] = tree
         return tree
 
     async def checkMessage(self, request):
@@ -56,6 +59,7 @@ class handle(BotPlugin):
         if cookie is None:
             return
         keyList = list(cookie.keys())
+        keyList.sort()
         keyTree = self.makeMapByList(keyList)
         nodeMark = 0
         hitSet = set()

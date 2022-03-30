@@ -14,10 +14,10 @@ class handle(BotPlugin):
     def makeMapByList(self, keyList):
         tot = 1
         tree = list()
-        tree[0] = dict()
+        tree.append(dict())
         firstChar = dict()
         for _ in range(2):
-            for i in range(len(keyList)):
+            for i in keyList:
                 if len(i) == 0:
                     continue
                 startList = [0]
@@ -64,7 +64,7 @@ class handle(BotPlugin):
                 nodeMark = 0
                 continue
             if "end" in keyTree[nodeMark]:
-                hitSet.add(keyTree[nodeMark]["end"])
+                hitSet |= keyTree[nodeMark]["end"]
             nodeMark = keyTree[nodeMark][i]
         for i in hitSet:
             try:

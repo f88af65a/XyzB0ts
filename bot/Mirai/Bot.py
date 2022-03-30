@@ -40,6 +40,8 @@ class MiraiBot(Bot):
         target = int(target)
         if type(messageChain) == str:
             messageChain = self.makeMessageChain().text(messageChain)
+        if type(messageChain) == list:
+            messageChain = self.makeMessageChain(messageChain)
         if messageType == "FriendMessage":
             await self.sendFriendMessage(target, messageChain.getData(), quote)
         elif messageType == "GroupMessage":

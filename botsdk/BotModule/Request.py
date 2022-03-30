@@ -90,7 +90,7 @@ class Request(dict):
         return self.getBot().userFormat(userId)
 
     def groupFormat(self, groupId):
-        return self.getBot().groupFormat(userId)
+        return self.getBot().groupFormat(groupId)
 
     # needOverRide
     # 获取请求数据中的角色

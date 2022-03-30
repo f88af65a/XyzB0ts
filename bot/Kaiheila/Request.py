@@ -4,6 +4,14 @@ from botsdk.BotModule.Request import Request
 
 
 class KaiheilaRequest(Request):
+    def init(self):
+        self.messageType = {
+            "GROUP"
+        }
+        self.signalMessage = {
+            "PERSON"
+        }
+
     # needOverRide
     # 获取角色
     async def getRoles(self):
@@ -85,4 +93,7 @@ class KaiheilaRequest(Request):
         return f"""{self["channel_type"]}:{self["type"]}"""
 
     def isSingle(self):
-        return False
+        return self["channel_type"] in self.signalMessage
+
+    def isMessage(self):
+        return self["channel_type"] in self.messageType

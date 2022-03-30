@@ -24,6 +24,8 @@ class handle(BotPlugin):
         reData = self.pattern.search(msg)
         # target获取
         cookie = request.getCookie("switch")
+        if cookie is None:
+            cookie = {}
         if reData is not None and reData.group(4) is not None:
             target = reData.group(4)
             if not type(cookie) is dict:

@@ -1,5 +1,3 @@
-import json
-
 from botsdk.BotModule.Request import Request
 
 
@@ -59,34 +57,6 @@ class KaiheilaRequest(Request):
     def setFirstText(self, s):
         if self["type"] == 1:
             self["content"] = s
-
-    # 发送消息
-    async def sendMessage(self, messageChain):
-        ids = self.getId().split(":")
-        sendMethod = None
-        targetId = ids[-1]
-        if ids[1] == "Group":
-            sendMethod = self.getBot().sendGroupMessage
-        elif ids[1] == "User":
-            sendMethod = self.getBot().sendFriendMessage
-        if sendMethod is None:
-            return
-        if type(messageChain) == str:
-            await sendMethod(target_id=targetId, content=messageChain)
-        else:
-            await sendMethod(
-                type=10, target_id=targetId,
-                content=json.dumps(
-                    [
-                        {
-                            "type": "card",
-                            "theme": "secondary",
-                            "size": "lg",
-                            "modules": messageChain.getData()
-                        }
-                    ]
-                )
-            )
 
     # 获取消息类型
     def getType(self):

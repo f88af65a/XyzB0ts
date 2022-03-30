@@ -32,14 +32,14 @@ class KaiheilaRequest(Request):
 
     # 获取发送者的BotId
     def getUserId(self):
-        return f"""Kaiheila:User:{self["author_id"]}"""
+        return self.userFormat(self["author_id"])
 
     # 获取来源BotId
     def getId(self):
         if self["channel_type"] == "GROUP":
-            return f"""Kaiheila:Group:{self["target_id"]}"""
+            return self.userFormat(self["target_id"])
         elif self["channel_type"] == "PERSON":
-            return f"""Kaiheila:User:{self["target_id"]}"""
+            return self.groupFormat(self["target_id"])
 
     # 获取消息的首串文本消息
     def getFirstText(self):

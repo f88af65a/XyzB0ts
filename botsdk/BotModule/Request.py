@@ -87,10 +87,10 @@ class Request(dict):
             )
 
     def userFormat(self, userId):
-        return f"{self.getBot().getServiceType()}:User:{userId}"
+        return self.getBot().userFormat(userId)
 
     def groupFormat(self, groupId):
-        return f"{self.getBot().getServiceType()}:Group:{groupId}"
+        return self.getBot().groupFormat(userId)
 
     # needOverRide
     # 获取请求数据中的角色

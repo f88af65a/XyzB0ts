@@ -64,6 +64,12 @@ class Bot:
     def getBotName(self):
         return self.data["botName"]
 
+    def userFormat(self, userId):
+        return f"{self.getServiceType()}:User:{userId}"
+
+    def groupFormat(self, groupId):
+        return f"{self.getServiceType()}:Group:{groupId}"
+
     # needOverRide
     # 初始化时调用
     def init(self):

@@ -37,9 +37,9 @@ class KaiheilaRequest(Request):
     # 获取来源BotId
     def getId(self):
         if self["channel_type"] == "GROUP":
-            return self.userFormat(self["target_id"])
-        elif self["channel_type"] == "PERSON":
             return self.groupFormat(self["target_id"])
+        elif self["channel_type"] == "PERSON":
+            return self.userFormat(self["target_id"])
 
     # 获取消息的首串文本消息
     def getFirstText(self):

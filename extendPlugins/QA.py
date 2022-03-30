@@ -13,7 +13,7 @@ class handle(BotPlugin):
         self.cache = dict()
 
     def makeMapByList(self, keyList):
-        if (jsonKeyList := json.dumps(keyList)) in  self.cache:
+        if (jsonKeyList := json.dumps(keyList)) in self.cache:
             return self.cache[jsonKeyList]
         tot = 1
         tree = list()
@@ -43,11 +43,10 @@ class handle(BotPlugin):
                                 firstChar[i[k]] = list()
                             firstChar[i[k]].append(tot)
                             tot += 1
-                        if k == len(i) - 1:
-                            if "end" not in tree[nodeMark]:
-                                tree[nodeMark]["end"] = set()
-                            tree[nodeMark]["end"].add(i)
                         nodeMark = tree[nodeMark][i[k]]
+                    if "end" not in tree[nodeMark]:
+                        tree[nodeMark]["end"] = set()
+                    tree[nodeMark]["end"].add(i)
         self.cache[jsonKeyList] = tree
         return tree
 

@@ -15,7 +15,7 @@ def asyncRunInThreadHandle(func, *args, **kwargs):
     except Exception:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-    asyncio.run(func(*args, **kwargs))
+    loop.run_until_complete(func(*args, **kwargs))
 
 
 def runInThread(func, *args, **kwargs):

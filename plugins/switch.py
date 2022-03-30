@@ -18,27 +18,27 @@ class handle(BotPlugin):
 
     async def switchCheck(self, request):
         if (((msg := request.getFirstText()) is None and not msg)
-                or request.isSingle()):
+                or request.isSingle()
+                or not request.isMessage()):
             return True
         reData = self.pattern.search(msg)
         # target获取
-        if reData is None or reData.group(4) is None:
-            return True
-        target = reData.group(4)
         cookie = request.getCookie("switch")
-        if not type(cookie) is dict:
-            cookie = dict()
-        if ((target == "enable" or target == "disable")
-                and await permissionCheck(request, target)
-                and (targetBot := request.getFirstText().split(" "))
-                and len(targetBot) > 1):
-            targetBot = targetBot[1]
-            if targetBot == request.getBot().getBotName():
-                if target == "enable":
-                    cookie[targetBot] = True
-                else:
-                    cookie[targetBot] = False
-                request.setCookie("switch", cookie)
-                await request.sendMessage("修改完成")
+        if reData is not None and reData.group(4) is not None:
+            target = reData.group(4)
+            if not type(cookie) is dict:
+                cookie = dict()
+            if ((target == "enable" or target == "disable")
+                    and await permissionCheck(request, target)
+                    and (targetBot := request.getFirstText().split(" "))
+                    and len(targetBot) > 1):
+                targetBot = targetBot[1]
+                if targetBot == request.getBot().getBotName():
+                    if target == "enable":
+                        cookie[targetBot] = True
+                    else:
+                        cookie[targetBot] = False
+                    request.setCookie("switch", cookie)
+                    await request.sendMessage("修改完成")
         botName = request.getBot().getBotName()
         return True if (botName in cookie and cookie[botName]) else False

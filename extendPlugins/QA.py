@@ -23,7 +23,7 @@ class handle(BotPlugin):
             for i in keyList:
                 if len(i) == 0:
                     continue
-                startList = [0]
+                startList = list()
                 if i[0] in firstChar:
                     startList += firstChar[i[0]]
                 if i[0] not in tree[0]:
@@ -32,6 +32,7 @@ class handle(BotPlugin):
                     if i[0] not in firstChar:
                         firstChar[i[0]] = list()
                     firstChar[i[0]].append(tot)
+                    startList.append(tot)
                     tot += 1
                 for j in startList:
                     nodeMark = j

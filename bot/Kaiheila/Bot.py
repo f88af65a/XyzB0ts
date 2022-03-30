@@ -157,7 +157,6 @@ class KaiheilaBot(Bot):
             ids = request.getId().split(":")
         else:
             ids = id.split(":")
-        ids = id.split(":")
         sendMethod = None
         targetId = ids[-1]
         if ids[1] == "Group":

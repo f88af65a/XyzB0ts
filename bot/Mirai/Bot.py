@@ -25,11 +25,14 @@ class MiraiBot(Bot):
             ids = request.getId().split(":")
         else:
             ids = id.split(":")
-        if messageType is None and request is None:
-            if ids[1] == "User":
-                messageType = "FriendMessage"
+        if messageType is None:
+            if request is None:
+                if ids[1] == "User":
+                    messageType = "FriendMessage"
+                else:
+                    messageType = "GroupMessage"
             else:
-                messageType = "GroupMessage"
+                messageType = request.getType()
         target = ids[2]
         target = int(target)
         if type(messageChain) == str:

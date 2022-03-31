@@ -29,7 +29,7 @@ class Request(dict):
         return (self.data, dict(self))
 
     def getCookie(self, target: str = None, id=None):
-        if "cookie" not in self.data:
+        if id is None and "cookie" not in self.data:
             self.data["cookie"] = getCookie(self.getId())
         if id is None:
             if target is None:

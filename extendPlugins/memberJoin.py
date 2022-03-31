@@ -51,8 +51,9 @@ class plugin(BotPlugin):
             )
         if not cookie:
             return
-        await request.getBot().sendGroupMessage(
-            json.loads(cookie), id=id
+        await request.sendMessage(
+            json.loads(cookie), id=id,
+            messageType="GroupMessage"
             )
 
 

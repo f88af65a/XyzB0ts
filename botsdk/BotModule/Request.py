@@ -74,12 +74,12 @@ class Request(dict):
 
     async def sendMessage(
             self, messageChain, id=None,
-            MessageType=None, *args, **kwargs):
+            messageType=None, *args, **kwargs):
         asyncRunInThread(
             self.getBot().sendMessage,
             messageChain,
             request=self,
-            messageType=MessageType,
+            messageType=messageType,
             id=id, *args, **kwargs
             )
 

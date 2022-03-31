@@ -30,8 +30,6 @@ class MiraiBot(Bot):
                 messageType = "FriendMessage"
             else:
                 messageType = "GroupMessage"
-        else:
-            messageType = request.getType()
         target = ids[2]
         target = int(target)
         if type(messageChain) == str:

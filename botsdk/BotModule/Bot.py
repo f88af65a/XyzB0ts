@@ -94,7 +94,10 @@ class Bot:
         pass
 
     # 发送消息接口
-    async def sendMessage(self, messageChain, request=None, id=None):
+    async def sendMessage(
+            self, messageChain, request=None, id=None,
+            *args, **kwargs
+            ):
         pass
 
     # 路由前过滤 返回True则可以继续执行

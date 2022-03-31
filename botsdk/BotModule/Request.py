@@ -71,19 +71,21 @@ class Request(dict):
     def getFirstTextSplit(self):
         return self.getFirstText().split(" ")
 
-    async def sendMessage(self, messageChain, id=None):
+    async def sendMessage(self, messageChain, id=None, *args, **kwargs):
         asyncRunInThread(
             self.getBot().sendMessage,
             messageChain,
+            *args,
             request=self,
-            id=id
+            id=id, **kwargs
             )
 
-    async def syncSendMessage(self, messageChain, *args, **kwargs):
+    async def syncSendMessage(self, messageChain, id=None, *args, **kwargs):
         await self.getBot().sendMessage(
             messageChain,
-            self,
-            *args, **kwargs
+            *args,
+            request=self,
+            id=id, **kwargs
             )
 
     def userFormat(self, userId):

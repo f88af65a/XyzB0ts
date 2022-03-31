@@ -45,14 +45,15 @@ class plugin(BotPlugin):
                 await request.sendMessage("设置成功")
 
     async def memberJoin(self, request):
+        id = request.GroupFormat(request["member"]["group"]["id"])
         cookie = request.getCookie(
-            "memberJoin",
-            id=f'''QQ:Group:{request["member"]["group"]["id"]}''')
+            id, "memberJoin"
+            )
         if not cookie:
             return
         await request.getBot().sendGroupMessage(
-            int(request["member"]["group"]["id"]),
-            json.loads(cookie))
+            json.loads(cookie), id=id
+            )
 
 
 def handle():

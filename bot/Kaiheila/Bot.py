@@ -149,10 +149,8 @@ class KaiheilaBot(Bot):
         return await self.adapter.channelview(target_id=channelId)
 
     async def sendMessage(
-            self,
-            messageChain,
-            request=None,
-            id=None):
+            self, messageChain, request=None, id=None,
+            messageType=None, *args, **kwargs):
         if id is None:
             ids = request.getId().split(":")
         else:

@@ -96,7 +96,7 @@ class Bot:
     # 发送消息接口
     async def sendMessage(
             self, messageChain, request=None, id=None,
-            *args, **kwargs
+            messageType=None, *args, **kwargs
             ):
         pass
 

@@ -1,7 +1,6 @@
 from botsdk.BotModule.Bot import Bot
 from botsdk.util.BotException import BotException
 from botsdk.util.Error import debugPrint, exceptionExit
-from botsdk.BotModule.MessageChain import MessageChain
 
 
 class MiraiBot(Bot):
@@ -20,16 +19,13 @@ class MiraiBot(Bot):
         return self.path
 
     async def sendMessage(
-            self,
-            messageChain: MessageChain,
-            request=None,
-            id=None,
-            quote=None):
+            self, messageChain, request=None, id=None,
+            messageType=None, quote=None, *args, **kwargs):
         if id is None:
             ids = request.getId().split(":")
         else:
             ids = id.split(":")
-        if request is None:
+        if messageType is None and request is None:
             if ids[1] == "User":
                 messageType = "FriendMessage"
             else:

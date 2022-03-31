@@ -24,7 +24,7 @@ class plugin(BotPlugin):
         message = request.getMessageChain()
         for i in message[1:]:
             if i["type"] == "Image":
-                re = await self.search(i["url"])
+                re = await self.search(i["url"], request)
                 await request.sendMessage(re)
                 return
             if i["type"] == "Quote":
@@ -39,7 +39,8 @@ class plugin(BotPlugin):
                 for j in quoteMessageChain:
                     if j["type"] == "Image":
                         re = await self.search(j["url"], request)
-                        await request.sendMessage(re, request.getMessageId())
+                        await request.sendMessage(
+                            re, quote=request.getMessageId())
                         return
                 await request.sendMessage("回复消息中没有图片")
                 return

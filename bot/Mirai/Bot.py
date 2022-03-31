@@ -20,7 +20,7 @@ class MiraiBot(Bot):
 
     async def sendMessage(
             self, messageChain, request=None, id=None,
-            messageType=None, quote=None, *args, **kwargs):
+            messageType=None, quote=None):
         if id is None:
             ids = request.getId().split(":")
         else:

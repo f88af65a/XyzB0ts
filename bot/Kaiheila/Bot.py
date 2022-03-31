@@ -150,7 +150,7 @@ class KaiheilaBot(Bot):
 
     async def sendMessage(
             self, messageChain, request=None, id=None,
-            messageType=None, *args, **kwargs):
+            messageType=None):
         if id is None:
             ids = request.getId().split(":")
         else:

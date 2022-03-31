@@ -45,9 +45,9 @@ class plugin(BotPlugin):
                 await request.sendMessage("设置成功")
 
     async def memberJoin(self, request):
-        id = request.GroupFormat(request["member"]["group"]["id"])
+        id = request.groupFormat(request["member"]["group"]["id"])
         cookie = request.getCookie(
-            id, "memberJoin"
+            "memberJoin", id
             )
         if not cookie:
             return

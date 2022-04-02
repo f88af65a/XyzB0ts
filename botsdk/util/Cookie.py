@@ -1,9 +1,13 @@
 import base64
-import json
+
+try:
+    from ujson import dumps, loads
+except Exception:
+    from json import dumps, loads
+
 import sys
 
 from .JsonConfig import getConfig
-
 
 if (driver := getConfig()["cookieDriver"]) == "RedisCookie":
     import redis
@@ -52,7 +56,7 @@ class SqliteCookie(Cookie):
         sqlData = self.cur.fetchall()
         re = dict()
         for i in sqlData:
-            re[i[0]] = json.loads(base64.b64decode(i[1]).decode("utf8"))
+            re[i[0]] = loads(base64.b64decode(i[1]).decode("utf8"))
         return re
 
     def updateCookie(self, id: str, cookie: str = None):
@@ -74,7 +78,7 @@ class SqliteCookie(Cookie):
         return self.updateCookie(id, base64.b64decode(re[0][1]).decode("utf8"))
 
     def getCookieByDict(self, id: str):
-        return json.loads(self.getCookieByStr(id))
+        return loads(self.getCookieByStr(id))
 
     def setCookieByStr(self, id: str, cookie: str):
         self.cookieDict[id] = cookie
@@ -83,7 +87,7 @@ class SqliteCookie(Cookie):
         self.conn.commit()
 
     def setCookieByDict(self, id: str, cookie: dict):
-        self.setCookieByStr(id, json.dumps(cookie))
+        self.setCookieByStr(id, dumps(cookie))
 
     def getCookie(self, id: str, key: str = None):
         if key is None:
@@ -109,16 +113,16 @@ class RedisCookie(Cookie):
     def getAllCookie(self):
         re = dict()
         for i in self.sql.keys("*"):
-            re[i] = json.loads(base64.b64decode(self.sql[i]).decode())
+            re[i] = loads(base64.b64decode(self.sql[i]).decode())
         return re
 
     def getCookieByDict(self, id):
         if id not in self.sql:
             self.sql[id] = base64.b64encode(b"{}").decode()
-        return json.loads(base64.b64decode(self.sql[id]).decode())
+        return loads(base64.b64decode(self.sql[id]).decode())
 
     def setCookieByDict(self, id, data):
-        self.sql[id] = base64.b64encode(json.dumps(data).encode()).decode()
+        self.sql[id] = base64.b64encode(dumps(data).encode()).decode()
         self.sql.save()
 
     def getCookie(self, id: str, key: str = None):

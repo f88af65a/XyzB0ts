@@ -77,3 +77,14 @@ async def roleCheck(request, roles, add=set()):
     if cookie and userId in cookie:
         requestRole |= set(cookie[userId])
     return bool(requestRole & roles)
+
+
+async def checkRoleById(request, id, roleName):
+    requestRole = set()
+    userId = request.getUserId()
+    cookie = request.getCookie("roles", id)
+    if cookie and userId in cookie:
+        requestRole |= set(cookie[userId])
+    if roleName in requestRole:
+        return True
+    return False

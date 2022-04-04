@@ -64,11 +64,11 @@ class handle(BotPlugin):
         nodeMark = 0
         hitSet = set()
         for i in msg:
+            if "end" in keyTree[nodeMark]:
+                hitSet |= keyTree[nodeMark]["end"]
             if i not in keyTree[nodeMark]:
                 nodeMark = 0
                 continue
-            if "end" in keyTree[nodeMark]:
-                hitSet |= keyTree[nodeMark]["end"]
             nodeMark = keyTree[nodeMark][i]
         if "end" in keyTree[nodeMark]:
             hitSet |= keyTree[nodeMark]["end"]

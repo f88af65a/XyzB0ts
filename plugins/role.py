@@ -33,16 +33,17 @@ class plugin(BotPlugin):
         cookie = request.getCookie("roles", localId)
         if cookie is None:
             cookie = dict()
-        if data[2] not in cookie:
-            cookie[data[2]] = []
+        for i in range(len(data[2])):
+            if data[2][i] not in cookie:
+                cookie[data[2][i]] = []
         if data[1] == "ADD":
             for i in range(len(data[2])):
-                if data[3] not in cookie[data[2]]:
-                    cookie[data[2]].append(data[3])
+                if data[3] not in cookie[data[2][i]]:
+                    cookie[data[2][i]].append(data[3])
         elif data[1] == "DEL":
             for i in range(len(data[2])):
-                if data[3] not in cookie[data[2]]:
-                    cookie[data[2]].remove(data[3])
+                if data[3] not in cookie[data[2][i]]:
+                    cookie[data[2][i]].remove(data[3])
         else:
             await request.sendMessage("你干啥呢")
             return

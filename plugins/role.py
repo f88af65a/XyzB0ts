@@ -24,12 +24,11 @@ class plugin(BotPlugin):
             await request.sendMessage("角色中不许包含:")
             return
         localId = request.getId()
+        if request.isSingle():
+            localId = "System"
         data[2] = data[2].split(",")
         for i in range(len(data[2])):
-            if request.isSingle():
-                data[2][i] = request.userFormat(data[2][i])
-            else:
-                data[2][i] = request.groupFormat(data[2][i])
+            data[2][i] = request.userFormat(data[2][i])
         cookie = request.getCookie("roles", localId)
         if cookie is None:
             cookie = dict()
@@ -61,9 +60,7 @@ class plugin(BotPlugin):
             return
         localId = request.getId()
         if request.isSingle():
-            data[3] = request.userFormat(data[3])
-        else:
-            data[3] = request.groupFormat(data[3])
+            localId = "System"
         cookie = request.getCookie("permission", localId)
         if cookie is None:
             cookie = dict()

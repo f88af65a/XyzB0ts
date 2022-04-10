@@ -18,7 +18,7 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "acookie", self.adminCookieControl)
         self.addTarget("GROUP:1", "acookie", self.adminCookieControl)
         self.addTarget("FriendMessage", "acookie", self.adminCookieControl)
-        self.canDetach = True
+        self.canDetach = False
 
     async def cookie(self, request):
         '''cookie #查看当前id所保存的cookie'''

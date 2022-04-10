@@ -56,6 +56,9 @@ class plugin(BotPlugin):
         localId = request.getId()
         if request.isSingle():
             localId = "System"
+            data[3] = request.userFormat()
+        else:
+            data[3] = request.groupFormat()
         cookie = request.getCookie("permission", localId)
         if cookie is None:
             cookie = dict()

@@ -24,26 +24,25 @@ class plugin(BotPlugin):
             await request.sendMessage("角色中不许包含:")
             return
         localId = request.getId()
-        data[3] = data[3].split(",")
-        for i in range(len(data[3])):
+        data[2] = data[2].split(",")
+        for i in range(len(data[2])):
             if request.isSingle():
-                data[3][i] = request.userFormat(data[3][i])
+                data[2][i] = request.userFormat(data[2][i])
             else:
-                data[3][i] = request.groupFormat(data[3][i])
+                data[2][i] = request.groupFormat(data[2][i])
         cookie = request.getCookie("roles", localId)
         if cookie is None:
             cookie = dict()
-        data[2] = request.userFormat(data[2])
         if data[2] not in cookie:
             cookie[data[2]] = []
         if data[1] == "ADD":
-            for i in range(len(data[3])):
-                if data[3][i] not in cookie[data[2]]:
-                    cookie[data[2]].append(data[3][i])
+            for i in range(len(data[2])):
+                if data[3] not in cookie[data[2]]:
+                    cookie[data[2]].append(data[3])
         elif data[1] == "DEL":
-            for i in range(len(data[3])):
-                if data[3][i] not in cookie[data[2]]:
-                    cookie[data[2]].remove(data[3][i])
+            for i in range(len(data[2])):
+                if data[3] not in cookie[data[2]]:
+                    cookie[data[2]].remove(data[3])
         else:
             await request.sendMessage("你干啥呢")
             return
@@ -60,12 +59,10 @@ class plugin(BotPlugin):
             await request.sendMessage("角色中不许包含:")
             return
         localId = request.getId()
-        data[3] = data[3].split(",")
-        for i in range(len(data[3])):
-            if request.isSingle():
-                data[3][i] = request.userFormat(data[3][i])
-            else:
-                data[3][i] = request.groupFormat(data[3][i])
+        if request.isSingle():
+            data[3] = request.userFormat(data[3])
+        else:
+            data[3] = request.groupFormat(data[3])
         cookie = request.getCookie("permission", localId)
         if cookie is None:
             cookie = dict()
@@ -77,13 +74,11 @@ class plugin(BotPlugin):
         if data[2] not in cookie:
             cookie[data[2]] = []
         if data[1] == "ADD":
-            for i in range(len(data[3])):
-                if data[3][i] not in cookie[data[2]]:
-                    cookie[data[2]].append(data[3][i])
+            if data[3] not in cookie[data[2]]:
+                cookie[data[2]].append(data[3])
         elif data[1] == "DEL":
-            for i in range(len(data[3])):
-                if data[3][i] not in cookie[data[2]]:
-                    cookie[data[2]].remove(data[3][i])
+            if data[3] in cookie[data[2]]:
+                cookie[data[2]].remove(data[3])
         else:
             await request.sendMessage("你干啥呢")
             return

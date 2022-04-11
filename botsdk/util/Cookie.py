@@ -68,8 +68,6 @@ class SqliteCookie(Cookie):
         return cookie
 
     def getCookieByStr(self, id: str):
-        if id in self.cookieDict:
-            return self.cookieDict[id]
         self.cur.execute('''SELECT * FROM Cookie WHERE id="{0}"'''.format(id))
         re = self.cur.fetchall()
         if len(re) == 0:

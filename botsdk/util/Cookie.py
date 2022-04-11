@@ -63,7 +63,8 @@ class SqliteCookie(Cookie):
         self.cur.execute('''SELECT * FROM Cookie WHERE id="{0}"'''.format(id))
         re = self.cur.fetchall()
         if len(re) == 0:
-            return ""
+            self.setCookieByStr(id, "{}")
+            return "{}"
         return base64.b64decode(re[0][1]).decode("utf8")
 
     def getCookieByDict(self, id: str):

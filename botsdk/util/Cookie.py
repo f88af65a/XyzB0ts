@@ -49,7 +49,6 @@ class SqliteCookie(Cookie):
             ('''CREATE TABLE IF NOT EXISTS Cookie(id TEXT PRIMARYKEY '''
              '''UNIQUE NOT NULL, cookie TEXT NOT NULL)'''))
         self.conn.commit()
-        self.cookieDict = dict()
 
     def getAllCookie(self):
         self.cur.execute('''SELECT * FROM Cookie''')
@@ -71,7 +70,6 @@ class SqliteCookie(Cookie):
         return loads(self.getCookieByStr(id))
 
     def setCookieByStr(self, id: str, cookie: str):
-        self.cookieDict[id] = cookie
         self.cur.execute('''REPLACE INTO Cookie VALUES("{0}","{1}")'''.format(
             id, base64.b64encode(cookie.encode()).decode()))
         self.conn.commit()

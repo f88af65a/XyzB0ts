@@ -59,21 +59,12 @@ class SqliteCookie(Cookie):
             re[i[0]] = loads(base64.b64decode(i[1]).decode("utf8"))
         return re
 
-    def updateCookie(self, id: str, cookie: str = None):
-        if cookie is None:
-            if id in self.cookieDict:
-                del self.cookieDict[id]
-            return ""
-        self.cookieDict[id] = cookie
-        return cookie
-
     def getCookieByStr(self, id: str):
         self.cur.execute('''SELECT * FROM Cookie WHERE id="{0}"'''.format(id))
         re = self.cur.fetchall()
         if len(re) == 0:
-            self.setCookieByStr(id, "{}")
-            return self.updateCookie(id, "{}")
-        return self.updateCookie(id, base64.b64decode(re[0][1]).decode("utf8"))
+            return ""
+        return base64.b64decode(re[0][1]).decode("utf8")
 
     def getCookieByDict(self, id: str):
         return loads(self.getCookieByStr(id))

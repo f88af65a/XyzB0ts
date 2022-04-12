@@ -31,16 +31,23 @@ class plugin(BotPlugin):
             f"""{request.getId()} {request.getUserId()}""")
 
     async def adminCookieControl(self, request):
-        '''acookie ID [new cookie] #管理员cookie管理'''
+        '''acookie ID [cookie/cookie key] [cookie] #管理员cookie管理'''
         data = request.getFirstText().split(" ")
         if len(data) < 2:
             await request.sendMessage("缺少参数")
         elif len(data) == 2:
             await request.sendMessage(str(getCookie(data[1])))
-        else:
+        elif len(data) == 3:
             try:
-                newCookie = data[2].split("=")
-                setCookie(data[1], newCookie[0], json.loads(newCookie[1]))
+                cookieDict = json.loads(data[2])
+                for i in cookieDict:
+                    setCookie(data[1], i, cookieDict[i])
+                await request.sendMessage("修改完成")
+            except Exception:
+                await request.sendMessage("参数错误")
+        elif len(data) == 4:
+            try:
+                setCookie(data[1], data[2], json.loads(data[3]))
                 await request.sendMessage("修改完成")
             except Exception:
                 await request.sendMessage("参数错误")

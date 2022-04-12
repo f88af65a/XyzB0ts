@@ -18,6 +18,9 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "acookie", self.adminCookieControl)
         self.addTarget("GROUP:1", "acookie", self.adminCookieControl)
         self.addTarget("FriendMessage", "acookie", self.adminCookieControl)
+        self.addTarget("GroupMessage", "syncCookie", self.syncCookie)
+        self.addTarget("GROUP:1", "syncCookie", self.syncCookie)
+        self.addTarget("FriendMessage", "syncCookie", self.syncCookie)
         self.canDetach = False
 
     async def cookie(self, request):
@@ -52,6 +55,8 @@ class plugin(BotPlugin):
             except Exception:
                 await request.sendMessage("参数错误")
 
+    async def syncCookie(self, request):
+        pass
 
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

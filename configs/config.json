@@ -42,7 +42,8 @@
 			"config": ["System:Owner"],
 			"say": ["System:Owner"],
 			"id": ["System:Owner"],
-			"acookie": ["System:Owner"]
+			"acookie": ["System:Owner"],
+			"syncCookie": ["System:Owner"]
 		},
 		"user": {}
 	}

@@ -56,7 +56,16 @@ class plugin(BotPlugin):
                 await request.sendMessage("参数错误")
 
     async def syncCookie(self, request):
-        pass
+        '''syncCookie DstId SrcId #同步cookie'''
+        data = request.getFirstText().split(" ")
+        if len(data) != 3:
+            await request.sendMessage(self.syncCookie.__doc__)
+            return
+        SrcCookie = getCookie(data[2])
+        for i in SrcCookie:
+            setCookie(data[1], i, SrcCookie[i])
+        await request.sendMessage("同步完成")
+
 
 def handle(*args, **kwargs):
     return plugin(*args, **kwargs)

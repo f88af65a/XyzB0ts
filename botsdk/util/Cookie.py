@@ -109,8 +109,19 @@ class RedisCookie(Cookie):
             self.sql[id] = base64.b64encode(b"{}").decode()
         return loads(base64.b64decode(self.sql[id]).decode())
 
-    def setCookieByDict(self, id, data):
-        self.sql[id] = base64.b64encode(dumps(data).encode()).decode()
+    def setCookieByDict(self, id, key, data):
+        while True:
+            try:
+                p = self.sql.pipeline()
+                p.watch(id)
+                oldData = loads(base64.b64decode(p.get(id)).decode())
+                oldData[key] = data
+                p.multi()
+                p.set(id, base64.b64encode(dumps(oldData).encode()).decode())
+                p.execute()
+                break
+            except Exception:
+                pass
         self.sql.save()
 
     def getCookie(self, id: str, key: str = None):
@@ -126,7 +137,7 @@ class RedisCookie(Cookie):
             return None
         cookie = self.getCookieByDict(id)
         cookie[key] = value
-        self.setCookieByDict(id, cookie)
+        self.setCookieByDict(id, key, cookie)
 
 
 class aioRedisCookie(Cookie):

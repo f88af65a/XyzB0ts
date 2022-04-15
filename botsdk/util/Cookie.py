@@ -115,7 +115,7 @@ class RedisCookie(Cookie):
                 p = self.sql.pipeline()
                 p.watch(id)
                 oldData = loads(base64.b64decode(p.get(id)).decode())
-                oldData[key] = data
+                oldData[key] = data[key]
                 p.multi()
                 p.set(id, base64.b64encode(dumps(oldData).encode()).decode())
                 p.execute()

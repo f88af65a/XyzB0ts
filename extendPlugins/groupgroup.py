@@ -53,14 +53,15 @@ class plugin(BotPlugin):
     async def say(self, request):
         '''group.say 消息'''
         data = request.getFirstTextSplit()
-        if len(data) != 2:
+        if len(data) < 2:
             await request.sendMessage(self.recall.__doc__)
             return
+        data[1] = " ".join(data[1:])
         await self.sendToAllGroup(
             request,
-            (f'''FROM {request["sender"]["group"]["name"]}\n'''
-             f'''{request["sender"]["memberName"]}'''
-             f'''#{request["sender"]["id"]}\n{data[1]}''')
+            (f'''<{request["sender"]["group"]["name"]}>'''
+             f'''<{request["sender"]["memberName"]}'''
+             f'''#{request["sender"]["id"]}>\n{data[1]}''')
              )
 
 

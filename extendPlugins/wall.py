@@ -59,6 +59,18 @@ class plugin(BotPlugin):
             )
         ).hexdigest()
 
+    async def sendToAllGroup(self, request, msg):
+        group = request.getCookie("wallGroup", id="wall")
+        if group is None:
+            group = []
+        bot = request.getBot()
+        for i in group:
+            await bot.sendGroupMessage(
+                i.split(":")[-1],
+                request.makeMessageChain()
+                .text(msg).getData()
+                )
+
     async def memberJoin(self, request):
         ret = {}
         ret["eventId"] = request["eventId"]
@@ -115,7 +127,7 @@ class plugin(BotPlugin):
     async def kick(self, request):
         '''wall.kick add/del q号'''
         data = request.getFirstTextSplit()
-        if len(data) != 3:
+        if len(data) != 3 or not data[2].isalnum():
             await request.sendMessage(self.kick.__doc__)
             return
         cookie = request.getCookie("wallKick", id="wall")
@@ -133,6 +145,9 @@ class plugin(BotPlugin):
                     await bot.kick(
                         target=int(i.split(":")[-1]),
                         memberId=data[2])
+                await self.sendToAllGroup(
+                    request,
+                    f'''{self.getFix(int(data[2]))}被加入了黑名单''')
         elif data[1] == "del":
             if (fmtData := request.userFormat(data[2])) in cookie:
                 cookie.remove(fmtData)
@@ -160,7 +175,7 @@ class plugin(BotPlugin):
     async def limit(self, request):
         '''wall.limit qq time'''
         data = request.getFirstTextSplit()
-        if len(data) < 2:
+        if len(data) != 3 or not data[1].isalnum():
             await request.sendMessage(self.limit.__doc__)
             return
         cookie = request.getCookie("wallLimit", id="wall")
@@ -169,6 +184,10 @@ class plugin(BotPlugin):
         uid = request.userFormat(data[1])
         cookie[uid] = time.time() + int(data[2])
         request.setCookie("wallLimit", cookie, id="wall")
+        await self.sendToAllGroup(
+            request,
+            f'''{self.getFix(int(data[1]))}被禁言了一段时间'''
+        )
         await request.sendMessage("修改完成")
 
     async def group(self, request):
@@ -211,17 +230,8 @@ class plugin(BotPlugin):
         if len(data) != 2:
             await request.sendMessage(self.recall.__doc__)
             return
-        group = request.getCookie("wallGroup", id="wall")
-        if group is None:
-            group = []
-        bot = request.getBot()
-        for i in group:
-            await bot.sendGroupMessage(
-                i.split(":")[-1],
-                request.makeMessageChain()
-                .text(data[1]).getData()
-                )
-        request.sendMessage("消息发送完成")
+        await self.sendToAllGroup(request, data[1])
+        await request.sendMessage("消息发送完成")
 
 
 def handle(*args, **kwargs):

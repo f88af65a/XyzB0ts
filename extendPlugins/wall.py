@@ -11,6 +11,7 @@ class plugin(BotPlugin):
         self.addBotType("Mirai")
         self.name = "wall"
         self.addType("TempMessage", self.fetchMessage)
+        self.addType("MemberJoinRequestEvent", self.memberJoin)
         self.addTarget("GroupMessage", "wall.kick", self.kick)
         self.addTarget("FriendMessage", "wall.kick", self.kick)
         self.addTarget("GroupMessage", "wall.recall", self.recall)
@@ -55,6 +56,21 @@ class plugin(BotPlugin):
                 str(N ^ oneCount).encode()
             )
         ).hexdigest()
+
+    async def memberJoin(self, request):
+        ret = {}
+        ret["eventId"] = request["eventId"]
+        ret["fromId"] = request["fromId"]
+        ret["groupId"] = request["groupId"]
+        ret["operate"] = 0
+        ret["message"] = ""
+        cookie = request.getCookie("wallKick", id="wall")
+        if cookie is None:
+            cookie = []
+        if request.userFormat(request["fromId"]) in cookie:
+            ret["operate"] = 1
+            ret["message"] = "黑名单"
+        await request.getBot().MemberJoinRequestEvent(ret)
 
     async def fetchMessage(self, request):
         if not request.isMessage():
@@ -112,7 +128,7 @@ class plugin(BotPlugin):
                 request.setCookie("wallKick", cookie, id="wall")
                 bot = request.getBot()
                 for i in group:
-                    bot.kick(
+                    await bot.kick(
                         target=int(i.split(":")[-1]),
                         memberId=data[2])
         elif data[1] == "del":

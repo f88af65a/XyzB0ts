@@ -169,6 +169,24 @@
                 "operate": "int",
                 "message": "str"
             }
+        },
+        "kick":{
+            "path": "/kick",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "target": "int",
+                "memberId": "int",
+                "msg": "str"
+            }
+        },
+        "quit":{
+            "path": "/quit",
+            "method": "post",
+            "parameter": {
+                "sessionKey": "str",
+                "target": "int"
+            }
         }
     }
 }

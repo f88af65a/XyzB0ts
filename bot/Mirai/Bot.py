@@ -184,6 +184,19 @@ class MiraiBot(Bot):
             id=messageId
         )
 
+    async def kick(self, target: int, memberId: int):
+        return await self.adapter.kick(
+            sessionKey=self.sessionKey,
+            target=target,
+            id=memberId
+        )
+
+    async def quit(self, target: int):
+        return await self.adapter.quit(
+            sessionKey=self.sessionKey,
+            target=target
+        )
+
     async def MemberJoinRequestEvent(self, data):
         return await self.adapter.BotInvitedJoinGroupRequestEvent(
             sessionKey=self.sessionKey,

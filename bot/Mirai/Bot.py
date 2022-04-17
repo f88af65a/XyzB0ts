@@ -199,7 +199,7 @@ class MiraiBot(Bot):
         )
 
     async def MemberJoinRequestEvent(self, data):
-        return await self.adapter.memberJoinRequestEvent(
+        return await self.adapter.MemberJoinRequestEvent(
             sessionKey=self.sessionKey,
             eventId=data["eventId"],
             fromId=data["fromId"],

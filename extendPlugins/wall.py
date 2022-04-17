@@ -1,9 +1,10 @@
-from botsdk.util.BotPlugin import BotPlugin
-import redis
 import base64
-import ujson
-import time
 import hashlib
+import time
+
+import redis
+import ujson
+from botsdk.util.BotPlugin import BotPlugin
 
 
 class plugin(BotPlugin):
@@ -24,7 +25,6 @@ class plugin(BotPlugin):
         self.addTarget("FriendMessage", "wall.get", self.get)
         self.addTarget("GroupMessage", "wall.say", self.say)
         self.addTarget("FriendMessage", "wall.say", self.say)
-        self.reChatDict = {}
         self.canDetach = True
         self.sql = redis.Redis(
             host="localhost", port=6379, decode_responses=True, db=4)

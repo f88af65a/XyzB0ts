@@ -22,6 +22,8 @@ class plugin(BotPlugin):
         self.addTarget("FriendMessage", "wall.group", self.group)
         self.addTarget("GroupMessage", "wall.get", self.get)
         self.addTarget("FriendMessage", "wall.get", self.get)
+        self.addTarget("GroupMessage", "wall.say", self.say)
+        self.addTarget("FriendMessage", "wall.say", self.say)
         self.reChatDict = {}
         self.canDetach = True
         self.sql = redis.Redis(
@@ -202,6 +204,24 @@ class plugin(BotPlugin):
             data["msg"] = base64.b64decode(data["msg"]).decode()
         await request.sendMessage(ujson.dumps(data))
         return
+
+    async def say(self, request):
+        '''wall.get 消息id'''
+        data = request.getFirstTextSplit()
+        if len(data) != 2:
+            await request.sendMessage(self.recall.__doc__)
+            return
+        group = request.getCookie("wallGroup", id="wall")
+        if group is None:
+            group = []
+        bot = request.getBot()
+        for i in group:
+            await bot.sendGroupMessage(
+                i.split(":")[-1],
+                request.makeMessageChain()
+                .text(data[1]).getData()
+                )
+        request.sendMessage("消息发送完成")
 
 
 def handle(*args, **kwargs):

@@ -58,7 +58,8 @@ class plugin(BotPlugin):
             return
         await self.sendToAllGroup(
             request,
-            (f'''{request["sender"]["memberName"]}'''
+            (f'''FROM {request["sender"]["group"]["name"]}\n'''
+             f'''{request["sender"]["memberName"]}'''
              f'''#{request["sender"]["id"]}\n{data[1]}''')
              )
 

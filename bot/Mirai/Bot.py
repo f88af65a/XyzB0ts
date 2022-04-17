@@ -184,11 +184,12 @@ class MiraiBot(Bot):
             id=messageId
         )
 
-    async def kick(self, target: int, memberId: int):
+    async def kick(self, target: int, memberId: int, msg: str = ""):
         return await self.adapter.kick(
             sessionKey=self.sessionKey,
             target=target,
-            id=memberId
+            memberId=memberId,
+            msg=msg
         )
 
     async def quit(self, target: int):

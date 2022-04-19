@@ -119,6 +119,7 @@ class handle(BotPlugin):
                             if j["type"] == "Image":
                                 if "url" in qaMessageChain[-1]:
                                     del qaMessageChain[-1]["url"]
+                data[2] = " ".join(data[2:])
                 cookie[data[2]] = json.dumps(qaMessageChain)
                 request.setCookie("q&a", cookie)
                 await request.sendMessage("设置成功")

@@ -115,11 +115,12 @@ class plugin(BotPlugin):
                     responseData["players"]["max"])
                 if "playerlist" in data:
                     printData += "\n在线玩家:\n"
-                    for i in range(0, len(responseData["players"]["sample"])):
-                        printData += (responseData
-                                      ["players"]["sample"][i]["name"])
-                        if i != len(responseData["players"]["sample"]) - 1:
-                            printData += "\n"
+                    if "players" in responseData and "sample" in responseData["players"]:
+                        for i in range(0, len(responseData["players"]["sample"])):
+                            printData += (responseData
+                                        ["players"]["sample"][i]["name"])
+                            if i != len(responseData["players"]["sample"]) - 1:
+                                printData += "\n"
                 await request.sendMessage(printData)
             except Exception:
                 await request.sendMessage("解析过程中出错")

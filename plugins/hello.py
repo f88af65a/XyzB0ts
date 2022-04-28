@@ -6,7 +6,7 @@ class plugin(BotPlugin):
         self.name = "hello"
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.addTarget("GROUP:1", "hello", self.hello)
+        self.addTarget("GROUP:9", "hello", self.hello)
         self.addTarget("GroupMessage", "hello", self.hello)
         self.addTarget("FriendMessage", "hello", self.hello)
         self.canDetach = True

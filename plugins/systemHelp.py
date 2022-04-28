@@ -10,7 +10,7 @@ class plugin(BotPlugin):
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "config", self.configHelp)
-        self.addTarget("GROUP:1", "config", self.configHelp)
+        self.addTarget("GROUP:9", "config", self.configHelp)
 
     async def configHelp(self, request):
         '''config [reload]'''

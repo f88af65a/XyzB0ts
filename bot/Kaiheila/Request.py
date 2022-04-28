@@ -49,8 +49,8 @@ class KaiheilaRequest(Request):
 
     # 获取消息的首串文本消息
     def getFirstText(self):
-        if self["type"] == 1:
-            return self["content"]
+        if self["type"] == 9:
+            return self["extra"]["kmarkdown"]["raw_content"]
         else:
             return ""
 

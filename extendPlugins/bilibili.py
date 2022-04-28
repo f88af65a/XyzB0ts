@@ -14,8 +14,8 @@ class plugin(BotPlugin):
         self.name = "bilibili"
         self.addTarget("GroupMessage", "anime", self.anime)
         self.addTarget("GroupMessage", "follower", self.follower)
-        self.addTarget("GROUP:1", "anime", self.anime)
-        self.addTarget("GROUP:1", "follower", self.follower)
+        self.addTarget("GROUP:9", "anime", self.anime)
+        self.addTarget("GROUP:9", "follower", self.follower)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.canDetach = True

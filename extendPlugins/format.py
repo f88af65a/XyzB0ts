@@ -14,9 +14,9 @@ class plugin(BotPlugin):
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "format", self.setFormat)
-        self.addTarget("GROUP:1", "format", self.setFormat)
+        self.addTarget("GROUP:9", "format", self.setFormat)
         self.addTarget("GroupMessage", "say", self.say)
-        self.addTarget("GROUP:1", "say", self.say)
+        self.addTarget("GROUP:9", "say", self.say)
         self.addFormat(self.doFormat)
         self.canDetach = True
 

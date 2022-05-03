@@ -8,7 +8,7 @@ class plugin(BotPlugin):
     def onLoad(self):
         self.name = "unturnedPlayerSize"
         self.addTarget("GroupMessage", "un", self.unSearch)
-        self.addTarget("GROUP:1", "un", self.unSearch)
+        self.addTarget("GROUP:9", "un", self.unSearch)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.canDetach = True

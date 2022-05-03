@@ -10,8 +10,8 @@ class plugin(BotPlugin):
         self.addTarget("FriendMessage", "角色", self.role)
         self.addTarget("GroupMessage", "权限", self.permission)
         self.addTarget("FriendMessage", "权限", self.permission)
-        self.addTarget("GROUP:1", "角色", self.role)
-        self.addTarget("GROUP:1", "权限", self.permission)
+        self.addTarget("GROUP:9", "角色", self.role)
+        self.addTarget("GROUP:9", "权限", self.permission)
         self.canDetach = True
 
     async def role(self, request):

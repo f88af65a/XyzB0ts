@@ -33,8 +33,8 @@ class plugin(BotPlugin):
         self.name = "minecraft"
         self.addTarget("GroupMessage", "mc", self.getMc)
         self.addTarget("GroupMessage", "mcbe", self.getBe)
-        self.addTarget("GROUP:1", "mc", self.getMc)
-        self.addTarget("GROUP:1", "mcbe", self.getBe)
+        self.addTarget("GROUP:9", "mc", self.getMc)
+        self.addTarget("GROUP:9", "mcbe", self.getBe)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.canDetach = True

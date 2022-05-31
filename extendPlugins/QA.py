@@ -61,16 +61,20 @@ class handle(BotPlugin):
         keyList = list(cookie.keys())
         keyList.sort()
         keyTree = self.makeMapByList(keyList)
-        nodeMark = 0
         hitSet = set()
-        for i in msg:
-            if "end" in keyTree[nodeMark]:
-                hitSet |= keyTree[nodeMark]["end"]
+        for j in range(len(msg)):
+            nodeMark = 0
+            breakFlag = false
+            for i in msg[j:]:
+                if "end" in keyTree[nodeMark]:
+                    hitSet |= keyTree[nodeMark]["end"]
+                    breakFlag = True
+                    break
+                if i not in keyTree[nodeMark]:
+                    break
+                nodeMark = keyTree[nodeMark][i]
+            if breakFlag:
                 break
-            if i not in keyTree[nodeMark]:
-                nodeMark = 0
-                continue
-            nodeMark = keyTree[nodeMark][i]
         if "end" in keyTree[nodeMark]:
             hitSet |= keyTree[nodeMark]["end"]
         for i in hitSet:

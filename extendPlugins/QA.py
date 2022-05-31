@@ -19,7 +19,7 @@ class handle(BotPlugin):
         tree = list()
         tree.append(dict())
         firstChar = dict()
-        for _ in range(2):
+        for _ in range(1):
             for i in keyList:
                 if len(i) == 0:
                     continue
@@ -63,13 +63,15 @@ class handle(BotPlugin):
         keyTree = self.makeMapByList(keyList)
         nodeMark = 0
         hitSet = set()
-        for i in msg:
-            if "end" in keyTree[nodeMark]:
-                hitSet |= keyTree[nodeMark]["end"]
-            if i not in keyTree[nodeMark]:
-                nodeMark = 0
-                continue
-            nodeMark = keyTree[nodeMark][i]
+        for j in range(len(msg)):
+            for i in msg[j:]:
+                if "end" in keyTree[nodeMark]:
+                    hitSet |= keyTree[nodeMark]["end"]
+                    break
+                if i not in keyTree[nodeMark]:
+                    nodeMark = 0
+                    continue
+                nodeMark = keyTree[nodeMark][i]
         if "end" in keyTree[nodeMark]:
             hitSet |= keyTree[nodeMark]["end"]
         for i in hitSet:

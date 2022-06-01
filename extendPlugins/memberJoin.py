@@ -61,7 +61,7 @@ class plugin(BotPlugin):
             lastTime = int(lastTime)
         if int(time.time()) - lastTime < 30:
             return
-        request.setCookie("memberJoinLastTime", str(int(time.time)))
+        request.setCookie("memberJoinLastTime", str(int(time.time())))
         await request.sendMessage(
             json.loads(cookie), id=id,
             messageType="GroupMessage"

@@ -52,7 +52,7 @@ class plugin(BotPlugin):
             )
         if not cookie:
             return
-        lastTime = cookie = request.getCookie(
+        lastTime = request.getCookie(
             "memberJoinLastTime", id
             )
         if lastTime is None:

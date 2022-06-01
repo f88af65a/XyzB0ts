@@ -1,6 +1,7 @@
 from botsdk.util.BotPlugin import BotPlugin
 import copy
 import json
+import time
 
 
 class plugin(BotPlugin):
@@ -51,6 +52,16 @@ class plugin(BotPlugin):
             )
         if not cookie:
             return
+        lastTime = cookie = request.getCookie(
+            "memberJoinLastTime", id
+            )
+        if lastTime is None:
+            lastTime = 0
+        else:
+            lastTime = int(lastTime)
+        if int(time.time()) - lastTime < 30:
+            return
+        request.setCookie("memberJoinLastTime", str(int(time.time)))
         await request.sendMessage(
             json.loads(cookie), id=id,
             messageType="GroupMessage"

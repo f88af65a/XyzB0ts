@@ -64,7 +64,7 @@ class handle(BotPlugin):
         hitSet = set()
         for j in range(len(msg)):
             nodeMark = 0
-            breakFlag = false
+            breakFlag = False
             for i in msg[j:]:
                 if "end" in keyTree[nodeMark]:
                     hitSet |= keyTree[nodeMark]["end"]

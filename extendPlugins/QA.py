@@ -66,13 +66,13 @@ class handle(BotPlugin):
             nodeMark = 0
             breakFlag = False
             for i in msg[j:]:
+                if i not in keyTree[nodeMark]:
+                    break
+                nodeMark = keyTree[nodeMark][i]
                 if "end" in keyTree[nodeMark]:
                     hitSet |= keyTree[nodeMark]["end"]
                     breakFlag = True
                     break
-                if i not in keyTree[nodeMark]:
-                    break
-                nodeMark = keyTree[nodeMark][i]
             if breakFlag:
                 break
         if "end" in keyTree[nodeMark]:

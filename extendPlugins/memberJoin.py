@@ -9,8 +9,16 @@ class plugin(BotPlugin):
         self.name = "memberJoin"
         self.addType("MemberJoinEvent", self.memberJoin)
         self.addTarget("GroupMessage", "setMemberJoin", self.setMemberJoin)
+        self.addTarget("GroupMessage", "delMemberJoin", self.delMemberJoin)
         self.addBotType("Mirai")
         self.canDetach = True
+
+    async def delMemberJoin(self, request):
+        '''回复delMemberJoin来设置加群消息'''
+        cookie = request.getCookie("memberJoin")
+        cookie = ""
+        request.setCookie("memberJoin", cookie)
+        await request.sendMessage("设置成功")
 
     async def setMemberJoin(self, request):
         '''回复setMemberJoin来设置加群消息'''

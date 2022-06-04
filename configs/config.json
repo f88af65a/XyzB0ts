@@ -43,7 +43,8 @@
 			"say": ["System:Owner"],
 			"id": ["System:Owner"],
 			"acookie": ["System:Owner"],
-			"syncCookie": ["System:Owner"]
+			"syncCookie": ["System:Owner"],
+			"quitGroup": ["System:Owner"]
 		},
 		"user": {}
 	}

@@ -9,7 +9,7 @@ class plugin(BotPlugin):
 
     async def quitGroup(self, request):
         '''quit q群 #退出q群'''
-        request.getBot().quit(request.getFirstTextSplit()[1])
+        await request.getBot().quit(request.getFirstTextSplit()[1])
 
 
 def handle(*args, **kwargs):

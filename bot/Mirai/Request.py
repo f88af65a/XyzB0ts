@@ -9,7 +9,8 @@ class MiraiRequest(Request):
              "TempMessage", "StrangerMessage",
              "OtherClientMessage"})
         self.signalMessage = {
-            "FriendMessage"
+            "FriendMessage",
+            "NewFriendRequestEvent"
         }
 
     def getRoute(self):

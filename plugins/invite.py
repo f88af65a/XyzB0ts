@@ -21,7 +21,7 @@ class plugin(BotPlugin):
                 "operate":
                     (0 if await
                         (permissionCheck(request, "System:Owner")
-                         or permissionCheck(request, "System:Invite")) else 1),
+                         or permissionCheck(request, "Inviter")) else 1),
                 "message": ""
             }
         )
@@ -35,7 +35,7 @@ class plugin(BotPlugin):
                 "operate":
                     (0 if await
                         (permissionCheck(request, "System:Owner")
-                         or permissionCheck(request, "System:Invite")) else 1),
+                         or permissionCheck(request, "Inviter")) else 1),
                 "message": ""
             }
         )

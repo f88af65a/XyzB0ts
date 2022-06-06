@@ -40,7 +40,7 @@ async def permissionCheck(
     cookie = request.getCookie("roles", localId)
     if cookie and userId in cookie:
         requestRole |= set(cookie[userId])
-    if requestRole & need:
+    if (requestRole & need or target in requestRole):
         return True
     childs = request.getId().split(":")[3:]
     # 根据permissionpp判断

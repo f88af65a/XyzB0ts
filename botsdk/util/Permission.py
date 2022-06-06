@@ -34,7 +34,7 @@ async def permissionCheck(
     # 确认id
     # 判断为群或者好友聊天获取不同的cookie
     localId = request.getId()
-    if request.isSingle():
+    if request.isSingle() or request.isInvite():
         localId = "System"
     # 角色判断
     cookie = request.getCookie("roles", localId)

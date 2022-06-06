@@ -130,3 +130,6 @@ class Request(dict):
 
     def isMessage(self):
         pass
+
+    def isInvite(self):
+        return False

@@ -20,7 +20,8 @@ class plugin(BotPlugin):
                 "groupId": request["groupId"],
                 "operate":
                     (0 if await
-                        permissionCheck(request, "System:Owner") else 1),
+                        (permissionCheck(request, "System:Owner")
+                         or permissionCheck(request, "System:Invite")) else 1),
                 "message": ""
             }
         )
@@ -33,7 +34,8 @@ class plugin(BotPlugin):
                 "groupId": request["groupId"],
                 "operate":
                     (0 if await
-                        permissionCheck(request, "System:Owner") else 1),
+                        (permissionCheck(request, "System:Owner")
+                         or permissionCheck(request, "System:Invite")) else 1),
                 "message": ""
             }
         )

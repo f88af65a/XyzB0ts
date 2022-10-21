@@ -65,7 +65,7 @@ class BotService:
                         f"/bot/{botName}",
                         dumps({
                             "name": botName,
-                            "data": dumps(bot.getData())
+                            "data": bot.getData()
                         }).encode(),
                         ephemeral=True
                     )

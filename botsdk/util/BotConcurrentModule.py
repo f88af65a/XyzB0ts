@@ -7,7 +7,6 @@ from .BotException import BotException
 from .GetModule import getRequest
 from .HandlePacket import asyncHandlePacket
 from .JsonConfig import getConfig
-from .RunInThread import asyncRunInThreadHandle, threadPool
 
 
 async def unPackRequestAndRun(data):
@@ -67,12 +66,6 @@ class BotConcurrentModule:
     def addTask(self, data):
         pass
 
-    def runInThread(self, func, *args, **kwargs):
-        pass
-
-    def asyncRunInThread(self, func, *args, **kwargs):
-        pass
-
 
 class defaultBotConcurrentModule(BotConcurrentModule):
     def __init__(self, processSize, threadSize):
@@ -87,11 +80,3 @@ class defaultBotConcurrentModule(BotConcurrentModule):
 
     def addTask(self, data):
         self.queue.put(data)
-
-    def runInThread(self, func, *args, **kwargs):
-        threadPool.submit(func, *args, **kwargs)
-
-    def asyncRunInThread(self, func, *args, **kwargs):
-        self.runInThread(
-            asyncRunInThreadHandle(func, *args, **kwargs)
-        )

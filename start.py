@@ -1,16 +1,23 @@
 import botsdk.BotService
-import multiprocessing
+import botsdk.BotRoute
+import botsdk.BotHandle
 import os
 import sys
-from botsdk.util.JsonConfig import getConfig
+from .botsdk.util.Args import GetArgs
 
 
 def start():
-    if "startMethod" in getConfig():
-        multiprocessing.set_start_method(getConfig()["startMethod"])
     os.chdir(sys.path[0])
-    service = botsdk.BotService.BotService()
-    service.run()
+    args = GetArgs()
+    if "service" in args:
+        service = botsdk.BotService.BotService()
+        service.run()
+    if "route" in args:
+        route = botsdk.BotRoute.BotRoute()
+        route.run()
+    if "handle" in args:
+        handle = botsdk.BotHandle.BotHandle()
+        handle.run()
 
 
 if __name__ == "__main__":

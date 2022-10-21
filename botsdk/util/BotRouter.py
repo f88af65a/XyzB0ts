@@ -1,10 +1,12 @@
 import asyncio
+import json
 import re
+
+from confluent_kafka import Producer
 
 from .BotConcurrentModule import defaultBotConcurrentModule
 from .BotPluginsManager import BotPluginsManager
 from .Error import asyncTraceBack
-from .HandlePacket import asyncHandlePacket
 from .JsonConfig import getConfig
 from .Permission import permissionCheck, roleCheck
 
@@ -13,6 +15,7 @@ class BotRouter:
     def __init__(self):
         self.loop = asyncio.get_event_loop()
         self.init()
+        self.p = Producer({'bootstrap.servers': 'localhost:9092'})
 
     def init(self):
         pass
@@ -22,6 +25,20 @@ class BotRouter:
                     request,
                     concurrentModule: defaultBotConcurrentModule = None):
         pass
+
+    async def sendToHandle(self, func, request):
+        self.p.poll(0)
+        self.p.produce(
+                "targetHandle",
+                json.dumps(
+                    {
+                        "path": func.__module__,
+                        "handle": func.__name__,
+                        "request": request.getData()
+                        }).encode("utf8"),
+                self.deliveryReport
+        )
+        self.p.flush()
 
 
 class GeneralRouter(BotRouter):
@@ -105,6 +122,8 @@ class TargetRouter(BotRouter):
             request.setHandleModuleName(
                 pluginsManager.getHandleByTarget(
                     request.getType(), target).__module__)
+            '''
+            1.0 update
             # 路由
             if (concurrentModule is not None
                     and ret.__self__.getCanDetach()
@@ -113,4 +132,7 @@ class TargetRouter(BotRouter):
                 concurrentModule.addTask(request.getData())
             else:
                 await asyncHandlePacket(ret, request)
+            '''
+            self.sendToHandle(ret, request)
+
         return True

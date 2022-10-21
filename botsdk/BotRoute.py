@@ -33,8 +33,5 @@ class BotRoute:
     def getBotService(self):
         return self.botService
 
-    def runInThread(self, func, *args, **kwargs):
-        return self.getBotService().runInThread(func, *args, **kwargs)
-
-    def asyncRunInThread(self, func, *args, **kwargs):
-        self.getBotService().asyncRunInThread(func, *args, **kwargs)
+    def run(self):
+        asyncio.run(self.route())

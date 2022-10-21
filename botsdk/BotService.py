@@ -1,15 +1,14 @@
 import asyncio
-import uuid
 import random
+import uuid
 
-from .BotRoute import BotRoute
+from confluent_kafka import Producer
+
 from .util.BotConcurrentModule import defaultBotConcurrentModule
-from .util.BotPluginsManager import BotPluginsManager
-from .util.Error import debugPrint
+from .util.Error import asyncTraceBack, debugPrint
 from .util.JsonConfig import getConfig
-from .util.Tool import getAttrFromModule
 from .util.Timer import Timer
-from .util.Error import asyncTraceBack
+from .util.Tool import getAttrFromModule
 
 
 class BotService:
@@ -22,6 +21,9 @@ class BotService:
     @asyncTraceBack
     async def runInEventLoop(self, accountMark, concurrentModule):
         while True:
+            # 初始化kafka 1.0 update
+            self.p = Producer({'bootstrap.servers': 'localhost:9092'})
+
             # 初始化Bot
             botType = getConfig()["account"][accountMark]["botType"]
             botPath = (getConfig()["botPath"] + botType).replace("/", ".")
@@ -32,6 +34,7 @@ class BotService:
                 botType + "Bot")(getConfig()["account"][accountMark])
             bot.setTimer(self.timer)
             debugPrint(f'''账号{botName}初始化成功''', fromName="BotService")
+
             # 登录
             loginRetry = 0
             while True:
@@ -46,9 +49,14 @@ class BotService:
                 else:
                     break
             debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
+
+            '''
+            1.0 update
             # 初始化BotRoute
             botRoute = BotRoute(
                 bot, BotPluginsManager(bot), self, concurrentModule)
+            '''
+
             # eventLoop
             while True:
                 retrySize = 0
@@ -92,16 +100,44 @@ class BotService:
                         await asyncio.sleep(
                             random.random() + random.randint(1, 2))
                 for i in ret[1]:
+                    ''' 1.0 update
                     request = getAttrFromModule(
                                 botPath + ".Request",
                                 botType + "Request")(
                                 {"bot": bot.getData(),
                                     "uuid": uuid.uuid4()},
                                 i, botRoute)
+                    '''
+                    request = getAttrFromModule(
+                                botPath + ".Request",
+                                botType + "Request")(
+                                {
+                                    "bot": bot.getData(),
+                                    "uuid": uuid.uuid4(),
+                                    "botPath": botPath + ".Request",
+                                    "botType": botType + "Request",
+                                    "responseChain": i
+                                    },
+                                i,)
                     if (await bot.filter(request)):
+                        ''' 1.0 update
                         asyncio.run_coroutine_threadsafe(
                             botRoute.route(request), self.loop)
+                        '''
+                        self.p.poll(0)
+                        self.p.produce(
+                                "routeList",
+                                request.getData().encode("utf8"),
+                                self.deliveryReport)
+                self.p.flush()
                 await asyncio.sleep(0)
+
+    def deliveryReport(self, err, msg):
+        if err is not None:
+            print('Message delivery failed: {}'.format(err))
+        else:
+            print('Message delivered to {} [{}]'.format(
+                    msg.topic(), msg.partition()))
 
     def run(self):
         self.loop = asyncio.new_event_loop()
@@ -115,9 +151,3 @@ class BotService:
                 self.loop)
         asyncio.run_coroutine_threadsafe(self.timer.timerLoop(), self.loop)
         self.loop.run_forever()
-
-    def runInThread(self, func, *args, **kwargs):
-        self.concurrentModule.runInThread(func, *args, **kwargs)
-
-    def asyncRunInThread(self, func, *args, **kwargs):
-        self.concurrentModule.asyncRunInThread(func, *args, **kwargs)

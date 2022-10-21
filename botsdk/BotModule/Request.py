@@ -1,13 +1,11 @@
 from botsdk.util.Cookie import getCookie, setCookie
 from ..util.GetModule import getBot
-from ..util.RunInThread import asyncRunInThread
 
 
 class Request(dict):
-    def __init__(self, data, responseChain, route=None):
+    def __init__(self, data, responseChain):
         super().__init__(responseChain)
         self.data = data
-        self.route = route
         self.bot = None
         self.init()
 
@@ -18,12 +16,6 @@ class Request(dict):
         if self.bot is None:
             self.bot = getBot(self.data["bot"])
         return self.bot
-
-    def getRoute(self):
-        return self.route
-
-    def getPluginsManager(self):
-        return self.route.getPluginsManager()
 
     def getData(self):
         return (self.data, dict(self))
@@ -75,12 +67,11 @@ class Request(dict):
     async def sendMessage(
             self, messageChain, id=None,
             messageType=None, *args, **kwargs):
-        asyncRunInThread(
-            self.getBot().sendMessage,
-            messageChain,
-            request=self,
-            messageType=messageType,
-            id=id, *args, **kwargs
+            self.getBot().sendMessage(
+                messageChain,
+                request=self,
+                messageType=messageType,
+                id=id, *args, **kwargs
             )
 
     async def syncSendMessage(

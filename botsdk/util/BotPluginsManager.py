@@ -7,7 +7,6 @@ from .JsonConfig import getConfig
 
 class BotPluginsManager:
     def __init__(self, bot):
-        self.bot = bot
         # 插件路径
         self.pluginsPath = getConfig()["pluginsPath"]
         # {插件名: 插件对象}
@@ -62,7 +61,7 @@ class BotPluginsManager:
                     debugPrint(f"插件{handle.getName()} 类型{i}中使用了相同的target {j}")
                     return False
         # 系统初始化
-        if not handle.initBySystem(self.bot):
+        if not handle.initBySystem():
             return False
         # 添加信息
         for i in handleListener:
@@ -135,6 +134,3 @@ class BotPluginsManager:
                 and target in self.getListener()["targetListener"]):
             return self.getListener()["typeListener"][target]
         return []
-
-    def getBot(self):
-        return self.bot

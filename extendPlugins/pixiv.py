@@ -20,8 +20,6 @@ class plugin(BotPlugin):
         self.permissionSet = {"OWNER", "ADMINISTRATOR", "MEMBER"}
         self.limitTags = {"R18", "R-18", "R18G", "R-18G", "R18-G"}
         self.canDetach = True
-
-    def init(self, bot):
         self.url = self.getConfig()["hibiapiUrl"]
         self.proxy = self.getConfig()["proxy"]
 

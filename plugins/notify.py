@@ -9,8 +9,6 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "notify", self.manageNotify)
         self.addBotType("Mirai")
         self.canDetach = True
-
-    def init(self, bot):
         allCookie = getCookieDriver().getAllCookie()
         for i in allCookie:
             if "notify" in allCookie[i]:

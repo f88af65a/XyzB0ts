@@ -24,12 +24,6 @@ class BotPlugin:
         # 兼容的bot类型
         self.botSet = set()
 
-    def getBotSet(self):
-        return self.botSet
-
-    def addBotType(self, botType: str):
-        self.botSet.add(botType)
-
     def addType(self, typeName: str, func):
         if typeName not in self.getListener():
             self.getListener()[typeName] = {"typeListener": set(),
@@ -52,10 +46,10 @@ class BotPlugin:
         self.addGeneral(6, func)
 
     # 系统调用的初始化函数
-    def initBySystem(self, bot):
+    def initBySystem(self):
         try:
             self.initPluginConfig()
-            self.init(bot)
+            self.init()
         except Exception:
             printTraceBack()
             return False
@@ -69,7 +63,7 @@ class BotPlugin:
                 self.config = json.loads(configFile.read())
 
     # 在成功加载后才会调用
-    def init(self, bot):
+    def init(self):
         pass
 
     # 加载时调用

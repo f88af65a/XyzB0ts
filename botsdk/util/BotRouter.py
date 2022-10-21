@@ -55,11 +55,11 @@ class TypeRouter(BotRouter):
 
 class TargetRouter(BotRouter):
     def init(self):
-        self.p = Producer({'bootstrap.servers': 'localhost:9092'})
         self.pattern = re.compile(
             (r"^(\[(\S*=\S*)&?\])?(["
              + "".join(["\\" + i for i in getConfig()["commandTarget"]])
              + r"])(\S+)( \S+)*$"))
+        self.p = Producer({'bootstrap.servers': 'localhost:9092'})
 
     def deliveryReport(self, err, msg):
         if err is not None:
@@ -141,5 +141,4 @@ class TargetRouter(BotRouter):
                 await asyncHandlePacket(ret, request)
             '''
             await self.sendToHandle(ret, request)
-
         return True

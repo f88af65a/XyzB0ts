@@ -4,9 +4,10 @@ import uuid
 from json import dumps
 
 from confluent_kafka import Producer
+from kazoo.client import KazooClient
 
 from .util.BotConcurrentModule import defaultBotConcurrentModule
-from .util.Error import asyncTraceBack, debugPrint
+from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.JsonConfig import getConfig
 from .util.Timer import Timer
 from .util.Tool import getAttrFromModule
@@ -51,6 +52,27 @@ class BotService:
                     break
             debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
 
+            # 同步至zookeeper
+            try:
+                zk = KazooClient(hosts="127.0.0.1:2181")
+                zk.start()
+                try:
+                    if not zk.exists("/bot"):
+                        zk.create("/bot")
+                except Exception:
+                    printTraceBack()
+                zk.create(
+                        f"/bot/{botName}",
+                        dumps({
+                            "name": botName,
+                            "data": dumps(bot.getData())
+                        }).encode(),
+                        ephemeral=True
+                    )
+            except Exception:
+                printTraceBack()
+                return
+            debugPrint(f'''账号{botName}同步至zookeeper成功''', fromName="BotService")
             '''
             1.0 update
             # 初始化BotRoute

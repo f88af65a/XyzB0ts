@@ -40,8 +40,8 @@ class BotRoute:
                 if (re := await self.router[i].route(
                         self.pluginsManager, request,
                         None)) is not None and re is False:
-                    return
-                await asyncio.sleep(0)
+                    break
+            await asyncio.sleep(0)
 
     def getBot(self):
         return self.bot

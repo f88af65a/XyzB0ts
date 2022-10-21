@@ -9,7 +9,7 @@ from .util.Tool import getAttrFromModule
 
 
 class BotHandle:
-    def __init__():
+    def __init__(self):
         pass
 
     async def Loop(self):
@@ -30,11 +30,12 @@ class BotHandle:
             msg = json.loads(msg.value())
             try:
                 module = importlib.reload(importlib.import_module(msg["path"]))
-                handle = getattr(module, msg["handle"])()
+                plugin = getattr(module, "handle")()
+                handle = getattr(plugin, msg["handle"])
             except Exception:
                 printTraceBack()
                 return
-            request = json.loads(msg["request"])
+            request = msg["request"]
             request = getAttrFromModule(
                     request[0]["botPath"],
                     request[0]["botType"]
@@ -43,7 +44,6 @@ class BotHandle:
                 await handle(request)
             except Exception:
                 printTraceBack()
-                return
 
     def run(self):
         asyncio.run(self.Loop())

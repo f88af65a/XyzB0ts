@@ -67,7 +67,7 @@ class Request(dict):
     async def sendMessage(
             self, messageChain, id=None,
             messageType=None, *args, **kwargs):
-        self.getBot().sendMessage(
+        await self.getBot().sendMessage(
             messageChain,
             request=self,
             messageType=messageType,

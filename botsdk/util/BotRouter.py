@@ -15,7 +15,6 @@ class BotRouter:
     def __init__(self):
         self.loop = asyncio.get_event_loop()
         self.init()
-        self.p = Producer({'bootstrap.servers': 'localhost:9092'})
 
     def init(self):
         pass
@@ -25,20 +24,6 @@ class BotRouter:
                     request,
                     concurrentModule: defaultBotConcurrentModule = None):
         pass
-
-    async def sendToHandle(self, func, request):
-        self.p.poll(0)
-        self.p.produce(
-                "targetHandle",
-                json.dumps(
-                    {
-                        "path": func.__module__,
-                        "handle": func.__name__,
-                        "request": request.getData()
-                        }).encode("utf8"),
-                callback=self.deliveryReport
-        )
-        self.p.flush()
 
 
 class GeneralRouter(BotRouter):
@@ -70,10 +55,32 @@ class TypeRouter(BotRouter):
 
 class TargetRouter(BotRouter):
     def init(self):
+        self.p = Producer({'bootstrap.servers': 'localhost:9092'})
         self.pattern = re.compile(
             (r"^(\[(\S*=\S*)&?\])?(["
              + "".join(["\\" + i for i in getConfig()["commandTarget"]])
              + r"])(\S+)( \S+)*$"))
+
+    def deliveryReport(self, err, msg):
+        if err is not None:
+            print('Message delivery failed: {}'.format(err))
+        else:
+            print('Message delivered to {} [{}]'.format(
+                    msg.topic(), msg.partition()))
+
+    async def sendToHandle(self, func, request):
+        self.p.poll(0)
+        self.p.produce(
+                "targetHandle",
+                json.dumps(
+                    {
+                        "path": func.__module__,
+                        "handle": func.__name__,
+                        "request": request.getData()
+                        }).encode("utf8"),
+                callback=self.deliveryReport
+        )
+        self.p.flush()
 
     @asyncTraceBack
     async def route(self,
@@ -133,6 +140,6 @@ class TargetRouter(BotRouter):
             else:
                 await asyncHandlePacket(ret, request)
             '''
-            self.sendToHandle(ret, request)
+            await self.sendToHandle(ret, request)
 
         return True

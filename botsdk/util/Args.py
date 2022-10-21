@@ -13,5 +13,5 @@ def GetArgs():
                     _args[i[:j]] = i[j + 1:]
                     break
                 if j == len(i) - 1:
-                    _args[i[:j]] = ""
+                    _args[i] = ""
     return _args

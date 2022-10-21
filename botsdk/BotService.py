@@ -1,6 +1,7 @@
 import asyncio
 import random
 import uuid
+from json import dumps
 
 from confluent_kafka import Producer
 
@@ -113,7 +114,7 @@ class BotService:
                                 botType + "Request")(
                                 {
                                     "bot": bot.getData(),
-                                    "uuid": uuid.uuid4(),
+                                    "uuid": str(uuid.uuid4()),
                                     "botPath": botPath + ".Request",
                                     "botType": botType + "Request",
                                     "responseChain": i
@@ -127,8 +128,8 @@ class BotService:
                         self.p.poll(0)
                         self.p.produce(
                                 "routeList",
-                                request.getData().encode("utf8"),
-                                self.deliveryReport)
+                                dumps(request.getData()).encode("utf8"),
+                                callback=self.deliveryReport)
                 self.p.flush()
                 await asyncio.sleep(0)
 

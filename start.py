@@ -3,7 +3,7 @@ import botsdk.BotRoute
 import botsdk.BotHandle
 import os
 import sys
-from .botsdk.util.Args import GetArgs
+from botsdk.util.Args import GetArgs
 
 
 def start():

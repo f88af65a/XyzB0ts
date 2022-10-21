@@ -36,7 +36,7 @@ class BotRouter:
                         "handle": func.__name__,
                         "request": request.getData()
                         }).encode("utf8"),
-                self.deliveryReport
+                callback=self.deliveryReport
         )
         self.p.flush()
 

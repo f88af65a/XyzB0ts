@@ -36,9 +36,9 @@ class BotHandle:
                 return
             request = json.loads(msg["request"])
             request = getAttrFromModule(
-                    request["botPath"],
-                    request["botType"]
-                )(request, request["responseChain"])
+                    request[0]["botPath"],
+                    request[0]["botType"]
+                )(request[0], request[1])
             try:
                 await handle(request)
             except Exception:

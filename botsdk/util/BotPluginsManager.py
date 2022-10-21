@@ -6,7 +6,7 @@ from .JsonConfig import getConfig
 
 
 class BotPluginsManager:
-    def __init__(self, bot):
+    def __init__(self):
         # 插件路径
         self.pluginsPath = getConfig()["pluginsPath"]
         # {插件名: 插件对象}
@@ -35,6 +35,10 @@ class BotPluginsManager:
             return self.loadPlugin(moduleName)
 
     def loadPlugin(self, path: str):
+        '''
+        插件加载流程
+        onload -> initBySystem -> initPluginConfig -> init
+        '''
         path = path.replace("/", ".")
         if path[-3:] == ".py":
             path = path[:-3]
@@ -46,9 +50,12 @@ class BotPluginsManager:
             printTraceBack()
             return False
         handle.onLoad()
+        '''
+        检查改为在插件中检查
         # 检查是否是兼容的
         if self.getBot().getBotType() not in handle.getBotSet():
             return False
+        '''
         # 检查名称是否重复
         if handle.getName() in self.plugins:
             return False

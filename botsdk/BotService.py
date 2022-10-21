@@ -116,12 +116,12 @@ class BotService:
                                     "bot": bot.getData(),
                                     "uuid": str(uuid.uuid4()),
                                     "botPath": botPath + ".Request",
-                                    "botType": botType + "Request",
-                                    "responseChain": i
+                                    "botType": botType + "Request"
                                     },
-                                i,)
+                                i)
                     if (await bot.filter(request)):
-                        ''' 1.0 update
+                        '''
+                        1.0 update
                         asyncio.run_coroutine_threadsafe(
                             botRoute.route(request), self.loop)
                         '''

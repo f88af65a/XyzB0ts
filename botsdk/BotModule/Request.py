@@ -3,8 +3,8 @@ from ..util.GetModule import getBot
 
 
 class Request(dict):
-    def __init__(self, data, responseChain):
-        super().__init__(responseChain)
+    def __init__(self, data, dictData):
+        super().__init__(dictData)
         self.data = data
         self.bot = None
         self.init()
@@ -67,12 +67,12 @@ class Request(dict):
     async def sendMessage(
             self, messageChain, id=None,
             messageType=None, *args, **kwargs):
-            self.getBot().sendMessage(
-                messageChain,
-                request=self,
-                messageType=messageType,
-                id=id, *args, **kwargs
-            )
+        self.getBot().sendMessage(
+            messageChain,
+            request=self,
+            messageType=messageType,
+            id=id, *args, **kwargs
+        )
 
     async def syncSendMessage(
             self, messageChain, id=None,

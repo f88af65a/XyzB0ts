@@ -20,10 +20,6 @@ class plugin(BotPlugin):
         self.addBotType("Kaiheila")
         self.canDetach = True
 
-    def init(self, bot):
-        for i in self.getConfig()["listen"]:
-            self.addFuture(i, self.bilibiliGetDynamic(bot, i))
-
     async def toNotify(self, notifyName, bot, messageChain):
         notifyModule = getNotifyModule()
         notifySet = copy.deepcopy(notifyModule.notify(notifyName))

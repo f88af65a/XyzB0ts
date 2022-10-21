@@ -16,6 +16,8 @@ class plugin(BotPlugin):
         )
         self.key = None
         self.canDetach = True
+
+    def init(self):
         self.key = self.getConfig()["saucenaoKey"]
 
     async def saucenao(self, request):

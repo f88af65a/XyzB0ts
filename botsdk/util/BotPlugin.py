@@ -24,6 +24,12 @@ class BotPlugin:
         # 兼容的bot类型
         self.botSet = set()
 
+    def getBotSet(self):
+        return self.botSet
+
+    def addBotType(self, botType: str):
+        self.botSet.add(botType)
+
     def addType(self, typeName: str, func):
         if typeName not in self.getListener():
             self.getListener()[typeName] = {"typeListener": set(),

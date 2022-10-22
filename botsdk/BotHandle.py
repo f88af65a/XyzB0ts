@@ -6,6 +6,7 @@ import time
 
 from confluent_kafka import Consumer
 
+from botsdk.util.HandlePacket import asyncHandlePacket
 from botsdk.util.ZookeeperTool import AddEphemeralNode
 
 from .util.Error import debugPrint, printTraceBack
@@ -42,6 +43,12 @@ class BotHandle:
             try:
                 module = importlib.reload(importlib.import_module(msg["path"]))
                 plugin = getattr(module, "handle")()
+                plugin.onLoad()
+                if not plugin.initBySystem():
+                    debugPrint(
+                            f'''{msg["path"]}.{msg["handle"]}初始化失败''',
+                            fromName="BotHandle")
+                    continue
                 handle = getattr(plugin, msg["handle"])
             except Exception:
                 printTraceBack()
@@ -52,7 +59,7 @@ class BotHandle:
                     request[0]["botType"]
                 )(request[0], request[1])
             try:
-                await handle(request)
+                await asyncHandlePacket(handle, request)
             except Exception:
                 printTraceBack()
 

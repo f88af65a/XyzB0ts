@@ -16,7 +16,7 @@ class BotPlugin:
         # UUID
         self.uuid = uuid.uuid4()
         # 配置文件,在pluginInit中初始化
-        self.config = None
+        self.config = {}
         # listenerk
         self.listener = {}
         # generalList

@@ -64,6 +64,7 @@ class BotService:
                         '''BotService同步至zookeeper失败''',
                         fromName="BotService")
                 return
+            debugPrint('''BotService同步至zookeeper成功''', fromName="BotService")
 
             # 同步至zookeeper
             if not AddEphemeralNode("/bot", botName, {
@@ -74,6 +75,9 @@ class BotService:
                         f'''账号{botName}同步至zookeeper失败''',
                         fromName="BotService")
                 return
+            debugPrint(
+                        f'''账号{botName}同步至zookeeper成功''',
+                        fromName="BotService")
             '''
             1.0 update
             # 初始化BotRoute

@@ -30,7 +30,7 @@ def GetZKClient():
     except Exception:
         printTraceBack()
         return None
-    return
+    return _zkClient
 
 
 def AddEphemeralNode(rootPath, name, data):

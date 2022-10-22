@@ -19,12 +19,13 @@ class BotHandle:
     async def Loop(self):
         # 将Handle信息同步至Zookeeper
         if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
-                        "type": "BotRouter",
+                        "type": "BotHandle",
                         "startTime": str(int(time.time()))
                     }):
             debugPrint(
-                    '''BotRouter同步至zookeeper失败''',
+                    '''BotHandle同步至zookeeper失败''',
                     fromName="BotRouter")
+        debugPrint('''BotHandle同步至zookeeper成功''', fromName="BotHandle")
         c = Consumer({
             'bootstrap.servers': 'localhost:9092',
             'group.id': "targetHandleGroup"

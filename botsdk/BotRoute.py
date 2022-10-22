@@ -31,6 +31,7 @@ class BotRoute:
                     '''BotRouter同步至zookeeper失败''',
                     fromName="BotRouter")
             return
+        debugPrint('''BotRouter同步至zookeeper成功''', fromName="BotRouter")
         c = Consumer({
             'bootstrap.servers': 'localhost:9092',
             'group.id': "targetHandleGroup"

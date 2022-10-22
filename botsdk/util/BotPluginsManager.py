@@ -27,6 +27,8 @@ class BotPluginsManager:
             if (os.path.isfile(f"{self.pluginsPath}{i}")
                     and self.loadPlugin(f"{self.pluginsPath}{i}")):
                 debugPrint(f"插件{self.pluginsPath}{i}加载成功")
+            else:
+                debugPrint(f"插件{self.pluginsPath}{i}加载失败")
 
     def reLoadPlugin(self, pluginName: str):
         if pluginName in self.plugins:

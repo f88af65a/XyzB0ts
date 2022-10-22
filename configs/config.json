@@ -44,7 +44,9 @@
 			"id": ["System:Owner"],
 			"acookie": ["System:Owner"],
 			"syncCookie": ["System:Owner"],
-			"quitGroup": ["System:Owner"]
+			"quitGroup": ["System:Owner"],
+			"listGroup": ["System:Owner"],
+			"listFriend": ["System:Owner"]
 		},
 		"user": {}
 	}

@@ -153,12 +153,12 @@ class MiraiBot(Bot):
             target=target
         )
 
-    async def friendList(self, target: int):
-        return await self.adapter.groupList(
+    async def friendList(self):
+        return await self.adapter.friendList(
             sessionKey=self.sessionKey
         )
 
-    async def groupList(self, target: int):
+    async def groupList(self):
         return await self.adapter.groupList(
             sessionKey=self.sessionKey
         )

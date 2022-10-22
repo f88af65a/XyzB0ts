@@ -69,10 +69,12 @@ class BotService:
                         }).encode(),
                         ephemeral=True
                     )
+                debugPrint(
+                        f'''账号{botName}同步至zookeeper成功''',
+                        fromName="BotService")
             except Exception:
                 printTraceBack()
                 return
-            debugPrint(f'''账号{botName}同步至zookeeper成功''', fromName="BotService")
             '''
             1.0 update
             # 初始化BotRoute

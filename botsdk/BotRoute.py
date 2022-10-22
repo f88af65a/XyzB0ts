@@ -5,7 +5,7 @@ from confluent_kafka import Consumer
 
 from .util.BotPluginsManager import BotPluginsManager
 from .util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
-from .util.Error import asyncTraceBack
+from .util.Error import asyncTraceBack, debugPrint
 from .util.TimeTest import asyncTimeTest
 from .util.Tool import getAttrFromModule
 
@@ -28,9 +28,8 @@ class BotRoute:
             if msg is None:
                 continue
             if msg.error():
-                print("Consumer error: {}".format(msg.error()))
+                debugPrint(msg.error())
                 continue
-            print('Received message: {}'.format(msg.value().decode('utf-8')))
             msg = loads(msg.value())
             request = getAttrFromModule(
                     msg[0]["botPath"],

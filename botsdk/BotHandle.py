@@ -4,7 +4,7 @@ import json
 
 from confluent_kafka import Consumer
 
-from .util.Error import printTraceBack
+from .util.Error import debugPrint, printTraceBack
 from .util.Tool import getAttrFromModule
 
 
@@ -23,10 +23,8 @@ class BotHandle:
             if msg is None:
                 continue
             if msg.error():
-                print("Consumer error: {}".format(msg.error()))
+                debugPrint(msg.error())
                 continue
-
-            print('Received message: {}'.format(msg.value().decode('utf-8')))
             msg = json.loads(msg.value())
             try:
                 module = importlib.reload(importlib.import_module(msg["path"]))

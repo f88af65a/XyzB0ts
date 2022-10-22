@@ -1,8 +1,12 @@
 import asyncio
 import importlib
 import json
+import os
+import time
 
 from confluent_kafka import Consumer
+
+from botsdk.util.ZookeeperTool import AddEphemeralNode
 
 from .util.Error import debugPrint, printTraceBack
 from .util.Tool import getAttrFromModule
@@ -13,6 +17,14 @@ class BotHandle:
         pass
 
     async def Loop(self):
+        # 将Handle信息同步至Zookeeper
+        if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
+                        "type": "BotRouter",
+                        "startTime": str(int(time.time()))
+                    }):
+            debugPrint(
+                    '''BotRouter同步至zookeeper失败''',
+                    fromName="BotRouter")
         c = Consumer({
             'bootstrap.servers': 'localhost:9092',
             'group.id': "targetHandleGroup"

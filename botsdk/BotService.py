@@ -1,13 +1,16 @@
 import asyncio
+import os
 import random
+import time
 import uuid
 from json import dumps
 
 from confluent_kafka import Producer
-from kazoo.client import KazooClient
+
+from botsdk.util.ZookeeperTool import AddEphemeralNode
 
 from .util.BotConcurrentModule import defaultBotConcurrentModule
-from .util.Error import asyncTraceBack, debugPrint, printTraceBack
+from .util.Error import asyncTraceBack, debugPrint
 from .util.JsonConfig import getConfig
 from .util.Timer import Timer
 from .util.Tool import getAttrFromModule
@@ -52,28 +55,24 @@ class BotService:
                     break
             debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
 
+            # 将Service信息同步至Zookeeper
+            if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
+                            "type": "BotService",
+                            "startTime": str(int(time.time()))
+                        }):
+                debugPrint(
+                        '''BotService同步至zookeeper失败''',
+                        fromName="BotService")
+                return
+
             # 同步至zookeeper
-            try:
-                zk = KazooClient(hosts="127.0.0.1:2181")
-                zk.start()
-                try:
-                    if not zk.exists("/bot"):
-                        zk.create("/bot")
-                except Exception:
-                    printTraceBack()
-                zk.create(
-                        f"/bot/{botName}",
-                        dumps({
+            if not AddEphemeralNode("/bot", botName, {
                             "name": botName,
                             "data": bot.getData()
-                        }).encode(),
-                        ephemeral=True
-                    )
+                        }):
                 debugPrint(
-                        f'''账号{botName}同步至zookeeper成功''',
+                        f'''账号{botName}同步至zookeeper失败''',
                         fromName="BotService")
-            except Exception:
-                printTraceBack()
                 return
             '''
             1.0 update
@@ -81,7 +80,6 @@ class BotService:
             botRoute = BotRoute(
                 bot, BotPluginsManager(bot), self, concurrentModule)
             '''
-
             # eventLoop
             while True:
                 retrySize = 0

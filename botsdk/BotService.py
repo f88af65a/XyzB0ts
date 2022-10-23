@@ -1,6 +1,7 @@
 import asyncio
 import os
 import random
+import threading
 import time
 import uuid
 from json import dumps, loads
@@ -54,11 +55,6 @@ class BotService:
 
             # 初始化kafka 1.0 update
             self.p = Producer({'bootstrap.servers': 'localhost:9092'})
-            self.c = Consumer({
-                'bootstrap.servers': 'localhost:9092',
-                'group.id': botName
-            })
-            self.c.subscribe(['BotService'])
 
             # 将Service信息同步至Zookeeper
             if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
@@ -86,6 +82,10 @@ class BotService:
             debugPrint(
                         f'''账号{botName}同步至zookeeper成功''',
                         fromName="BotService")
+            
+            # 启动kafka监听线程
+            t = threading.Thread(target=self.kafkaThread, args=(botName))
+            t.start()
             '''
             1.0 update
             # 初始化BotRoute
@@ -168,17 +168,25 @@ class BotService:
                                     ).encode("utf8"),
                                 callback=self.deliveryReport)
                 self.p.flush()
-                msg = self.c.poll(0)
-                if msg is not None and not msg.error():
-                    msg = loads(msg.value())
-                    if "code" not in msg:
-                        debugPrint("MSG缺少code", fromName="BotService")
-                    else:
-                        if msg["code"] == 1 and msg["data"] == botName:
-                            self.c.close()
-                            GetZKClient().stop()
-                            exit()
                 await asyncio.sleep(0)
+
+    def kafkaThread(self, botName):
+        self.c = Consumer({
+            'bootstrap.servers': 'localhost:9092',
+            'group.id': botName
+        })
+        self.c.subscribe(['BotService'])
+        while True:
+            msg = self.c.poll(1.0)
+            if msg is not None and not msg.error():
+                msg = loads(msg.value())
+                if "code" not in msg:
+                    debugPrint("MSG缺少code", fromName="BotService")
+                else:
+                    if msg["code"] == 1 and msg["data"] == botName:
+                        self.c.close()
+                        GetZKClient().stop()
+                        exit()
 
     def deliveryReport(self, err, msg):
         if err is not None:

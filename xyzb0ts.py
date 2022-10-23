@@ -10,24 +10,24 @@ from botsdk.util.ZookeeperTool import GetZKClient
 
 
 def GetTopic(name):
-    adminClient = AdminClient({"bootstrap.server": "127.0.0.1:9092"})
-    topics = adminClient.list_topics()
+    adminClient = AdminClient({"bootstrap.servers": "127.0.0.1:9092"})
+    topics = adminClient.list_topics().topics
     if name not in topics:
         return None
     return topics[name]
 
 
 def GetTopicPartitionSize(name):
-    adminClient = AdminClient({"bootstrap.server": "127.0.0.1:9092"})
-    topics = adminClient.list_topics()
+    adminClient = AdminClient({"bootstrap.servers": "127.0.0.1:9092"})
+    topics = adminClient.list_topics().topics
     if name not in topics:
         return -1
     return len(topics[name].partitions)
 
 
 def AlertPartition(name, size):
-    adminClient = AdminClient({"bootstrap.server": "127.0.0.1:9092"})
-    topics = adminClient.list_topics()
+    adminClient = AdminClient({"bootstrap.servers": "127.0.0.1:9092"})
+    topics = adminClient.list_topics().topics
     if name not in topics:
         return False
     if size > len(topics[name].partitions):
@@ -56,9 +56,10 @@ def deliveryReport(err, msg):
 def BotControl(botData):
     inputData = input(
         f'''------{botData["botName"]}------\n'''
-        f'''------Partition:{GetTopicPartitionSize("BotService")}------'''
+        f'''------Partition:{GetTopicPartitionSize("BotService")}------\n'''
         '''0.添加一个BotService\n'''
         '''1.减少一个BotService\n'''
+        '''2.修改PartitionSize'''
     )
     try:
         inputData = int(inputData)
@@ -86,7 +87,7 @@ def BotControl(botData):
 def RouterControl():
     inputData = input(
         '''------Router------\n'''
-        f'''------Partition:{GetTopicPartitionSize("routeList")}------'''
+        f'''------Partition:{GetTopicPartitionSize("routeList")}------\n'''
         '''0.添加一个Router\n'''
         '''1.减少一个Router\n'''
     )
@@ -115,10 +116,10 @@ def RouterControl():
 def HandleControl():
     inputData = input(
         '''------Handle------\n'''
-        f'''------Partition:{GetTopicPartitionSize("targetHandle")}------'''
+        f'''------Partition:{GetTopicPartitionSize("targetHandle")}\n------'''
         '''0.添加一个Router\n'''
         '''1.减少一个Router\n'''
-        '''2.修改PartitionSize'''
+        '''2.修改PartitionSize\n'''
     )
     try:
         inputData = int(inputData)

@@ -4,7 +4,6 @@ import re
 
 from confluent_kafka import Producer
 
-from .BotConcurrentModule import defaultBotConcurrentModule
 from .BotPluginsManager import BotPluginsManager
 from .Error import asyncTraceBack, debugPrint
 from .JsonConfig import getConfig
@@ -21,16 +20,14 @@ class BotRouter:
 
     async def route(self,
                     pluginsManager: BotPluginsManager,
-                    request,
-                    concurrentModule: defaultBotConcurrentModule = None):
+                    request):
         pass
 
 
 class GeneralRouter(BotRouter):
     async def route(self,
                     pluginsManager: BotPluginsManager,
-                    request,
-                    concurrentModule: defaultBotConcurrentModule = None):
+                    request):
         for i in pluginsManager.getGeneralList():
             if request.getBot().getBotType() not in i[1].__self__.botSet:
                 continue
@@ -42,8 +39,7 @@ class GeneralRouter(BotRouter):
 class TypeRouter(BotRouter):
     async def route(self,
                     pluginsManager: BotPluginsManager,
-                    request,
-                    concurrentModule: defaultBotConcurrentModule = None):
+                    request):
         if request.getType() in pluginsManager.getListener():
             listener = pluginsManager.getListener()
             for i in listener[request.getType()]["typeListener"]:
@@ -86,8 +82,7 @@ class TargetRouter(BotRouter):
     @asyncTraceBack
     async def route(self,
                     pluginsManager: BotPluginsManager,
-                    request,
-                    concurrentModule: defaultBotConcurrentModule = None):
+                    request):
         # 类型判断与命令获取
         if (target := request.getFirstText()) is None or not target:
             return False

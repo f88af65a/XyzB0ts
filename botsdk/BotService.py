@@ -10,7 +10,6 @@ from confluent_kafka import Consumer, Producer
 from botsdk.util.Args import GetArgs
 from botsdk.util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
-from .util.BotConcurrentModule import defaultBotConcurrentModule
 from .util.Error import asyncTraceBack, debugPrint
 from .util.JsonConfig import getConfig
 from .util.Timer import Timer
@@ -25,7 +24,7 @@ class BotService:
         return self.timer
 
     @asyncTraceBack
-    async def runInEventLoop(self, botData, concurrentModule):
+    async def runInEventLoop(self, botData):
         while True:
             # 初始化Bot
             botType = botData["botType"]
@@ -189,11 +188,11 @@ class BotService:
                     msg.topic(), msg.partition()))
 
     def run(self):
+        '''
+        1.0 update
         concurrentModule = defaultBotConcurrentModule(
             int(getConfig()["workProcess"]) if getConfig()["multi"] else None,
             int(getConfig()["workThread"]))
-        '''
-        1.0 update
         asyncio.run_coroutine_threadsafe(
             self.runInEventLoop(
                 loads(GetArgs()["account"].split("'", '"')), concurrentModule),
@@ -201,6 +200,5 @@ class BotService:
         asyncio.run_coroutine_threadsafe(self.timer.timerLoop(), self.loop)
         '''
         asyncio.run(self.runInEventLoop(
-                loads(GetArgs()["account"].replace("'", '"')),
-                concurrentModule)
+                loads(GetArgs()["account"].replace("'", '"')))
                 )

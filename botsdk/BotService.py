@@ -84,7 +84,7 @@ class BotService:
                         fromName="BotService")
             
             # 启动kafka监听线程
-            t = threading.Thread(target=self.kafkaThread, args=(botName))
+            t = threading.Thread(target=self.kafkaThread, args=(botName,))
             t.start()
             '''
             1.0 update

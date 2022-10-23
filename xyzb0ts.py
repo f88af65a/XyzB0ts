@@ -59,7 +59,7 @@ def BotControl(botData):
         f'''------Partition:{GetTopicPartitionSize("BotService")}------\n'''
         '''0.添加一个BotService\n'''
         '''1.减少一个BotService\n'''
-        '''2.修改PartitionSize'''
+        '''2.修改PartitionSize\n'''
     )
     try:
         inputData = int(inputData)
@@ -90,6 +90,7 @@ def RouterControl():
         f'''------Partition:{GetTopicPartitionSize("routeList")}------\n'''
         '''0.添加一个Router\n'''
         '''1.减少一个Router\n'''
+        '''2.修改PartitionSize\n'''
     )
     try:
         inputData = int(inputData)
@@ -116,7 +117,7 @@ def RouterControl():
 def HandleControl():
     inputData = input(
         '''------Handle------\n'''
-        f'''------Partition:{GetTopicPartitionSize("targetHandle")}\n------'''
+        f'''------Partition:{GetTopicPartitionSize("targetHandle")}------\n'''
         '''0.添加一个Router\n'''
         '''1.减少一个Router\n'''
         '''2.修改PartitionSize\n'''

@@ -25,16 +25,16 @@ class BotService:
         return self.timer
 
     @asyncTraceBack
-    async def runInEventLoop(self, accountMark, concurrentModule):
+    async def runInEventLoop(self, botData, concurrentModule):
         while True:
             # 初始化Bot
-            botType = getConfig()["account"][accountMark]["botType"]
+            botType = botData["botType"]
             botPath = (getConfig()["botPath"] + botType).replace("/", ".")
-            botName = getConfig()["account"][accountMark]["botName"]
+            botName = botData["botName"]
             debugPrint(f'''账号{botName}加载成功''', fromName="BotService")
             bot = getAttrFromModule(
                 botPath + ".Bot",
-                botType + "Bot")(getConfig()["account"][accountMark])
+                botType + "Bot")(botData)
             bot.setTimer(self.timer)
             debugPrint(f'''账号{botName}初始化成功''', fromName="BotService")
 
@@ -176,7 +176,6 @@ class BotService:
                         debugPrint("MSG缺少code", fromName="BotService")
                     else:
                         if msg["code"] == 1 and msg["data"] == botName:
-                            self.p.close()
                             self.c.close()
                             GetZKClient().stop()
                             exit()
@@ -190,16 +189,18 @@ class BotService:
                     msg.topic(), msg.partition()))
 
     def run(self):
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop)
         concurrentModule = defaultBotConcurrentModule(
             int(getConfig()["workProcess"]) if getConfig()["multi"] else None,
             int(getConfig()["workThread"]))
-        asyncio.run_coroutine_threadsafe(
-            self.runInEventLoop(loads(GetArgs()["account"]), concurrentModule),
-            self.loop)
         '''
         1.0 update
+        asyncio.run_coroutine_threadsafe(
+            self.runInEventLoop(
+                loads(GetArgs()["account"].split("'", '"')), concurrentModule),
+            self.loop)
         asyncio.run_coroutine_threadsafe(self.timer.timerLoop(), self.loop)
         '''
-        self.loop.run_forever()
+        asyncio.run(self.runInEventLoop(
+                loads(GetArgs()["account"].replace("'", '"')),
+                concurrentModule)
+                )

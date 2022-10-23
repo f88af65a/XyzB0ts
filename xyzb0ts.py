@@ -8,7 +8,7 @@ from botsdk.util.JsonConfig import getConfig
 from botsdk.util.ZookeeperTool import GetZKClient
 
 
-def deliveryReport(self, err, msg):
+def deliveryReport(err, msg):
     if err is not None:
         print('Message delivery failed: {}'.format(err))
     else:
@@ -29,8 +29,8 @@ def BotControl(botData):
         return
     if inputData == 0:
         os.system(
-                f'''{getConfig()["python"]} '''
-                f'''service account="{dumps(botData)}"''')
+                f'''{getConfig()["python"]} start.py '''
+                f'''service account="{dumps(botData).replace('"', "'")}" &''')
     elif inputData == 1:
         p = Producer({'bootstrap.servers': 'localhost:9092'})
         p.poll(0)
@@ -56,7 +56,7 @@ def RouterControl():
         return
     if inputData == 0:
         os.system(
-                f'''{getConfig()["python"]} route''')
+                f'''{getConfig()["python"]} start.py route &''')
     elif inputData == 1:
         p = Producer({'bootstrap.servers': 'localhost:9092'})
         p.poll(0)
@@ -67,7 +67,6 @@ def RouterControl():
                     ).encode("utf8"),
                 callback=deliveryReport)
         p.flush()
-        p.stop()
 
 
 def HandleControl():
@@ -83,7 +82,7 @@ def HandleControl():
         return
     if inputData == 0:
         os.system(
-                f'''{getConfig()["python"]} handle''')
+                f'''{getConfig()["python"]} start.py handle &''')
     elif inputData == 1:
         p = Producer({'bootstrap.servers': 'localhost:9092'})
         p.poll(0)
@@ -94,7 +93,6 @@ def HandleControl():
                     ).encode("utf8"),
                 callback=deliveryReport)
         p.flush()
-        p.stop()
 
 
 def start():
@@ -138,7 +136,7 @@ def start():
         except Exception:
             continue
         if inputData < len(accounts):
-            BotControl[accounts[inputData]]
+            BotControl(accounts[inputData])
         elif inputData == len(accounts):
             RouterControl()
         elif inputData == len(accounts) + 1:

@@ -1,13 +1,13 @@
 import asyncio
 import importlib
-import json
 import os
 import time
+from json import loads
 
 from confluent_kafka import Consumer
 
 from botsdk.util.HandlePacket import asyncHandlePacket
-from botsdk.util.ZookeeperTool import AddEphemeralNode
+from botsdk.util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 from .util.Error import debugPrint, printTraceBack
 from .util.Tool import getAttrFromModule
@@ -39,7 +39,18 @@ class BotHandle:
             if msg.error():
                 debugPrint(msg.error())
                 continue
-            msg = json.loads(msg.value())
+            msg = loads(msg.value())
+            if "code" not in msg:
+                debugPrint("MSG中缺少code", fromName="BotRoute")
+                continue
+            if msg["code"] == 1:
+                c.close()
+                GetZKClient().stop()
+                exit()
+            if "data" not in msg:
+                debugPrint("MSG中缺少data", fromName="BotRoute")
+                continue
+            msg = msg["data"]
             try:
                 module = importlib.reload(importlib.import_module(msg["path"]))
                 plugin = getattr(module, "handle")()

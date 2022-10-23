@@ -3,11 +3,12 @@ import os
 import random
 import time
 import uuid
-from json import dumps
+from json import dumps, loads
 
-from confluent_kafka import Producer
+from confluent_kafka import Consumer, Producer
 
-from botsdk.util.ZookeeperTool import AddEphemeralNode
+from botsdk.util.Args import GetArgs
+from botsdk.util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 from .util.BotConcurrentModule import defaultBotConcurrentModule
 from .util.Error import asyncTraceBack, debugPrint
@@ -26,9 +27,6 @@ class BotService:
     @asyncTraceBack
     async def runInEventLoop(self, accountMark, concurrentModule):
         while True:
-            # 初始化kafka 1.0 update
-            self.p = Producer({'bootstrap.servers': 'localhost:9092'})
-
             # 初始化Bot
             botType = getConfig()["account"][accountMark]["botType"]
             botPath = (getConfig()["botPath"] + botType).replace("/", ".")
@@ -55,10 +53,20 @@ class BotService:
                     break
             debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
 
+            # 初始化kafka 1.0 update
+            self.p = Producer({'bootstrap.servers': 'localhost:9092'})
+            self.c = Consumer({
+                'bootstrap.servers': 'localhost:9092',
+                'group.id': botName
+            })
+            self.c.subscribe(['BotService'])
+
             # 将Service信息同步至Zookeeper
             if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
                             "type": "BotService",
-                            "startTime": str(int(time.time()))
+                            "startTime": str(int(time.time())),
+                            "botType": botType,
+                            "botName": botName
                         }):
                 debugPrint(
                         '''BotService同步至zookeeper失败''',
@@ -67,8 +75,9 @@ class BotService:
             debugPrint('''BotService同步至zookeeper成功''', fromName="BotService")
 
             # 同步至zookeeper
-            if not AddEphemeralNode("/bot", botName, {
+            if not AddEphemeralNode("/Bot", botName, {
                             "name": botName,
+                            "startTime": str(int(time.time())),
                             "data": bot.getData()
                         }):
                 debugPrint(
@@ -126,6 +135,7 @@ class BotService:
                             fromName="BotService")
                         await asyncio.sleep(
                             random.random() + random.randint(1, 2))
+                # to router
                 for i in ret[1]:
                     ''' 1.0 update
                     request = getAttrFromModule(
@@ -154,16 +164,29 @@ class BotService:
                         self.p.poll(0)
                         self.p.produce(
                                 "routeList",
-                                dumps(request.getData()).encode("utf8"),
+                                dumps(
+                                    {"code": 0, "data": request.getData()}
+                                    ).encode("utf8"),
                                 callback=self.deliveryReport)
                 self.p.flush()
+                msg = self.c.poll(0)
+                if msg is not None and not msg.error():
+                    msg = loads(msg.value())
+                    if "code" not in msg:
+                        debugPrint("MSG缺少code", fromName="BotService")
+                    else:
+                        if msg["code"] == 1 and msg["data"] == botName:
+                            self.p.close()
+                            self.c.close()
+                            GetZKClient().stop()
+                            exit()
                 await asyncio.sleep(0)
 
     def deliveryReport(self, err, msg):
         if err is not None:
-            print('Message delivery failed: {}'.format(err))
+            debugPrint('Message delivery failed: {}'.format(err))
         else:
-            print('Message delivered to {} [{}]'.format(
+            debugPrint('Message delivered to {} [{}]'.format(
                     msg.topic(), msg.partition()))
 
     def run(self):
@@ -172,9 +195,11 @@ class BotService:
         concurrentModule = defaultBotConcurrentModule(
             int(getConfig()["workProcess"]) if getConfig()["multi"] else None,
             int(getConfig()["workThread"]))
-        for i in range(len(getConfig()["account"])):
-            asyncio.run_coroutine_threadsafe(
-                self.runInEventLoop(i, concurrentModule),
-                self.loop)
+        asyncio.run_coroutine_threadsafe(
+            self.runInEventLoop(loads(GetArgs()["account"]), concurrentModule),
+            self.loop)
+        '''
+        1.0 update
         asyncio.run_coroutine_threadsafe(self.timer.timerLoop(), self.loop)
+        '''
         self.loop.run_forever()

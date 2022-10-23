@@ -1,11 +1,13 @@
 import traceback
+from .JsonConfig import getConfig
 
 
 def debugPrint(msg: str, fromName=None, exception=None, level=5):
-    print((
-            (f"[{str(fromName)}]" if fromName is not None else "")
-            + (f"[{str(exception)}]" if exception is not None else "")
-            + str(msg)))
+    if getConfig()["debug"] is True and getConfig()["debugPrint"] <= level:
+        print((
+                (f"[{str(fromName)}]" if fromName is not None else "")
+                + (f"[{str(exception)}]" if exception is not None else "")
+                + str(msg)))
 
 
 def exceptionExit(msg):

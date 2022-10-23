@@ -11,9 +11,9 @@ def GetBotByName(name: str):
     try:
         zk = KazooClient(hosts="127.0.0.1:2181")
         zk.start()
-        if not zk.exists(f"/bot/{name}"):
+        if not zk.exists(f"/Bot/{name}"):
             return None
-        ret = getBot(loads(zk.get(f"/bot/{name}")[0].decode())["data"])
+        ret = getBot(loads(zk.get(f"/Bot/{name}")[0].decode())["data"])
         zk.stop()
         return ret
     except Exception:

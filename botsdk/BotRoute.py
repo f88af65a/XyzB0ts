@@ -5,7 +5,7 @@ import time
 
 from confluent_kafka import Consumer
 
-from botsdk.util.ZookeeperTool import AddEphemeralNode
+from botsdk.util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 from .util.BotPluginsManager import BotPluginsManager
 from .util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
@@ -45,6 +45,17 @@ class BotRoute:
                 debugPrint(msg.error())
                 continue
             msg = loads(msg.value())
+            if "code" not in msg:
+                debugPrint("MSG中缺少code", fromName="BotRoute")
+                continue
+            if msg["code"] == 1:
+                c.close()
+                GetZKClient().stop()
+                exit()
+            if "data" not in msg:
+                debugPrint("MSG中缺少data", fromName="BotRoute")
+                continue
+            msg = msg["data"]
             request = getAttrFromModule(
                     msg[0]["botPath"],
                     msg[0]["botType"]

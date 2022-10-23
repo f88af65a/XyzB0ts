@@ -6,7 +6,7 @@ from confluent_kafka import Producer
 
 from .BotConcurrentModule import defaultBotConcurrentModule
 from .BotPluginsManager import BotPluginsManager
-from .Error import asyncTraceBack
+from .Error import asyncTraceBack, debugPrint
 from .JsonConfig import getConfig
 from .Permission import permissionCheck, roleCheck
 
@@ -63,9 +63,9 @@ class TargetRouter(BotRouter):
 
     def deliveryReport(self, err, msg):
         if err is not None:
-            print('Message delivery failed: {}'.format(err))
+            debugPrint('Message delivery failed: {}'.format(err))
         else:
-            print('Message delivered to {} [{}]'.format(
+            debugPrint('Message delivered to {} [{}]'.format(
                     msg.topic(), msg.partition()))
 
     async def sendToHandle(self, func, request):
@@ -73,11 +73,12 @@ class TargetRouter(BotRouter):
         self.p.produce(
                 "targetHandle",
                 json.dumps(
-                    {
+                    {"code": 0,
+                     "data": {
                         "path": func.__module__,
                         "handle": func.__name__,
                         "request": request.getData()
-                        }).encode("utf8"),
+                        }}).encode("utf8"),
                 callback=self.deliveryReport
         )
         self.p.flush()

@@ -3,9 +3,46 @@ import sys
 from json import dumps, loads
 
 from confluent_kafka import Producer
+from confluent_kafka.admin import NewPartitions, AdminClient
 
 from botsdk.util.JsonConfig import getConfig
 from botsdk.util.ZookeeperTool import GetZKClient
+
+
+def GetTopic(name):
+    adminClient = AdminClient({"bootstrap.server": "127.0.0.1:9092"})
+    topics = adminClient.list_topics()
+    if name not in topics:
+        return None
+    return topics[name]
+
+
+def GetTopicPartitionSize(name):
+    adminClient = AdminClient({"bootstrap.server": "127.0.0.1:9092"})
+    topics = adminClient.list_topics()
+    if name not in topics:
+        return -1
+    return len(topics[name].partitions)
+
+
+def AlertPartition(name, size):
+    adminClient = AdminClient({"bootstrap.server": "127.0.0.1:9092"})
+    topics = adminClient.list_topics()
+    if name not in topics:
+        return False
+    if size > len(topics[name].partitions):
+        adminClient.create_partitions([NewPartitions(name, size)])
+    return True
+
+
+def ChangePartitionSize(name):
+    inputData = input("请输入数量\n")
+    try:
+        inputData = int(inputData)
+    except Exception:
+        print("请输入整数")
+        return
+    AlertPartition(name, inputData)
 
 
 def deliveryReport(err, msg):
@@ -19,6 +56,7 @@ def deliveryReport(err, msg):
 def BotControl(botData):
     inputData = input(
         f'''------{botData["botName"]}------\n'''
+        f'''------Partition:{GetTopicPartitionSize("BotService")}------'''
         '''0.添加一个BotService\n'''
         '''1.减少一个BotService\n'''
     )
@@ -41,11 +79,14 @@ def BotControl(botData):
                     ).encode("utf8"),
                 callback=deliveryReport)
         p.flush()
+    elif inputData == 2:
+        ChangePartitionSize("BotService")
 
 
 def RouterControl():
     inputData = input(
         '''------Router------\n'''
+        f'''------Partition:{GetTopicPartitionSize("routeList")}------'''
         '''0.添加一个Router\n'''
         '''1.减少一个Router\n'''
     )
@@ -67,13 +108,17 @@ def RouterControl():
                     ).encode("utf8"),
                 callback=deliveryReport)
         p.flush()
+    elif inputData == 2:
+        ChangePartitionSize("routeList")
 
 
 def HandleControl():
     inputData = input(
         '''------Handle------\n'''
+        f'''------Partition:{GetTopicPartitionSize("targetHandle")}------'''
         '''0.添加一个Router\n'''
         '''1.减少一个Router\n'''
+        '''2.修改PartitionSize'''
     )
     try:
         inputData = int(inputData)
@@ -93,6 +138,8 @@ def HandleControl():
                     ).encode("utf8"),
                 callback=deliveryReport)
         p.flush()
+    elif inputData == 2:
+        ChangePartitionSize("targetHandle")
 
 
 def start():

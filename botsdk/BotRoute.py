@@ -62,8 +62,8 @@ class BotRoute:
                 )(msg[0], msg[1])
             for i in range(len(self.router)):
                 if (re := await self.router[i].route(
-                        self.pluginsManager, request,
-                        None)) is not None and re is False:
+                        self.pluginsManager, request
+                        )) is not None and re is False:
                     break
             await asyncio.sleep(0)
 

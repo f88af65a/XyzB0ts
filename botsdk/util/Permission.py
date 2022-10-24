@@ -12,7 +12,8 @@ from .JsonConfig import getConfig
 
 async def permissionCheck(
         request, target: str,
-        add: set = set(), need: set = set()):
+        add: set = set(), need: set = set(),
+        botName: str = None):
     requestRole = await request.getRoles() | {"*"} | add
     userId = request.getUserId()
     if userId is None:
@@ -35,18 +36,31 @@ async def permissionCheck(
     # 判断为群或者好友聊天获取不同的cookie
     localId = request.getId()
     if request.isSingle() or request.isInvite():
-        localId = "System"
+        localId = request.getBot().getBotName()
     # 角色判断
     cookie = request.getCookie("roles", localId)
     if cookie and userId in cookie:
         requestRole |= set(cookie[userId])
     if (requestRole & need or target in requestRole):
         return True
+    '''
+    1.0 update
     childs = request.getId().split(":")[3:]
-    # 根据permissionpp判断
+    '''
+    # 根据permission判断
     cookie = request.getCookie("permission", localId)
     if not cookie:
         return False
+    if ((target in cookie
+            and (permissionRoles := set(cookie[target]))
+            and (requestRole & permissionRoles
+                 or ("*" in permissionRoles
+                     and permissionRoles["*"] & requestRole)))
+            or ("*" in cookie and set(cookie["*"]) & requestRole)):
+        return True
+    return False
+    '''
+    1.0 update
     m = 0
     while True:
         if ((target in cookie
@@ -62,6 +76,7 @@ async def permissionCheck(
         else:
             break
     return False
+    '''
 
 
 async def roleCheck(request, roles, add=set()):

@@ -7,7 +7,6 @@
 	"localFilePath": "localFile/",
 	"workProcess": 4,
 	"workThread": 4,
-	"multi": true,
 	"debug": false,
 	"debugPrint": 5,
 	"deBugGroupId": [],

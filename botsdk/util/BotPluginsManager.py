@@ -122,6 +122,9 @@ class BotPluginsManager:
             return self.plugins[pluginName]
         return None
 
+    def getAllPlugin(self):
+        return list(self.plugins.values())
+
     def getTarget(self, messageType: str, target: str):
         if (messageType in self.listener
                 and target in self.listener[messageType]["targetListener"]):

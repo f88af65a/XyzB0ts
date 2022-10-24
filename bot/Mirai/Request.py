@@ -59,9 +59,17 @@ class MiraiRequest(Request):
     def getId(self):
         if ((msgtype := self.getType()) == "GroupMessage"
                 or msgtype == "TempMessage"):
-            return self.groupFormat(self["sender"]["group"]["id"])
+            return (
+                self.getBot().getBotName()
+                + ":"
+                + self.groupFormat(self["sender"]["group"]["id"])
+                )
         else:
-            return self.getUserId()
+            return (
+                self.getBot().getBotName()
+                + ":"
+                + self.getUserId()
+                )
 
     def getGroupId(self):
         return str(self["sender"]["group"]["id"])

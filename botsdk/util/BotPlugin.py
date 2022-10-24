@@ -1,4 +1,3 @@
-import asyncio
 import json
 import os
 import uuid
@@ -23,6 +22,8 @@ class BotPlugin:
         self.generalList = []
         # 兼容的bot类型
         self.botSet = set()
+        # Loop 会在router中执行
+        self.loopEvent = []
 
     def getBotSet(self):
         return self.botSet
@@ -83,27 +84,11 @@ class BotPlugin:
     def getName(self):
         return self.name
 
-    def getFutureDict(self):
-        return self.futures
+    def addLoopEvent(self, c):
+        self.loopEvent.append(c)
 
-    def getFutureByName(self, name):
-        if name in self.getFutureDict():
-            return self.futures[name]
-        return None
-
-    def addFuture(self, name, func):
-        if name in self.futures:
-            return None
-        self.getFutureDict()[name] = asyncio.run_coroutine_threadsafe(
-            func,
-            asyncio.get_event_loop())
-
-    def removeFuture(self, name):
-        if name in self.futures:
-            self.futures[name].cancel()
-            del self.futures[name]
-            return True
-        return False
+    def getLoopEvent(self):
+        return self.loopEvent
 
     def getCanDetach(self):
         return self.canDetach

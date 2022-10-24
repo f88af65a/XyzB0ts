@@ -3,13 +3,15 @@ from json import loads
 import os
 import time
 
+from kazoo import NodeExistsError
+
 from confluent_kafka import Consumer
 
 from botsdk.util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 from .util.BotPluginsManager import BotPluginsManager
 from .util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
-from .util.Error import asyncTraceBack, debugPrint
+from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.TimeTest import asyncTimeTest
 from .util.Tool import getAttrFromModule
 
@@ -18,6 +20,7 @@ class BotRoute:
     def __init__(self):
         self.pluginsManager = BotPluginsManager()
         self.router = [GeneralRouter(), TypeRouter(), TargetRouter()]
+        self.loopRouter = False
 
     @asyncTraceBack
     @asyncTimeTest
@@ -38,6 +41,38 @@ class BotRoute:
         })
         c.subscribe(['routeList'])
         while True:
+            # loopEvent
+            try:
+                zk = GetZKClient()
+                if not zk.exists("/BotFlags"):
+                    try:
+                        zk.create("/BotFlags")
+                    except NodeExistsError:
+                        pass
+                    except Exception:
+                        printTraceBack()
+                        exit()
+                if not zk.exists("/BotFlags/RouterLoopEvent"):
+                    try:
+                        zk.create(
+                                "/BotFlags/RouterLoopEvent",
+                                ephemeral=True)
+                        self.loopRouter = True
+                    except NodeExistsError:
+                        pass
+                    except Exception:
+                        printTraceBack()
+                        exit()
+            except Exception:
+                printTraceBack()
+                exit()
+            if self.isLoopRouter():
+                plugins = self.pluginsManager().getAllPlugin()
+                for i in plugins:
+                    events = i.getLoopEvent()
+                    for j in events():
+                        asyncio.run_coroutine_threadsafe(j, self.loop)
+            # Route
             msg = c.poll(1.0)
             if msg is None:
                 continue
@@ -49,8 +84,14 @@ class BotRoute:
                 debugPrint("MSG中缺少code", fromName="BotRoute")
                 continue
             if msg["code"] == 1:
-                c.close()
-                GetZKClient().stop()
+                try:
+                    c.close()
+                except Exception:
+                    pass
+                try:
+                    GetZKClient().stop()
+                except Exception:
+                    pass
                 exit()
             if "data" not in msg:
                 debugPrint("MSG中缺少data", fromName="BotRoute")
@@ -70,5 +111,10 @@ class BotRoute:
     def getBot(self):
         return self.bot
 
+    def isLoopRouter(self):
+        return self.loopRouter
+
     def run(self):
-        asyncio.run(self.route())
+        self.loop = asyncio.new_event_loop()
+        asyncio.run_coroutine_threadsafe(self.route(), self.loop)
+        self.loop.run_forever()

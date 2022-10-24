@@ -7,6 +7,7 @@ from botsdk.util.BotNotifyModule import getNotifyModule
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Error import printTraceBack
 from botsdk.util.HttpRequest import get
+from botsdk.util.ZookeeperTool import GetBotByName
 
 
 class plugin(BotPlugin):
@@ -20,14 +21,11 @@ class plugin(BotPlugin):
         self.addBotType("Kaiheila")
         self.canDetach = True
 
-    async def toNotify(self, notifyName, bot, messageChain):
-        notifyModule = getNotifyModule()
-        notifySet = copy.deepcopy(notifyModule.notify(notifyName))
-        for i in notifySet:
-            if i.split(":")[0] == bot.getServiceType():
-                await bot.sendMessage(messageChain, id=i)
+    def init(self):
+        for i in self.getConfig()["listen"]:
+            self.addLoopEvent(self.bilibiliGetDynamic(i))
 
-    def dynamicCardAnlysis(self, jdata, msg):
+    async def dynamicCardAnlysis(self, jdata, msg):
         if "vest" in jdata:
             msg.text("[动态][UP:{0}]\n".format(jdata["user"]["uname"]
                      + jdata["sketch"]["title"])
@@ -63,7 +61,7 @@ class plugin(BotPlugin):
             else:
                 msg.text("\n是未识别类型的新动态")
 
-    async def bilibiliGetDynamic(self, bot, uid):
+    async def bilibiliGetDynamic(self, uid):
         dynamicId = set()
         maxDynamicId = 0
         notifyName = f"bilibili.dynamic.{uid}"
@@ -85,6 +83,29 @@ class plugin(BotPlugin):
                         dynamicId.add(i["desc"]["dynamic_id"])
                 else:
                     localId = []
+                    cardList = []
+                    for i in datas:
+                        localId.append(i["desc"]["dynamic_id"])
+                        if (i["desc"]["dynamic_id"] not in dynamicId
+                                and i["desc"]["dynamic_id"] > maxDynamicId):
+                            cardList.append(i["card"])
+                            dynamicId.add(i["desc"]["dynamic_id"])
+                    notifyModule = getNotifyModule()
+                    notifySet = copy.deepcopy(notifyModule.notify(notifyName))
+                    for needNotifyId in notifySet:
+                        botName = needNotifyId.split(":")[0]
+                        bot = GetBotByName(botName)
+                        if bot is None:
+                            continue
+                        dynamicChain = bot.makeMessageChain()
+                        self.dynamicCardAnlysis(
+                            json.loads(i["card"]), dynamicChain)
+                        await bot.sendMessage(dynamicChain, id=needNotifyId)
+                    maxDynamicId = max(maxDynamicId, max(localId))
+                    dynamicId = set(localId)
+                    '''
+                    1.0 update
+                     localId = []
                     for i in datas:
                         localId.append(i["desc"]["dynamic_id"])
                         if (i["desc"]["dynamic_id"] not in dynamicId
@@ -97,8 +118,7 @@ class plugin(BotPlugin):
                                 bot.makeMessageChain().text("[是新动态捏]")
                                 + dynamicChain)
                             dynamicId.add(i["desc"]["dynamic_id"])
-                    maxDynamicId = max(maxDynamicId, max(localId))
-                    dynamicId = set(localId)
+                    '''
             except Exception:
                 printTraceBack()
 

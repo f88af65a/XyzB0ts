@@ -44,8 +44,14 @@ class BotHandle:
                 debugPrint("MSG中缺少code", fromName="BotRoute")
                 continue
             if msg["code"] == 1:
-                c.close()
-                GetZKClient().stop()
+                try:
+                    c.close()
+                except Exception:
+                    pass
+                try:
+                    GetZKClient().stop()
+                except Exception:
+                    pass
                 exit()
             if "data" not in msg:
                 debugPrint("MSG中缺少data", fromName="BotRoute")

@@ -3,7 +3,7 @@ from json import loads
 import os
 import time
 
-from kazoo import NodeExistsError
+from kazoo.exceptions import NodeExistsError
 
 from confluent_kafka import Consumer
 
@@ -58,6 +58,12 @@ class BotRoute:
                                 "/BotFlags/RouterLoopEvent",
                                 ephemeral=True)
                         self.loopRouter = True
+                        plugins = self.pluginsManager.getAllPlugin()
+                        for i in plugins:
+                            events = i.getLoopEvent()
+                            for j in events:
+                                asyncio.run_coroutine_threadsafe(
+                                        j[0](*j[1], **j[2]), self.loop)
                     except NodeExistsError:
                         pass
                     except Exception:
@@ -66,12 +72,6 @@ class BotRoute:
             except Exception:
                 printTraceBack()
                 exit()
-            if self.isLoopRouter():
-                plugins = self.pluginsManager().getAllPlugin()
-                for i in plugins:
-                    events = i.getLoopEvent()
-                    for j in events():
-                        asyncio.run_coroutine_threadsafe(j, self.loop)
             # Route
             msg = c.poll(1.0)
             if msg is None:

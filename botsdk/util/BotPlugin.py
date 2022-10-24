@@ -84,8 +84,8 @@ class BotPlugin:
     def getName(self):
         return self.name
 
-    def addLoopEvent(self, c):
-        self.loopEvent.append(c)
+    def addLoopEvent(self, c, *args, **kwargs):
+        self.loopEvent.append([c, args, kwargs])
 
     def getLoopEvent(self):
         return self.loopEvent

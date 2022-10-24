@@ -22,9 +22,9 @@ class MiraiBot(Bot):
             self, messageChain, request=None, id=None,
             messageType=None, quote=None):
         if id is None:
-            ids = request.getId().split(":")
+            ids = request.getId().split(":")[1:]
         else:
-            ids = id.split(":")
+            ids = id.split(":")[1:]
         if messageType is None:
             if request is None:
                 if ids[1] == "User":

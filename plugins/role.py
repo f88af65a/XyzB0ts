@@ -60,15 +60,10 @@ class plugin(BotPlugin):
             return
         localId = request.getId()
         if request.isSingle():
-            localId = "System"
+            localId = request.getBot().getBotName()
         cookie = request.getCookie("permission", localId)
         if cookie is None:
             cookie = dict()
-        childs = request.getId().split(":")[3:]
-        for i in childs:
-            if f":{i}" not in cookie:
-                cookie[f":{i}"] = dict()
-            cookie = cookie[f":{i}"]
         if data[2] not in cookie:
             cookie[data[2]] = []
         if data[1] == "ADD":

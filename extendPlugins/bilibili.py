@@ -23,7 +23,7 @@ class plugin(BotPlugin):
 
     def init(self):
         for i in self.getConfig()["listen"]:
-            self.addLoopEvent(self.bilibiliGetDynamic(i))
+            self.addLoopEvent(self.bilibiliGetDynamic, i)
 
     async def dynamicCardAnlysis(self, jdata, msg):
         if "vest" in jdata:

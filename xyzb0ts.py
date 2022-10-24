@@ -10,7 +10,7 @@ from botsdk.util.ZookeeperTool import GetZKClient
 
 
 def GetTopic(name):
-    adminClient = AdminClient({"bootstrap.servers": "127.0.0.1:9092"})
+    adminClient = AdminClient({"bootstrap.servers": getConfig()["kafka"]})
     topics = adminClient.list_topics().topics
     if name not in topics:
         return None
@@ -18,7 +18,7 @@ def GetTopic(name):
 
 
 def GetTopicPartitionSize(name):
-    adminClient = AdminClient({"bootstrap.servers": "127.0.0.1:9092"})
+    adminClient = AdminClient({"bootstrap.servers": getConfig()["kafka"]})
     topics = adminClient.list_topics().topics
     if name not in topics:
         return -1
@@ -26,7 +26,7 @@ def GetTopicPartitionSize(name):
 
 
 def AlertPartition(name, size):
-    adminClient = AdminClient({"bootstrap.servers": "127.0.0.1:9092"})
+    adminClient = AdminClient({"bootstrap.servers": getConfig()["kafka"]})
     topics = adminClient.list_topics().topics
     if name not in topics:
         return False
@@ -118,8 +118,8 @@ def HandleControl():
     inputData = input(
         '''------Handle------\n'''
         f'''------Partition:{GetTopicPartitionSize("targetHandle")}------\n'''
-        '''0.添加一个Router\n'''
-        '''1.减少一个Router\n'''
+        '''0.添加一个Handle\n'''
+        '''1.减少一个Handle\n'''
         '''2.修改PartitionSize\n'''
     )
     try:

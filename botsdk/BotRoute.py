@@ -75,6 +75,7 @@ class BotRoute:
             # Route
             msg = c.poll(1.0)
             if msg is None:
+                await asyncio.sleep(0)
                 continue
             if msg.error():
                 debugPrint(msg.error())

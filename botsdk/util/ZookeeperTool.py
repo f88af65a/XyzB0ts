@@ -1,6 +1,7 @@
 from kazoo.client import KazooClient
 
 from botsdk.util.Error import printTraceBack
+from botsdk.util.JsonConfig import getConfig
 from .GetModule import getBot
 from json import dumps, loads
 
@@ -9,15 +10,23 @@ _zkClient = None
 
 def GetBotByName(name: str):
     try:
-        zk = KazooClient(hosts="127.0.0.1:2181")
-        zk.start()
-        if not zk.exists(f"/Bot/{name}"):
+        zk = GetZKClient()
+        try:
+            if not zk.exists(f"/Bot/{name}"):
+                return None
+        except Exception:
+            zk.stop()
+            printTraceBack()
             return None
-        ret = getBot(loads(zk.get(f"/Bot/{name}")[0].decode())["data"])
+        try:
+            ret = getBot(loads(zk.get(f"/Bot/{name}")[0].decode())["data"])
+        except Exception:
+            zk.stop()
+            printTraceBack()
         zk.stop()
         return ret
     except Exception:
-        pass
+        zk.stop()
     return None
 
 
@@ -25,7 +34,7 @@ def GetZKClient():
     global _zkClient
     try:
         if _zkClient is None:
-            _zkClient = KazooClient(hosts="127.0.0.1:2181")
+            _zkClient = KazooClient(hosts=getConfig()["zookeeper"])
         _zkClient.start()
     except Exception:
         printTraceBack()

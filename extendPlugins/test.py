@@ -18,7 +18,6 @@ class plugin(BotPlugin):
     async def notifyTest(self):
         while True:
             await asyncio.sleep(10)
-            bot = GetBotByName("MiraiBot")
             notifyModule = getNotifyModule()
             notifySet = copy.deepcopy(notifyModule.notify("bot.notify.test"))
             for i in notifySet:

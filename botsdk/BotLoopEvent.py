@@ -31,13 +31,13 @@ class BotLoopEvent:
                     '''BotLoopEvent同步至zookeeper失败''',
                     fromName="BotLoopEvent")
             GetZKClient().stop()
-            os._exit()
+            os._exit(1)
         if not AddEphemeralNode("/BotFlags", "BotLoopEvent"):
             debugPrint(
                     '''BotLoopEvent同步至zookeeper失败''',
                     fromName="BotLoopEvent")
             GetZKClient().stop()
-            os._exit()
+            os._exit(1)
         debugPrint('''BotLoopEvent同步至zookeeper成功''', fromName="BotLoopEvent")
         '''
         thread = threading.Thread(target=self.kafkaThread)
@@ -51,30 +51,15 @@ class BotLoopEvent:
                 for j in events:
                     asyncio.run_coroutine_threadsafe(
                         j[0](*j[1], **j[2]),
-                        self.asyncLoop()
+                        self.asyncLoop
                     )
         except Exception:
             printTraceBack()
-        try:
-            c = Consumer({
-                'bootstrap.servers': 'localhost:9092',
-                'group.id': "LoopEventGroup"
-            })
-            c.subscribe(['BotLoopEvent'])
-            while True:
-                msg = c.poll(1.0)
-                if msg is not None and not msg.error():
-                    msg = loads(msg.value())
-                    if "code" not in msg:
-                        debugPrint("MSG缺少code", fromName="BotService")
-                    else:
-                        if msg["code"] == 1:
-                            c.close()
-                            GetZKClient().stop()
-                            os._exit()
-        except Exception:
-            printTraceBack()
-            os._exit()
+            debugPrint("加载时出错", fromName="BotLoopEvent")
+            os._exit(1)
+        debugPrint("LoopEvent加载完成", fromName="BotLoopEvent")
+        thread = threading.Thread(target=self.kafkaThread)
+        thread.start()
 
     def kafkaThread(self):
         try:

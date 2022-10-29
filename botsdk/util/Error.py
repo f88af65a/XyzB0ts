@@ -13,7 +13,7 @@ def debugPrint(msg: str, fromName=None, exception=None, level=5):
 
 def exceptionExit(msg):
     debugPrint(msg)
-    os._exit()
+    os._exit(1)
 
 
 def printTraceBack(msg=None):

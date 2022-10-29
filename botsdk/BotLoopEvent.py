@@ -34,7 +34,7 @@ class BotLoopEvent:
             os._exit(1)
         if not AddEphemeralNode("/BotFlags", "BotLoopEvent"):
             debugPrint(
-                    '''BotLoopEvent同步至zookeeper失败''',
+                    '''建立唯一失败''',
                     fromName="BotLoopEvent")
             GetZKClient().stop()
             os._exit(1)
@@ -78,10 +78,10 @@ class BotLoopEvent:
                         if msg["code"] == 1:
                             c.close()
                             GetZKClient().stop()
-                            os._exit()
+                            os._exit(1)
         except Exception:
             printTraceBack()
-            os._exit()
+            os._exit(1)
 
     def run(self):
         self.asyncLoop = asyncio.new_event_loop()

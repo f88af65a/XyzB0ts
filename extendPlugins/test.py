@@ -1,7 +1,7 @@
 import asyncio
 import copy
 
-from botsdk.util.BotNotifyModule import getNotifyModule
+from botsdk.util.BotNotifyModule import GetNotifyList
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.ZookeeperTool import GetBotByName
 
@@ -18,8 +18,7 @@ class plugin(BotPlugin):
     async def notifyTest(self):
         while True:
             await asyncio.sleep(10)
-            notifyModule = getNotifyModule()
-            notifySet = copy.deepcopy(notifyModule.notify("bot.notify.test"))
+            notifySet = copy.deepcopy(GetNotifyList("bot.notify.test"))
             for i in notifySet:
                 botName = i.split(":")[0]
                 bot = GetBotByName(botName)

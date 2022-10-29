@@ -187,10 +187,10 @@ class BotService:
                         if msg["code"] == 1 and msg["data"] == botName:
                             self.c.close()
                             GetZKClient().stop()
-                            os._exit()
+                            os._exit(1)
         except Exception:
             printTraceBack()
-            os._exit()
+            os._exit(1)
 
     def deliveryReport(self, err, msg):
         if err is not None:

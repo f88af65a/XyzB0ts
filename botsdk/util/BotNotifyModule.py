@@ -1,3 +1,6 @@
+from .Cookie import getCookie
+
+
 class NotifyTreeNode:
     def __init__(self, notifyName: str = ""):
         self.notifyName = notifyName
@@ -82,7 +85,10 @@ class BotNotifyModule:
         self.notifyTree.remove(id, notifyName)
 
     def notify(self, notifyName: str):
-        return self.notifyTree.get(notifyName)
+        notifyDict = getCookie("System:Notify", "NotifyList")
+        if notifyDict is None or notifyName not in notifyDict:
+            return []
+        return notifyDict[notifyName]
 
 
 notifyModule = BotNotifyModule()
@@ -90,3 +96,7 @@ notifyModule = BotNotifyModule()
 
 def getNotifyModule():
     return notifyModule
+
+
+def GetNotifyList(notifyName):
+    return getNotifyModule().notify(notifyName)

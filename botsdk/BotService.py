@@ -11,7 +11,7 @@ from confluent_kafka import Consumer, Producer
 from botsdk.util.Args import GetArgs
 from botsdk.util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
-from .util.Error import asyncTraceBack, debugPrint
+from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.JsonConfig import getConfig
 from .util.Timer import Timer
 from .util.Tool import getAttrFromModule
@@ -171,22 +171,26 @@ class BotService:
                 await asyncio.sleep(0)
 
     def kafkaThread(self, botName):
-        self.c = Consumer({
-            'bootstrap.servers': 'localhost:9092',
-            'group.id': botName
-        })
-        self.c.subscribe(['BotService'])
-        while True:
-            msg = self.c.poll(1.0)
-            if msg is not None and not msg.error():
-                msg = loads(msg.value())
-                if "code" not in msg:
-                    debugPrint("MSG缺少code", fromName="BotService")
-                else:
-                    if msg["code"] == 1 and msg["data"] == botName:
-                        self.c.close()
-                        GetZKClient().stop()
-                        exit()
+        try:
+            self.c = Consumer({
+                'bootstrap.servers': 'localhost:9092',
+                'group.id': botName
+            })
+            self.c.subscribe(['BotService'])
+            while True:
+                msg = self.c.poll(1.0)
+                if msg is not None and not msg.error():
+                    msg = loads(msg.value())
+                    if "code" not in msg:
+                        debugPrint("MSG缺少code", fromName="BotService")
+                    else:
+                        if msg["code"] == 1 and msg["data"] == botName:
+                            self.c.close()
+                            GetZKClient().stop()
+                            os._exit()
+        except Exception:
+            printTraceBack()
+            os._exit()
 
     def deliveryReport(self, err, msg):
         if err is not None:

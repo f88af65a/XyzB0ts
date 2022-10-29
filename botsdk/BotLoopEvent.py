@@ -31,44 +31,75 @@ class BotLoopEvent:
                     '''BotLoopEvent同步至zookeeper失败''',
                     fromName="BotLoopEvent")
             GetZKClient().stop()
-            exit()
+            os._exit()
         if not AddEphemeralNode("/BotFlags", "BotLoopEvent"):
             debugPrint(
                     '''BotLoopEvent同步至zookeeper失败''',
                     fromName="BotLoopEvent")
             GetZKClient().stop()
-            exit()
+            os._exit()
+        debugPrint('''BotLoopEvent同步至zookeeper成功''', fromName="BotLoopEvent")
+        '''
         thread = threading.Thread(target=self.kafkaThread)
         thread.start()
-        debugPrint('''BotLoopEvent同步至zookeeper成功''', fromName="BotLoopEvent")
-        while True:
-            # LoopEvent
-            try:
-                plugins = self.pluginsManager.getAllPlugin()
-                for i in plugins:
-                    events = i.getLoopEvent()
-                    for j in events:
-                        await j[0](*j[1], **j[2])
-            except Exception:
-                printTraceBack()
+        '''
+        # LoopEvent
+        try:
+            plugins = self.pluginsManager.getAllPlugin()
+            for i in plugins:
+                events = i.getLoopEvent()
+                for j in events:
+                    asyncio.run_coroutine_threadsafe(
+                        j[0](*j[1], **j[2]),
+                        self.asyncLoop()
+                    )
+        except Exception:
+            printTraceBack()
+        try:
+            c = Consumer({
+                'bootstrap.servers': 'localhost:9092',
+                'group.id': "LoopEventGroup"
+            })
+            c.subscribe(['BotLoopEvent'])
+            while True:
+                msg = c.poll(1.0)
+                if msg is not None and not msg.error():
+                    msg = loads(msg.value())
+                    if "code" not in msg:
+                        debugPrint("MSG缺少code", fromName="BotService")
+                    else:
+                        if msg["code"] == 1:
+                            c.close()
+                            GetZKClient().stop()
+                            os._exit()
+        except Exception:
+            printTraceBack()
+            os._exit()
 
     def kafkaThread(self):
-        c = Consumer({
-            'bootstrap.servers': 'localhost:9092',
-            'group.id': "LoopEventGroup"
-        })
-        c.subscribe(['BotLoopEvent'])
-        while True:
-            msg = self.c.poll(1.0)
-            if msg is not None and not msg.error():
-                msg = loads(msg.value())
-                if "code" not in msg:
-                    debugPrint("MSG缺少code", fromName="BotService")
-                else:
-                    if msg["code"] == 1:
-                        self.c.close()
-                        GetZKClient().stop()
-                        exit()
+        try:
+            c = Consumer({
+                'bootstrap.servers': 'localhost:9092',
+                'group.id': "LoopEventGroup"
+            })
+            c.subscribe(['BotLoopEvent'])
+            while True:
+                msg = c.poll(1.0)
+                if msg is not None and not msg.error():
+                    msg = loads(msg.value())
+                    if "code" not in msg:
+                        debugPrint("MSG缺少code", fromName="BotService")
+                    else:
+                        if msg["code"] == 1:
+                            c.close()
+                            GetZKClient().stop()
+                            os._exit()
+        except Exception:
+            printTraceBack()
+            os._exit()
 
     def run(self):
-        asyncio.run(self.loop())
+        self.asyncLoop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.asyncLoop)
+        asyncio.run_coroutine_threadsafe(self.loop(), self.asyncLoop)
+        self.asyncLoop.run_forever()

@@ -1,3 +1,4 @@
+import os
 import traceback
 from .JsonConfig import getConfig
 
@@ -12,7 +13,7 @@ def debugPrint(msg: str, fromName=None, exception=None, level=5):
 
 def exceptionExit(msg):
     debugPrint(msg)
-    exit()
+    os._exit()
 
 
 def printTraceBack(msg=None):

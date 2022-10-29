@@ -52,7 +52,7 @@ class BotHandle:
                     GetZKClient().stop()
                 except Exception:
                     pass
-                exit()
+                os._exit()
             if "data" not in msg:
                 debugPrint("MSG中缺少data", fromName="BotRoute")
                 continue

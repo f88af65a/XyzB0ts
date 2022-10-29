@@ -16,9 +16,10 @@ def exceptionExit(msg):
 
 
 def printTraceBack(msg=None):
-    traceback.print_exc()
-    if msg is not None:
-        debugPrint(msg)
+    if getConfig()["debug"] is True:
+        traceback.print_exc()
+        if msg is not None:
+            debugPrint(msg)
 
 
 def traceBack(func):

@@ -35,14 +35,14 @@ def GetZKClient():
     try:
         if _zkClient is None:
             _zkClient = KazooClient(hosts=getConfig()["zookeeper"])
-        _zkClient.start()
+            _zkClient.start()
     except Exception:
         printTraceBack()
         return None
     return _zkClient
 
 
-def AddEphemeralNode(rootPath, name, data):
+def AddEphemeralNode(rootPath, name, data=None):
     zk = GetZKClient()
     if zk is None:
         return False
@@ -55,10 +55,12 @@ def AddEphemeralNode(rootPath, name, data):
             return False
         zk.create(
                 f"{rootPath}/{name}",
-                dumps(data).encode(),
+                None if data is None else dumps(data).encode(),
                 ephemeral=True
             )
     except Exception:
         printTraceBack()
         return False
     return True
+
+

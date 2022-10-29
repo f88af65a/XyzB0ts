@@ -144,6 +144,36 @@ def HandleControl():
         ChangePartitionSize("targetHandle")
 
 
+def LoopEventControl():
+    inputData = input(
+        '''------Handle------\n'''
+        f'''------Partition:{GetTopicPartitionSize("BotLoopEvent")}------\n'''
+        '''0.添加一个LoopEvent\n'''
+        '''1.减少一个LoopEvent\n'''
+        '''2.修改PartitionSize\n'''
+    )
+    try:
+        inputData = int(inputData)
+    except Exception:
+        print("请输入整数")
+        return
+    if inputData == 0:
+        os.system(
+                f'''{getConfig()["python"]} start.py loopevent &''')
+    elif inputData == 1:
+        p = Producer({'bootstrap.servers': 'localhost:9092'})
+        p.poll(0)
+        p.produce(
+                "BotLoopEvent",
+                dumps(
+                    {"code": 1}
+                    ).encode("utf8"),
+                callback=deliveryReport)
+        p.flush()
+    elif inputData == 2:
+        ChangePartitionSize("BotLoopEvent")
+
+
 def start():
     os.chdir(sys.path[0])
     while True:
@@ -177,8 +207,9 @@ def start():
             print(f'''{i}.{accounts[i]["botName"]}''')
         print(f'''{len(accounts)}.router管理''')
         print(f'''{len(accounts) + 1}.handle管理''')
-        print(f'''{len(accounts) + 2}.刷新''')
-        print(f'''{len(accounts) + 3}.退出''')
+        print(f'''{len(accounts) + 2}.LoopEvent管理''')
+        print(f'''{len(accounts) + 3}.刷新''')
+        print(f'''{len(accounts) + 4}.退出''')
         inputData = input("请输入操作\n")
         try:
             inputData = int(inputData)
@@ -191,8 +222,10 @@ def start():
         elif inputData == len(accounts) + 1:
             HandleControl()
         elif inputData == len(accounts) + 2:
-            continue
+            LoopEventControl()
         elif inputData == len(accounts) + 3:
+            continue
+        elif inputData == len(accounts) + 4:
             return
 
 

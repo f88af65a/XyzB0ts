@@ -82,7 +82,7 @@ class BotService:
             debugPrint(
                         f'''账号{botName}同步至zookeeper成功''',
                         fromName="BotService")
-            
+
             # 启动kafka监听线程
             t = threading.Thread(target=self.kafkaThread, args=(botName,))
             t.start()

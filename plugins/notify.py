@@ -12,12 +12,12 @@ class plugin(BotPlugin):
     async def manageNotify(self, request):
         "notify [add/remove/list] 通知名 #监听通知"
         data = request.getFirstTextSplit()
+        if len(data) == 1:
+            await request.sendMessage(self.manageNotify.__doc__)
         if len(data) == 2:
             cookie = getCookie("System:Notify")
             if cookie is None:
                 cookie = {}
-            if data[2] not in cookie:
-                cookie[data[2]] = []
             requestId = request.getId()
             if data[1] == "list":
                 haveList = []
@@ -39,7 +39,7 @@ class plugin(BotPlugin):
                 await request.sendMessage("修改完成")
             elif data[1] == "remove":
                 if data[2] in cookie:
-                    cookie.remove(data[2])
+                    del cookie[data[2]]
                     setCookie("System:Notify", "NotifyList", cookie)
                 await request.sendMessage("修改完成")
 

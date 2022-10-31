@@ -24,9 +24,12 @@ class plugin(BotPlugin):
         if apiResponse is None:
             responseMessage += "请求失败"
         else:
-            responseMessage = json.loads(responseMessage)
-            for i in apiResponse:
-                responseMessage += f'''{i}: {apiResponse[i]}'''
+            try:
+                apiResponse = json.loads(apiResponse)
+                for i in apiResponse:
+                    responseMessage += f'''{i}: {apiResponse[i]}'''
+            except Exception:
+                responseMessage += "返回值解析失败"
         await request.sendMessage(responseMessage)
 
 

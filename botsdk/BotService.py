@@ -144,12 +144,16 @@ class BotService:
                                     "uuid": uuid.uuid4()},
                                 i, botRoute)
                     '''
+                    localUuid = str(uuid.uuid4())
+                    debugPrint(
+                            f"收到消息,uuid为{localUuid}",
+                            fromName="BotService")
                     request = getAttrFromModule(
                                 botPath + ".Request",
                                 botType + "Request")(
                                 {
                                     "bot": bot.getData(),
-                                    "uuid": str(uuid.uuid4()),
+                                    "uuid": localUuid,
                                     "botPath": botPath + ".Request",
                                     "botType": botType + "Request"
                                     },
@@ -167,6 +171,9 @@ class BotService:
                                     {"code": 0, "data": request.getData()}
                                     ).encode("utf8"),
                                 callback=self.deliveryReport)
+                        debugPrint(
+                            f"{localUuid}送至Router",
+                            fromName="BotService")
                 self.p.flush()
                 await asyncio.sleep(0)
 

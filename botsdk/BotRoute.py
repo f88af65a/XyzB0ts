@@ -68,10 +68,12 @@ class BotRoute:
                     msg[0]["botPath"],
                     msg[0]["botType"]
                 )(msg[0], msg[1])
+            debugPrint(f"成功收到消息:{request.getUuid()}")
             for i in range(len(self.router)):
                 if (re := await self.router[i].route(
                         self.pluginsManager, request
                         )) is not None and re is False:
+                    debugPrint(f"消息:{request.getUuid()},被{self.router[i]}拦截")
                     break
             await asyncio.sleep(0)
 

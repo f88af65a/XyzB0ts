@@ -27,7 +27,7 @@ class plugin(BotPlugin):
             try:
                 apiResponse = json.loads(apiResponse)
                 for i in apiResponse:
-                    responseMessage += f'''{i}: {apiResponse[i]}'''
+                    responseMessage += f'''{i}: {apiResponse[i]}\n'''
             except Exception:
                 responseMessage += "返回值解析失败"
         await request.sendMessage(responseMessage)

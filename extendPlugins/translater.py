@@ -36,7 +36,7 @@ class plugin(BotPlugin):
         return url + "&".join(joinList)
 
     async def translater(self, request):
-        '''translater [带空格的文本] #进行一次翻译'''
+        '''fanyi [带空格的文本] #进行一次翻译'''
         requestData = request.getFirstTextSplit()
         if len(requestData) < 2:
             await request.sendMessage(self.translater.__doc__)

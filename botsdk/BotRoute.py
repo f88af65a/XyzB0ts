@@ -69,15 +69,14 @@ class BotRoute:
                     msg[0]["botType"]
                 )(msg[0], msg[1])
             debugPrint(f"成功收到消息:{request.getUuid()}")
-            for i in range(len(self.router)):
-                if (re := await self.router[i].route(
+            for i in self.router:
+                if (re := await i.route(
                         self.pluginsManager, request
-                        )) is not None:
-                    if re[0] is False:
-                        debugPrint(
-                                f"消息:{request.getUuid()},"
-                                f"被{self.router[i]}:{re[1]}拦截"
-                                )
+                        )) and re[0] is False:
+                    debugPrint(
+                            f"消息:{request.getUuid()},"
+                            f"被{i}:{re[1]}拦截"
+                            )
                     break
             await asyncio.sleep(0)
 

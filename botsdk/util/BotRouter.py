@@ -32,8 +32,8 @@ class GeneralRouter(BotRouter):
             if request.getBot().getBotType() not in i[1].__self__.botSet:
                 continue
             if (ret := await i[1](request)) is not None and ret is False:
-                return False
-        return True
+                return [False, i]
+        return [True, None]
 
 
 class TypeRouter(BotRouter):
@@ -46,7 +46,7 @@ class TypeRouter(BotRouter):
                 if request.getBot().getBotType() not in i.__self__.botSet:
                     continue
                 await i(request)
-        return True
+        return [True, None]
 
 
 class TargetRouter(BotRouter):
@@ -85,12 +85,12 @@ class TargetRouter(BotRouter):
                     request):
         # 类型判断与命令获取
         if (target := request.getFirstText()) is None or not target:
-            return False
+            return [False, None]
         # 正则匹配
         reData = self.pattern.search(target)
         # target获取
         if reData is None or reData.group(4) is None:
-            return
+            return [False, None]
         target = reData.group(4)
         request.setTarget(target)
         # 命令判断
@@ -98,11 +98,11 @@ class TargetRouter(BotRouter):
                 request.getType(), target)) is not None:
             # 判断类型是否正确
             if request.getBot().getBotType() not in ret.__self__.botSet:
-                return True
+                return [True, None]
             # 权限判断
             if not await permissionCheck(request, target):
                 await request.sendMessage("权限限制")
-                return
+                return [False, None]
             controlData = {"size": 1, "wait": 0}
             if reData.group(1) is not None:
                 # 控制字段权限判断
@@ -110,14 +110,14 @@ class TargetRouter(BotRouter):
                         request,
                         {"System:Owner", "System:ADMINISTRATOR"}):
                     await request.sendMessage("使用控制字段权限不足")
-                    return
+                    return [False, None]
                 # 控制字段提取
                 controlList = reData.group(1)[1:-1].split("&")
                 for i in controlList:
                     controlLineSplit = i.split("=")
                     if len(controlLineSplit) != 2:
                         await request.sendMessage("控制字段有误")
-                        return
+                        return [False, None]
                     else:
                         controlData[controlLineSplit[0]] = controlLineSplit[1]
             request.setControlData(controlData)
@@ -137,4 +137,4 @@ class TargetRouter(BotRouter):
                 await asyncHandlePacket(ret, request)
             '''
             await self.sendToHandle(ret, request)
-        return True
+        return [True, None]

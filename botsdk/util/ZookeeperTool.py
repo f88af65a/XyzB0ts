@@ -23,7 +23,6 @@ def GetBotByName(name: str):
         except Exception:
             zk.stop()
             printTraceBack()
-        zk.stop()
         return ret
     except Exception:
         zk.stop()

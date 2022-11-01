@@ -1,0 +1,6 @@
+confluent_kafka
+kazoo
+aiohttp
+redis
+ujson
+pillow

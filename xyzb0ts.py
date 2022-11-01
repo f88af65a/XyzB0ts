@@ -146,7 +146,7 @@ def HandleControl():
 
 def LoopEventControl():
     inputData = input(
-        '''------Handle------\n'''
+        '''------LoopEvent------\n'''
         f'''------Partition:{GetTopicPartitionSize("BotLoopEvent")}------\n'''
         '''0.添加一个LoopEvent\n'''
         '''1.减少一个LoopEvent\n'''

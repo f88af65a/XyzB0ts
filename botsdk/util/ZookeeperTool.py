@@ -9,24 +9,21 @@ _zkClient = None
 
 
 def GetBotByName(name: str):
+    zk = GetZKClient()
+    if zk is None:
+        return None
     try:
-        zk = GetZKClient()
-        try:
-            if not zk.exists(f"/Bot/{name}"):
-                return None
-        except Exception:
-            zk.stop()
-            printTraceBack()
+        if not zk.exists(f"/Bot/{name}"):
             return None
-        try:
-            ret = getBot(loads(zk.get(f"/Bot/{name}")[0].decode())["data"])
-        except Exception:
-            zk.stop()
-            printTraceBack()
-        return ret
     except Exception:
-        zk.stop()
-    return None
+        printTraceBack()
+        return None
+    try:
+        ret = getBot(loads(zk.get(f"/Bot/{name}")[0].decode())["data"])
+    except Exception:
+        printTraceBack()
+        return None
+    return ret
 
 
 def GetZKClient():

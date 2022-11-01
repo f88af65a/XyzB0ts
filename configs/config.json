@@ -30,7 +30,7 @@
 			"botName": "",
 			"botType": "Kaiheila",
 			"serviceType": "Kaiheila",
-			"path": "https://www.kaiheila.cn/api/v3",
+			"path": "https://www.kookapp.cn/api",
 			"authorizationType": "",
 			"token": ""
 		}

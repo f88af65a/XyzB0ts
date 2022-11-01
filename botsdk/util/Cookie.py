@@ -110,18 +110,19 @@ class RedisCookie(Cookie):
         return loads(base64.b64decode(self.sql[id]).decode())
 
     def setCookieByDict(self, id, key, data):
+        pipe = self.sql.pipeline()
         while True:
             try:
-                p = self.sql.pipeline()
-                p.watch(id)
-                oldData = loads(base64.b64decode(p.get(id)).decode())
+                pipe.watch(id)
+                oldData = loads(base64.b64decode(pipe.get(id)).decode())
                 oldData[key] = data[key]
-                p.multi()
-                p.set(id, base64.b64encode(dumps(oldData).encode()).decode())
-                p.execute()
+                pipe.multi()
+                pipe.set(id, base64.b64encode(
+                        dumps(oldData).encode()).decode())
+                pipe.execute()
                 break
             except Exception:
-                pass
+                pipe.reset()
         self.sql.save()
 
     def getCookie(self, id: str, key: str = None):

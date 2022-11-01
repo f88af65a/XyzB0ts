@@ -157,14 +157,31 @@ class KaiheilaBot(Bot):
             ids = id.split(":")
         sendMethod = None
         targetId = ids[-1]
-        if ids[1] == "Group":
+        if ids[-2] == "Group":
             sendMethod = self.sendGroupMessage
-        elif ids[1] == "User":
+        elif ids[-2] == "User":
             sendMethod = self.sendFriendMessage
         if sendMethod is None:
             return
         if type(messageChain) == str:
-            await sendMethod(target_id=targetId, content=messageChain)
+            await sendMethod(
+                type=10,
+                target_id=targetId,
+                content=json.dumps([
+                    {
+                        "type": "card",
+                        "theme": "secondary",
+                        "size": "lg",
+                        "modules": [{
+                            "type": "section",
+                            "text": {
+                                "type": "plain-text",
+                                "content": messageChain
+                            }
+                        }]
+                    }
+                ]
+                ))
         else:
             await sendMethod(
                 type=10, target_id=targetId,

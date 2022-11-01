@@ -6,8 +6,15 @@ class plugin(BotPlugin):
     def onLoad(self):
         self.name = "notify"
         self.addTarget("GroupMessage", "notify", self.manageNotify)
+        self.addTarget("GROUP:9", "notify", self.manageNotify)
         self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.canDetach = True
+        '''
+        {
+        "通知名":[待通知列表]
+        }
+        '''
 
     async def manageNotify(self, request):
         "notify [add/remove/list] 通知名 #监听通知"
@@ -22,11 +29,11 @@ class plugin(BotPlugin):
             if data[1] == "list":
                 haveList = []
                 for i in cookie:
-                    if requestId in cookie:
+                    if requestId in cookie[i]:
                         haveList.append(i)
                 await request.sendMessage(str(haveList))
         elif len(data) == 3:
-            cookie = getCookie("System:Notify")
+            cookie = getCookie("System:Notify", "NotifyList")
             if cookie is None:
                 cookie = {}
             if data[2] not in cookie:
@@ -39,7 +46,7 @@ class plugin(BotPlugin):
                 await request.sendMessage("修改完成")
             elif data[1] == "remove":
                 if data[2] in cookie:
-                    del cookie[data[2]]
+                    cookie[data[2]].remove(request.getId())
                     setCookie("System:Notify", "NotifyList", cookie)
                 await request.sendMessage("修改完成")
 

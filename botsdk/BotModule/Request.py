@@ -74,6 +74,9 @@ class Request(dict):
             id=id, *args, **kwargs
         )
 
+    async def send(self, *args, **kwargs):
+        return await self.sendMessage(*args, **kwargs)
+
     async def syncSendMessage(
             self, messageChain, id=None,
             messageType=None, *args, **kwargs):

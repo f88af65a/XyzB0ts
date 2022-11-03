@@ -100,6 +100,10 @@ class Bot:
             ):
         pass
 
+    # 发送消息接口缩写
+    async def send(self, *args, **kwargs):
+        return await self.sendMessage(*args, **kwargs)
+
     # 路由前过滤 返回True则可以继续执行
     async def filter(self, request) -> bool:
         return True

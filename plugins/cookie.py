@@ -37,7 +37,7 @@ class plugin(BotPlugin):
         '''acookie ID [cookie/cookie key] [cookie] #管理员cookie管理'''
         data = request.getFirstText().split(" ")
         if len(data) < 2:
-            await request.sendMessage("缺少参数")
+            await request.sendMessage(self.adminCookieControl.__doc__)
         elif len(data) == 2:
             await request.sendMessage(str(getCookie(data[1])))
         elif len(data) == 3:

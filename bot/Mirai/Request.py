@@ -10,8 +10,6 @@ class MiraiRequest(Request):
              "OtherClientMessage"})
         self.signalMessage = {
             "FriendMessage",
-        }
-        self.inviteMessage = {
             "NewFriendRequestEvent",
             "BotInvitedJoinGroupRequestEvent"
         }
@@ -141,9 +139,6 @@ class MiraiRequest(Request):
 
     def isSingle(self):
         return self.getType() in self.signalMessage
-
-    def isInvite(self):
-        return self.getType() in self.inviteMessage
 
     def isMessage(self):
         return self.getType() in self.messageType

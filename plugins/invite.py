@@ -1,5 +1,5 @@
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.Permission import permissionCheck
+from botsdk.util.Permission import roleCheck
 
 
 class plugin(BotPlugin):
@@ -19,7 +19,7 @@ class plugin(BotPlugin):
                 "fromId": request["fromId"],
                 "groupId": request["groupId"],
                 "operate":
-                    (0 if await permissionCheck(request, "Inviter") else 1),
+                    (0 if await roleCheck(request, {"Inviter"}) else 1),
                 "message": ""
             }
         )
@@ -31,7 +31,7 @@ class plugin(BotPlugin):
                 "fromId": request["fromId"],
                 "groupId": request["groupId"],
                 "operate":
-                    (0 if await permissionCheck(request, "Inviter") else 1),
+                    (0 if await roleCheck(request, {"Inviter"}) else 1),
                 "message": ""
             }
         )

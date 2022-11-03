@@ -30,7 +30,7 @@ class BotHandle(Module):
             'group.id': "targetHandleGroup"
         })
         c.subscribe(['targetHandle'])
-        self.addToExit(c.close())
+        self.addToExit(c.close)
         while True:
             msg = c.poll(1.0)
             if msg is None:

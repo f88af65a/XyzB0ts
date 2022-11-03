@@ -4,7 +4,6 @@ import time
 from json import loads
 
 from confluent_kafka import Consumer
-from util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 from .Module import Module
 from .util.BotPluginsManager import BotPluginsManager
@@ -12,6 +11,7 @@ from .util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
 from .util.Error import asyncTraceBack, debugPrint
 from .util.TimeTest import asyncTimeTest
 from .util.Tool import getAttrFromModule
+from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 
 class BotRoute(Module):

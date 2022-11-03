@@ -6,17 +6,14 @@ from json import loads
 
 from confluent_kafka import Consumer
 
-from botsdk.util.HandlePacket import asyncHandlePacket
-from botsdk.util.ZookeeperTool import AddEphemeralNode, GetZKClient
-
+from .Module import Module
 from .util.Error import debugPrint, printTraceBack
+from .util.HandlePacket import asyncHandlePacket
 from .util.Tool import getAttrFromModule
+from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 
-class BotHandle:
-    def __init__(self):
-        pass
-
+class BotHandle(Module):
     async def Loop(self):
         # 将Handle信息同步至Zookeeper
         if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
@@ -26,12 +23,14 @@ class BotHandle:
             debugPrint(
                     '''BotHandle同步至zookeeper失败''',
                     fromName="BotRouter")
+        self.addToExit(GetZKClient().stop)
         debugPrint('''BotHandle同步至zookeeper成功''', fromName="BotHandle")
         c = Consumer({
             'bootstrap.servers': 'localhost:9092',
             'group.id': "targetHandleGroup"
         })
         c.subscribe(['targetHandle'])
+        self.addToExit(c.close())
         while True:
             msg = c.poll(1.0)
             if msg is None:
@@ -44,15 +43,7 @@ class BotHandle:
                 debugPrint("MSG中缺少code", fromName="BotRoute")
                 continue
             if msg["code"] == 1:
-                try:
-                    c.close()
-                except Exception:
-                    pass
-                try:
-                    GetZKClient().stop()
-                except Exception:
-                    pass
-                os._exit(1)
+                self.exit()
             if "data" not in msg:
                 debugPrint("MSG中缺少data", fromName="BotRoute")
                 continue

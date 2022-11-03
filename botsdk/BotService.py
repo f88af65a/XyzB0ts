@@ -8,22 +8,15 @@ from json import dumps, loads
 
 from confluent_kafka import Consumer, Producer
 
-from botsdk.util.Args import GetArgs
-from botsdk.util.ZookeeperTool import AddEphemeralNode, GetZKClient
-
+from .Module import Module
+from .util.Args import GetArgs
 from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.JsonConfig import getConfig
-from .util.Timer import Timer
 from .util.Tool import getAttrFromModule
+from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 
-class BotService:
-    def __init__(self):
-        self.timer = Timer()
-
-    def getTimer(self):
-        return self.timer
-
+class BotService(Module):
     @asyncTraceBack
     async def runInEventLoop(self, botData):
         while True:
@@ -35,7 +28,6 @@ class BotService:
             bot = getAttrFromModule(
                 botPath + ".Bot",
                 botType + "Bot")(botData)
-            bot.setTimer(self.timer)
             debugPrint(f'''账号{botName}初始化成功''', fromName="BotService")
 
             # 登录
@@ -79,6 +71,7 @@ class BotService:
                         f'''账号{botName}同步至zookeeper失败''',
                         fromName="BotService")
                 return
+            self.addToExit(GetZKClient().stop)
             debugPrint(
                         f'''账号{botName}同步至zookeeper成功''',
                         fromName="BotService")
@@ -179,25 +172,24 @@ class BotService:
 
     def kafkaThread(self, botName):
         try:
-            self.c = Consumer({
+            c = Consumer({
                 'bootstrap.servers': 'localhost:9092',
                 'group.id': botName
             })
-            self.c.subscribe(['BotService'])
+            c.subscribe(['BotService'])
+            self.addToExit(c.close)
             while True:
-                msg = self.c.poll(1.0)
+                msg = c.poll(1.0)
                 if msg is not None and not msg.error():
                     msg = loads(msg.value())
                     if "code" not in msg:
                         debugPrint("MSG缺少code", fromName="BotService")
                     else:
                         if msg["code"] == 1 and msg["data"] == botName:
-                            self.c.close()
-                            GetZKClient().stop()
-                            os._exit(1)
+                            self.exit()
         except Exception:
             printTraceBack()
-            os._exit(1)
+            self.exit()
 
     def deliveryReport(self, err, msg):
         if err is not None:

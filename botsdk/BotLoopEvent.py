@@ -6,16 +6,16 @@ from json import loads
 
 from confluent_kafka import Consumer
 
-from botsdk.util.ZookeeperTool import AddEphemeralNode, GetZKClient
-
+from .Module import Module
 from .util.BotPluginsManager import BotPluginsManager
 from .util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
 from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.TimeTest import asyncTimeTest
+from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 
-class BotLoopEvent:
-    def __init__(self):
+class BotLoopEvent(Module):
+    def init(self):
         self.pluginsManager = BotPluginsManager()
         self.router = [GeneralRouter(), TypeRouter(), TargetRouter()]
 
@@ -23,6 +23,7 @@ class BotLoopEvent:
     @asyncTimeTest
     async def loop(self):
         # 将LoopEvent信息同步至Zookeeper
+        self.addToExit(GetZKClient().stop)
         if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
                         "type": "BotLoopEvent",
                         "startTime": str(int(time.time()))
@@ -30,14 +31,12 @@ class BotLoopEvent:
             debugPrint(
                     '''BotLoopEvent同步至zookeeper失败''',
                     fromName="BotLoopEvent")
-            GetZKClient().stop()
-            os._exit(1)
+            self.exit()
         if not AddEphemeralNode("/BotFlags", "BotLoopEvent"):
             debugPrint(
                     '''建立唯一失败''',
                     fromName="BotLoopEvent")
-            GetZKClient().stop()
-            os._exit(1)
+            self.exit()
         debugPrint('''BotLoopEvent同步至zookeeper成功''', fromName="BotLoopEvent")
         '''
         thread = threading.Thread(target=self.kafkaThread)
@@ -56,7 +55,7 @@ class BotLoopEvent:
         except Exception:
             printTraceBack()
             debugPrint("加载时出错", fromName="BotLoopEvent")
-            os._exit(1)
+            self.exit()
         debugPrint("LoopEvent加载完成", fromName="BotLoopEvent")
         thread = threading.Thread(target=self.kafkaThread)
         thread.start()
@@ -68,6 +67,7 @@ class BotLoopEvent:
                 'group.id': "LoopEventGroup"
             })
             c.subscribe(['BotLoopEvent'])
+            self.addToExit(c.close)
             while True:
                 msg = c.poll(1.0)
                 if msg is not None and not msg.error():
@@ -76,12 +76,10 @@ class BotLoopEvent:
                         debugPrint("MSG缺少code", fromName="BotService")
                     else:
                         if msg["code"] == 1:
-                            c.close()
-                            GetZKClient().stop()
-                            os._exit(1)
+                            self.exit()
         except Exception:
             printTraceBack()
-            os._exit(1)
+            self.exit()
 
     def run(self):
         self.asyncLoop = asyncio.new_event_loop()

@@ -4,9 +4,9 @@ import time
 from json import loads
 
 from confluent_kafka import Consumer
+from util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
-from botsdk.util.ZookeeperTool import AddEphemeralNode, GetZKClient
-
+from .Module import Module
 from .util.BotPluginsManager import BotPluginsManager
 from .util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
 from .util.Error import asyncTraceBack, debugPrint
@@ -14,8 +14,8 @@ from .util.TimeTest import asyncTimeTest
 from .util.Tool import getAttrFromModule
 
 
-class BotRoute:
-    def __init__(self):
+class BotRoute(Module):
+    def init(self):
         self.pluginsManager = BotPluginsManager()
         self.router = [GeneralRouter(), TypeRouter(), TargetRouter()]
 
@@ -31,12 +31,14 @@ class BotRoute:
                     '''BotRouter同步至zookeeper失败''',
                     fromName="BotRouter")
             return
+        self.addToExit(GetZKClient().stop)
         debugPrint('''BotRouter同步至zookeeper成功''', fromName="BotRouter")
         c = Consumer({
             'bootstrap.servers': 'localhost:9092',
             'group.id': "routeListGroup"
         })
         c.subscribe(['routeList'])
+        self.addToExit(c.close)
         while True:
             # Route
             msg = c.poll(1.0)
@@ -51,15 +53,7 @@ class BotRoute:
                 debugPrint("MSG中缺少code", fromName="BotRoute")
                 continue
             if msg["code"] == 1:
-                try:
-                    c.close()
-                except Exception:
-                    pass
-                try:
-                    GetZKClient().stop()
-                except Exception:
-                    pass
-                os._exit(1)
+                self.exit()
             if "data" not in msg:
                 debugPrint("MSG中缺少data", fromName="BotRoute")
                 continue

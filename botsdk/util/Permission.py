@@ -87,7 +87,7 @@ async def roleCheck(request, roles, add=set()):
         requestRole |= set(systemCookie["user"][userId])
     localId = request.getId()
     if request.isSingle():
-        localId = "System"
+        localId = request.getBot().getBotName()
     cookie = request.getCookie("roles", localId)
     if cookie and userId in cookie:
         requestRole |= set(cookie[userId])

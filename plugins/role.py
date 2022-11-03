@@ -25,7 +25,7 @@ class plugin(BotPlugin):
             return
         localId = request.getId()
         if request.isSingle():
-            localId = "System"
+            localId = request.getBot().getBotName()
         data[2] = data[2].split(",")
         for i in range(len(data[2])):
             data[2][i] = request.userFormat(data[2][i])

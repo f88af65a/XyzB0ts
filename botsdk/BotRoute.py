@@ -72,6 +72,7 @@ class BotRoute(Module):
                     self.routeRequest(request),
                     self.loop)
 
+    @asyncTimeTest
     async def routeRequest(self, request):
         for i in self.router:
             if (re := await i.route(

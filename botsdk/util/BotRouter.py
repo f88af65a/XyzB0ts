@@ -4,6 +4,8 @@ import re
 
 from confluent_kafka import Producer
 
+from .TimeTest import asyncTimeTest
+
 from .BotPluginsManager import BotPluginsManager
 from .Error import asyncTraceBack, debugPrint
 from .JsonConfig import getConfig
@@ -25,6 +27,7 @@ class BotRouter:
 
 
 class GeneralRouter(BotRouter):
+    @asyncTimeTest
     async def route(self,
                     pluginsManager: BotPluginsManager,
                     request):
@@ -37,6 +40,7 @@ class GeneralRouter(BotRouter):
 
 
 class TypeRouter(BotRouter):
+    @asyncTimeTest
     async def route(self,
                     pluginsManager: BotPluginsManager,
                     request):
@@ -80,6 +84,7 @@ class TargetRouter(BotRouter):
         self.p.flush()
 
     @asyncTraceBack
+    @asyncTimeTest
     async def route(self,
                     pluginsManager: BotPluginsManager,
                     request):

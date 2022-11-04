@@ -3,6 +3,8 @@ import sys
 import redis
 from ujson import dumps, loads
 
+from .TimeTest import timeTest
+
 from .JsonConfig import getConfig
 
 '''
@@ -44,14 +46,16 @@ class RedisCookie(Cookie):
                 print(e)
         '''
 
+    @timeTest
     def getAllCookie(self):
         re = dict()
         for i in self.sql.keys("*"):
             re[i] = self._getCookie(i)
         return re
 
-    # dict 非str
-    def _getCookie(self, id: str, key):
+    # 不存在返回None，存入什么返回什么
+    @timeTest
+    def getCookie(self, id: str, key: str = None):
         if key:
             if self.sql.hexists(id, key):
                 return loads(self.sql.hget(id, key))
@@ -60,15 +64,10 @@ class RedisCookie(Cookie):
             ret = self.sql.hgetall(id)
             return {i: loads(ret[i]) for i in ret}
 
-    # 无返回值
-    def _setCookie(self, id: str, key: str, value):
-        self.sql.hset(id, key, dumps(value))
-
-    def getCookie(self, id: str, key: str = None):
-        return self._getCookie(id, key)
-
+    # 暂时无返回值
+    @timeTest
     def setCookie(self, id: str, key: str, value):
-        return self._setCookie(id, key, value)
+        self.sql.hset(id, key, dumps(value))
 
 
 cookieDriver = None

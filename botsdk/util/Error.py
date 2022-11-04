@@ -4,7 +4,7 @@ from .JsonConfig import getConfig
 
 
 def debugPrint(msg: str, fromName=None, exception=None, level=5):
-    if getConfig()["debugPrint"] <= level:
+    if level >= getConfig()["debugPrint"]:
         print((
                 (f"[{str(fromName)}]" if fromName is not None else "")
                 + (f"[{str(exception)}]" if exception is not None else "")

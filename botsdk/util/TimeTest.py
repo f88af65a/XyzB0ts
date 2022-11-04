@@ -7,7 +7,9 @@ def timeTest(func):
         startTime = time.time()
         re = func(*args, **kwargs)
         debugPrint(
-            f"[{func.__name__}]{str(time.time() - startTime)}")
+            f"[{func.__name__}]{str(time.time() - startTime)}",
+            fromName="asyncTimeTest",
+            level=4)
         return re
     return warp
 
@@ -17,6 +19,8 @@ def asyncTimeTest(func):
         startTime = time.time()
         re = await func(*args, **kwargs)
         debugPrint(
-            f"[{func.__name__}]{str(time.time() - startTime)}")
+            f"[{func.__name__}]{str(time.time() - startTime)}",
+            fromName="asyncTimeTest",
+            level=4)
         return re
     return warp

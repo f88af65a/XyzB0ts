@@ -1,4 +1,4 @@
-import json
+import ujson as json
 
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.HttpRequest import get

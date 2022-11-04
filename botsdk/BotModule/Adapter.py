@@ -1,6 +1,7 @@
-import json
 import os
 import sys
+
+import ujson as json
 
 from botsdk.util.BotException import BotException
 from botsdk.util.JsonConfig import getConfig

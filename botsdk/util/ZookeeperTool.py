@@ -1,9 +1,10 @@
 from kazoo.client import KazooClient
+from ujson import dumps, loads
 
 from botsdk.util.Error import printTraceBack
 from botsdk.util.JsonConfig import getConfig
+
 from .GetModule import getBot
-from json import dumps, loads
 
 _zkClient = None
 

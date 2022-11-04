@@ -1,7 +1,8 @@
 import asyncio
 import copy
-import json
 import time
+
+import ujson as json
 
 from botsdk.util.BotNotifyModule import getNotifyModule
 from botsdk.util.BotPlugin import BotPlugin

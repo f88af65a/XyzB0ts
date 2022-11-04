@@ -1,7 +1,9 @@
-from botsdk.util.BotPlugin import BotPlugin
 import copy
-import json
 import time
+
+import ujson as json
+
+from botsdk.util.BotPlugin import BotPlugin
 
 
 class plugin(BotPlugin):

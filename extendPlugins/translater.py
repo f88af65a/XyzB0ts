@@ -1,7 +1,8 @@
 import hashlib
-import json
 import random
 import urllib.parse
+
+import ujson as json
 
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.HttpRequest import get

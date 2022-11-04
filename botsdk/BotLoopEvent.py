@@ -2,7 +2,7 @@ import asyncio
 import os
 import threading
 import time
-from json import loads
+from ujson import loads
 
 from confluent_kafka import Consumer
 

@@ -2,7 +2,7 @@ import asyncio
 import importlib
 import os
 import time
-from json import loads
+from ujson import loads
 
 from confluent_kafka import Consumer
 
@@ -68,7 +68,8 @@ class BotHandle(Module):
                 )(request[0], request[1])
             try:
                 await asyncHandlePacket(handle, request)
-            except Exception:
+            except Exception as e:
+                request.send(str(e))
                 printTraceBack()
 
     def run(self):

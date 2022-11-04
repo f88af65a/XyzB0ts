@@ -1,5 +1,6 @@
+import ujson as json
+
 import botsdk.util.HttpRequest
-import json
 from botsdk.BotModule.Adapter import Adapter
 
 

@@ -1,9 +1,9 @@
 import asyncio
 import os
 import time
-from json import loads
 
 from confluent_kafka import Consumer
+from ujson import loads
 
 from .Module import Module
 from .util.BotPluginsManager import BotPluginsManager
@@ -62,7 +62,7 @@ class BotRoute(Module):
                     msg[0]["botPath"],
                     msg[0]["botType"]
                 )(msg[0], msg[1])
-            debugPrint(f"成功收到消息:{request.getUuid()}")
+            debugPrint(f"成功收到消息:{request.getUuid()}", fromName="BotRoute")
             for i in self.router:
                 if (re := await i.route(
                         self.pluginsManager, request

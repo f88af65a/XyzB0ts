@@ -1,9 +1,10 @@
-import json
 import math
+import os
 import random
 import time
+
+import ujson as json
 from PIL import Image
-import os
 
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.HttpRequest import get

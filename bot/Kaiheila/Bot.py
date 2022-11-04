@@ -1,6 +1,7 @@
 import asyncio
 import time
-import json
+
+import ujson as json
 
 from botsdk.BotModule.Bot import Bot
 from botsdk.util.Error import debugPrint

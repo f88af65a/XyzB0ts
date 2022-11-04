@@ -1,7 +1,7 @@
-import json
 from threading import local
 
 import aiohttp
+import ujson as json
 
 from .Error import debugPrint, printTraceBack
 

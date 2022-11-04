@@ -1,5 +1,7 @@
-import json
 import copy
+
+import ujson as json
+
 from botsdk.util.BotPlugin import BotPlugin
 
 

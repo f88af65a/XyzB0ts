@@ -1,6 +1,6 @@
 import os
 import sys
-from json import dumps, loads
+from ujson import dumps, loads
 
 from confluent_kafka import Producer
 from confluent_kafka.admin import NewPartitions, AdminClient

@@ -1,8 +1,9 @@
-import json
 import os
 
-from .BotException import BotException
+import ujson as json
+
 from .Args import GetArgs
+from .BotException import BotException
 
 config = None
 configDirPath = "configs/"

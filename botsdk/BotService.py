@@ -4,9 +4,9 @@ import random
 import threading
 import time
 import uuid
-from json import dumps, loads
 
 from confluent_kafka import Consumer, Producer
+from ujson import dumps, loads
 
 from .Module import Module
 from .util.Args import GetArgs

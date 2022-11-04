@@ -1,8 +1,9 @@
-import json
+import ujson as json
 
-from ..util.GetModule import getAdapter
 from botsdk.util.JsonConfig import getConfig
 from botsdk.util.Tool import getAttrFromModule
+
+from ..util.GetModule import getAdapter
 
 
 class Bot:

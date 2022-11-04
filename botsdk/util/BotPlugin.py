@@ -1,6 +1,7 @@
-import json
 import os
 import uuid
+
+import ujson as json
 
 from .Error import printTraceBack
 

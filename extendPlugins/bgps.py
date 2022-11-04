@@ -52,7 +52,8 @@ class plugin(BotPlugin):
             responseMessage += (
                 f'''名称:{response["results"][i]["title"]}\n'''
                 f'''原价:{response["results"][i]["old_price"]}\n'''
-                f'''现价:{response["results"][i]["price"]}\n'''
+                f'''现价:{response["results"][i]["currency_tag"]}'''
+                f'''{response["results"][i]["price"]}\n'''
                 f'''折扣:{response["results"][i]["discount"]}\n'''
                 f'''发布日期:{response["results"][i]["release_date"]}\n'''
                 f'''平台:{response["results"][i]["source"]}\n'''

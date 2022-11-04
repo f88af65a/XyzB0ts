@@ -40,11 +40,13 @@ class MiraiBot(Bot):
         if type(messageChain) == list:
             messageChain = self.makeMessageChain(messageChain)
         if messageType == "FriendMessage":
-            await self.sendFriendMessage(target, messageChain.getData(), quote)
+            return await self.sendFriendMessage(
+                    target, messageChain.getData(), quote)
         elif messageType == "GroupMessage":
-            await self.sendGroupMessage(target, messageChain.getData(), quote)
+            return await self.sendGroupMessage(
+                    target, messageChain.getData(), quote)
         elif messageType == "TempMessage":
-            await self.sendTempMessage(
+            return await self.sendTempMessage(
                 int(request["sender"]["group"]["id"]),
                 int(request.getSenderId()),
                 messageChain.getData(), quote)

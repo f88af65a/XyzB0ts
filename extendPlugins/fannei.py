@@ -26,7 +26,7 @@ class plugin(BotPlugin):
             return False
 
     async def fannei(self, request):
-        '''fannei #add/del 目标ID'''
+        '''fannei #add/remove 目标ID'''
         data = request.getFirstTextSplit()
         if len(data) != 3:
             await request.sendMessage(self.fannei.__doc__)
@@ -39,7 +39,7 @@ class plugin(BotPlugin):
             if data[2] not in cookie:
                 cookie.append(data[2])
                 request.setCookie("fannei", cookie)
-        elif data[1] == "del":
+        elif data[1] == "remove":
             if data[2] in cookie:
                 cookie.remove(data[2])
                 request.setCookie("fannei", cookie)

@@ -165,7 +165,7 @@ class KaiheilaBot(Bot):
         if sendMethod is None:
             return
         if type(messageChain) == str:
-            await sendMethod(
+            return await sendMethod(
                 type=10,
                 target_id=targetId,
                 content=json.dumps([
@@ -184,7 +184,7 @@ class KaiheilaBot(Bot):
                 ]
                 ))
         else:
-            await sendMethod(
+            return await sendMethod(
                 type=10, target_id=targetId,
                 content=json.dumps(
                     [

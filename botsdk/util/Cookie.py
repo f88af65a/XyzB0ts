@@ -58,7 +58,6 @@ class RedisCookie(Cookie):
             return None
         else:
             ret = self.sql.hgetall(id)
-            print(ret)
             return {i: loads(ret[i]) for i in ret}
 
     # 无返回值
@@ -85,10 +84,7 @@ def getCookieDriver():
 
 
 def getCookie(id: str, key: str = None):
-    try:
-        return getCookieDriver().getCookie(id, key)
-    except Exception as e:
-        print(e)
+    return getCookieDriver().getCookie(id, key)
 
 
 def setCookie(id: str, key: str, value):

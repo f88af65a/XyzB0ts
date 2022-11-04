@@ -15,6 +15,8 @@ class BotPluginsManager:
         self.listener = dict()
         # [(优先级,函数)]
         self.generalList = list()
+        # {"targetName"}
+        self.targetSet = set()
         # 初始化
         self.loadAllPlugin()
 
@@ -64,11 +66,15 @@ class BotPluginsManager:
         # 检查target是否重复
         handleListener = handle.getListener()
         for i in handleListener:
+            if "targetListener" not in handleListener[i]:
+                continue
             for j in handleListener[i]:
                 if (i in self.getListener()
                         and j in self.getListener()[i]["targetListener"]):
-                    debugPrint(f"插件{handle.getName()} 类型{i}中使用了相同的target {j}")
+                    debugPrint(
+                            f"插件{handle.getName()} 类型{i}中使用了相同的target {j}")
                     return False
+        # self.getListener()[typeName]["targetListener"][targetName] = func
         # 系统初始化
         if not handle.initBySystem():
             return False

@@ -1,7 +1,7 @@
 import asyncio
+import ujson as json
 import re
 
-import ujson as json
 from confluent_kafka import Producer
 
 from .BotPluginsManager import BotPluginsManager

@@ -1,15 +1,18 @@
 from os import _exit
-
+from threading import Lock
 from .util.Error import printTraceBack
 
 
 class Module:
     def __init__(self):
         self.exitList = []
+        self.exitListLock = Lock()
         self.init()
 
     def addToExit(self, func, *args, **kwargs):
+        self.exitListLock.acquire()
         self.exitList.append([func, args, kwargs])
+        self.exitListLock.release()
 
     def exit(self):
         for i in self.exitList:

@@ -1,5 +1,6 @@
 import asyncio
 import os
+import threading
 import time
 
 from confluent_kafka import Consumer
@@ -33,6 +34,11 @@ class BotRoute(Module):
             return
         self.addToExit(GetZKClient().stop)
         debugPrint('''BotRouter同步至zookeeper成功''', fromName="BotRouter")
+        fetchMessageThread = threading.Thread(target=self.fetchMessageThread)
+        fetchMessageThread.start()
+
+    def fetchMessageThread(self):
+        debugPrint('''消息获取线程启动''', fromName="BotRouter")
         c = Consumer({
             'bootstrap.servers': 'localhost:9092',
             'group.id': "routeListGroup"
@@ -43,7 +49,6 @@ class BotRoute(Module):
             # Route
             msg = c.poll(1.0)
             if msg is None:
-                await asyncio.sleep(0)
                 continue
             if msg.error():
                 debugPrint(msg.error())
@@ -63,19 +68,25 @@ class BotRoute(Module):
                     msg[0]["botType"]
                 )(msg[0], msg[1])
             debugPrint(f"成功收到消息:{request.getUuid()}", fromName="BotRoute")
-            for i in self.router:
-                if (re := await i.route(
-                        self.pluginsManager, request
-                        )) and re[0] is False:
-                    debugPrint(
-                            f"消息:{request.getUuid()},"
-                            f"被{i}:{re[1]}拦截"
-                            )
-                    break
-            await asyncio.sleep(0)
+            asyncio.run_coroutine_threadsafe(
+                    self.routeRequest(request),
+                    self.loop)
+
+    async def routeRequest(self, request):
+        for i in self.router:
+            if (re := await i.route(
+                    self.pluginsManager, request
+                    )) and re[0] is False:
+                debugPrint(
+                        f"消息:{request.getUuid()},"
+                        f"被{i}:{re[1]}拦截"
+                        )
+                break
 
     def getBot(self):
         return self.bot
 
     def run(self):
-        asyncio.run(self.route())
+        self.loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(self.route(), self.loop)
+        self.loop.run_forever()

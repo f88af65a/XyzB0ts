@@ -3,7 +3,7 @@ import importlib
 import os
 import time
 from ujson import loads
-
+import threading
 from confluent_kafka import Consumer
 
 from .Module import Module
@@ -25,6 +25,11 @@ class BotHandle(Module):
                     fromName="BotRouter")
         self.addToExit(GetZKClient().stop)
         debugPrint('''BotHandle同步至zookeeper成功''', fromName="BotHandle")
+        fetchMessageThread = threading.Thread(target=self.fetchMessageThread)
+        fetchMessageThread.start()
+
+    def fetchMessageThread(self):
+        debugPrint('''消息获取线程启动''', fromName="BotHandle")
         c = Consumer({
             'bootstrap.servers': 'localhost:9092',
             'group.id': "targetHandleGroup"
@@ -66,11 +71,23 @@ class BotHandle(Module):
                     request[0]["botPath"],
                     request[0]["botType"]
                 )(request[0], request[1])
-            try:
-                await asyncHandlePacket(handle, request)
-            except Exception as e:
-                request.send(str(e))
-                printTraceBack()
+            debugPrint(f"成功收到消息:{request.getUuid()}", fromName="BotHandle")
+            asyncio.run_coroutine_threadsafe(
+                    self.DoInEventLoop(
+                        handle,
+                        request
+                    ),
+                    self.loop
+                )
+
+    async def DoInEventLoop(self, handle, request):
+        try:
+            await asyncHandlePacket(handle, request)
+        except Exception as e:
+            await request.send(str(e))
+            printTraceBack()
 
     def run(self):
-        asyncio.run(self.Loop())
+        self.loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(self.Loop(), self.loop)
+        self.loop.run_forever()

@@ -9,6 +9,7 @@ from confluent_kafka import Consumer, Producer
 from ujson import dumps, loads
 
 from .Module import Module
+from .util.Args import GetArgs
 from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.JsonConfig import getConfig
 from .util.Tool import getAttrFromModule
@@ -214,4 +215,6 @@ class BotService(Module):
                 loads(GetArgs()["account"].replace("'", '"')))
                 )
         '''
-        await self.runInLoop()
+        await self.runInLoop(
+                loads(GetArgs()["account"].replace("'", '"'))
+                )

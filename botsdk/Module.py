@@ -51,5 +51,5 @@ class Module:
     def start(self):
         loop = asyncio.get_event_loop()
         self.loop = loop
-        asyncio.run_coroutine_threadsafe(self._start, self.loop)
+        asyncio.run_coroutine_threadsafe(self._start(), self.loop)
         self.loop.run_forever()

@@ -1,7 +1,7 @@
 import ujson as json
 
-from botsdk.util.JsonConfig import getConfig
-from botsdk.util.Tool import getAttrFromModule
+from ..util.JsonConfig import getConfig
+from ..util.Tool import getAttrFromModule
 
 from ..util.GetModule import getAdapter
 

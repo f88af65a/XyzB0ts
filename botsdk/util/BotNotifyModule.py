@@ -1,4 +1,4 @@
-from .Cookie import getCookie
+from .Cookie import getCookie, AsyncGetCookie
 
 
 class NotifyTreeNode:
@@ -90,6 +90,13 @@ class BotNotifyModule:
             return []
         return notifyDict[notifyName]
 
+    async def AsyncNotify(self, notifyName: str):
+        notifyDict = await AsyncGetCookie(
+                "System:Notify", "NotifyList")
+        if notifyDict is None or notifyName not in notifyDict:
+            return []
+        return notifyDict[notifyName]
+
 
 notifyModule = BotNotifyModule()
 
@@ -100,3 +107,7 @@ def getNotifyModule():
 
 def GetNotifyList(notifyName):
     return getNotifyModule().notify(notifyName)
+
+
+async def AsyncGetNotifyList(notifyName):
+    return await getNotifyModule().AsyncNotify(notifyName)

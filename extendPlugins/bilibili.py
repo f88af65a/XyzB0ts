@@ -4,7 +4,7 @@ import time
 
 import ujson as json
 
-from botsdk.util.BotNotifyModule import getNotifyModule
+from botsdk.util.BotNotifyModule import AsyncGetNotifyList
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.Error import printTraceBack
 from botsdk.util.HttpRequest import get
@@ -91,8 +91,8 @@ class plugin(BotPlugin):
                                 and i["desc"]["dynamic_id"] > maxDynamicId):
                             cardList.append(i["card"])
                             dynamicId.add(i["desc"]["dynamic_id"])
-                    notifyModule = getNotifyModule()
-                    notifySet = copy.deepcopy(notifyModule.notify(notifyName))
+                    notifySet = copy.deepcopy(
+                            await AsyncGetNotifyList(notifyName))
                     for needNotifyId in notifySet:
                         botName = needNotifyId.split(":")[0]
                         bot = GetBotByName(botName)

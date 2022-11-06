@@ -22,7 +22,7 @@ class plugin(BotPlugin):
 
     async def doFormat(self, request):
         if ((re := request.getFirstText()) is None or not re
-           or (cookie := request.getCookie("format")) is None):
+           or (cookie := await request.AsyncGetCookie("format")) is None):
             return
         try:
             request.setFirstText(

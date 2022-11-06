@@ -50,7 +50,7 @@ class BotLoopEvent(Module):
                 for j in events:
                     asyncio.run_coroutine_threadsafe(
                         j[0](*j[1], **j[2]),
-                        self.asyncLoop
+                        self.loop
                     )
         except Exception:
             printTraceBack()

@@ -38,7 +38,7 @@ async def permissionCheck(
     if request.isSingle():
         localId = request.getBot().getBotName()
     # 角色判断
-    cookie = request.getCookie("roles", localId)
+    cookie = await request.AsyncGetCookie("roles", localId)
     if cookie and userId in cookie:
         requestRole |= set(cookie[userId])
     if (requestRole & need or target in requestRole):
@@ -48,7 +48,7 @@ async def permissionCheck(
     childs = request.getId().split(":")[3:]
     '''
     # 根据permission判断
-    cookie = request.getCookie("permission", localId)
+    cookie = await request.AsyncGetCookie("permission", localId)
     if not cookie:
         return False
     if ((target in cookie
@@ -88,7 +88,7 @@ async def roleCheck(request, roles, add=set()):
     localId = request.getId()
     if request.isSingle():
         localId = request.getBot().getBotName()
-    cookie = request.getCookie("roles", localId)
+    cookie = await request.AsyncGetCookie("roles", localId)
     if cookie and userId in cookie:
         requestRole |= set(cookie[userId])
     return bool(requestRole & roles)
@@ -97,7 +97,7 @@ async def roleCheck(request, roles, add=set()):
 async def checkRoleById(request, id, roleName):
     requestRole = set()
     userId = request.getUserId()
-    cookie = request.getCookie("roles", id)
+    cookie = await request.AsyncGetCookie("roles", id)
     if cookie and userId in cookie:
         requestRole |= set(cookie[userId])
     if roleName in requestRole:

@@ -1,6 +1,7 @@
 import sys
 
 import redis
+from redis import asyncio as aioredis
 from ujson import dumps, loads
 
 from .TimeTest import timeTest
@@ -50,7 +51,7 @@ class RedisCookie(Cookie):
     def getAllCookie(self):
         re = dict()
         for i in self.sql.keys("*"):
-            re[i] = self._getCookie(i)
+            re[i] = self.getCookie(i)
         return re
 
     # 不存在返回None，存入什么返回什么
@@ -68,6 +69,45 @@ class RedisCookie(Cookie):
     @timeTest
     def setCookie(self, id: str, key: str, value):
         self.sql.hset(id, key, dumps(value))
+
+
+class AioRedisCookie(Cookie):
+    def __init__(self):
+        self.sql = redis.Redis(
+            host="localhost", port=6379, decode_responses=True)
+        '''
+        for i in self.sql.keys("*"):
+            try:
+                localData = loads(base64.b64decode(self.sql[i]).decode())
+                self.sql.delete(i)
+                for j in localData:
+                    self.sql.hset(i, j, dumps(localData[j]))
+            except Exception as e:
+                print(e)
+        '''
+
+    @timeTest
+    async def getAllCookie(self):
+        re = dict()
+        for i in await self.sql.keys("*"):
+            re[i] = await self.getCookie(i)
+        return re
+
+    # 不存在返回None，存入什么返回什么
+    @timeTest
+    async def getCookie(self, id: str, key: str = None):
+        if key:
+            if await self.sql.hexists(id, key):
+                return loads(await self.sql.hget(id, key))
+            return None
+        else:
+            ret = await self.sql.hgetall(id)
+            return {i: loads(ret[i]) for i in ret}
+
+    # 暂时无返回值
+    @timeTest
+    async def setCookie(self, id: str, key: str, value):
+        await self.sql.hset(id, key, dumps(value))
 
 
 cookieDriver = None
@@ -90,9 +130,22 @@ def setCookie(id: str, key: str, value):
     getCookieDriver().setCookie(id, key, value)
 
 
-async def asyncGetCookie(id: str, key: str = None):
+asyncCookieDriver = None
+
+
+async def InitAsyncCookieDriver(*args, **kwargs):
+    global asyncCookieDriver
+    asyncCookieDriver = await aioredis.from_url(
+            "redis://localhost:6379", db=0)
+
+
+async def GetAsyncCookieDriver():
+    return asyncCookieDriver
+
+
+async def AsyncGetCookie(id: str, key: str = None):
     return await getCookieDriver().asyncGetCookie(id, key)
 
 
-async def asyncSetCookie(id: str, key: str, value):
+async def AsyncSetCookie(id: str, key: str, value):
     await getCookieDriver().asyncSetCookie(id, key, value)

@@ -14,7 +14,7 @@ from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 
 class BotHandle(Module):
-    async def Loop(self):
+    async def runInLoop(self):
         # 将Handle信息同步至Zookeeper
         if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
                         "type": "BotHandle",
@@ -87,7 +87,5 @@ class BotHandle(Module):
             await request.send(str(e))
             printTraceBack()
 
-    def run(self):
-        self.loop = asyncio.get_event_loop()
-        asyncio.run_coroutine_threadsafe(self.Loop(), self.loop)
-        self.loop.run_forever()
+    async def run(self):
+        await self.runInLoop()

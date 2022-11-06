@@ -2,9 +2,9 @@ import asyncio
 import os
 import threading
 import time
-from ujson import loads
 
 from confluent_kafka import Consumer
+from ujson import loads
 
 from .Module import Module
 from .util.BotPluginsManager import BotPluginsManager
@@ -21,7 +21,7 @@ class BotLoopEvent(Module):
 
     @asyncTraceBack
     @asyncTimeTest
-    async def loop(self):
+    async def runInLoop(self):
         # 将LoopEvent信息同步至Zookeeper
         self.addToExit(GetZKClient().stop)
         if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
@@ -81,8 +81,5 @@ class BotLoopEvent(Module):
             printTraceBack()
             self.exit()
 
-    def run(self):
-        self.asyncLoop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.asyncLoop)
-        asyncio.run_coroutine_threadsafe(self.loop(), self.asyncLoop)
-        self.asyncLoop.run_forever()
+    async def run(self):
+        await self.runInLoop()

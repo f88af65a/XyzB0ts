@@ -1,4 +1,5 @@
-from botsdk.util.Cookie import getCookie, setCookie
+from ..util.Cookie import getCookie, setCookie
+from ..util.Cookie import AsyncGetCookie, AsyncSetCookie
 from ..util.GetModule import getBot
 
 
@@ -36,6 +37,23 @@ class Request(dict):
         if "cookie" in self.data and id is None:
             self.data["cookie"][target] = cookie
         setCookie(id if id else self.getId(), target, cookie)
+
+    async def AsyncGetCookie(self, target: str = None, id=None):
+        if id is None:
+            if "cookie" not in self.data:
+                self.data["cookie"] = await AsyncGetCookie(self.getId())
+            if target is None:
+                return self.data["cookie"]
+            if target in self.data["cookie"]:
+                return self.data["cookie"][target]
+            return None
+        else:
+            return AsyncGetCookie(id, target)
+
+    async def AsyncSetCookie(self, target: str, cookie, id=None):
+        if "cookie" in self.data and id is None:
+            self.data["cookie"][target] = cookie
+        await AsyncSetCookie(id if id else self.getId(), target, cookie)
 
     def setHandleModuleName(self, name):
         self.data["handleModuleName"] = name

@@ -22,7 +22,7 @@ class BotRoute(Module):
 
     @asyncTraceBack
     @asyncTimeTest
-    async def route(self):
+    async def runInLoop(self):
         # 将Router信息同步至Zookeeper
         if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
                         "type": "BotRouter",
@@ -87,7 +87,5 @@ class BotRoute(Module):
     def getBot(self):
         return self.bot
 
-    def run(self):
-        self.loop = asyncio.get_event_loop()
-        asyncio.run_coroutine_threadsafe(self.route(), self.loop)
-        self.loop.run_forever()
+    async def run(self):
+        await self.runInLoop()

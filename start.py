@@ -5,23 +5,23 @@ import botsdk.BotLoopEvent
 import os
 import sys
 from botsdk.util.Args import GetArgs
+from botsdk.util.Cookie import InitAsyncCookieDriver
 
 
 def start():
     os.chdir(sys.path[0])
     args = GetArgs()
+    handle = None
     if "service" in args:
-        service = botsdk.BotService.BotService()
-        service.run()
+        handle = botsdk.BotService.BotService()
     if "route" in args:
-        route = botsdk.BotRoute.BotRoute()
-        route.run()
+        handle = botsdk.BotRoute.BotRoute()
     if "handle" in args:
         handle = botsdk.BotHandle.BotHandle()
-        handle.run()
     if "loopevent" in args:
         handle = botsdk.BotLoopEvent.BotLoopEvent()
-        handle.run()
+    handle.AddOnStart(InitAsyncCookieDriver)
+    handle.start()
 
 
 if __name__ == "__main__":

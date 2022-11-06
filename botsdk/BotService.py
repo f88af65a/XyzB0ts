@@ -9,7 +9,6 @@ from confluent_kafka import Consumer, Producer
 from ujson import dumps, loads
 
 from .Module import Module
-from .util.Args import GetArgs
 from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.JsonConfig import getConfig
 from .util.Tool import getAttrFromModule
@@ -18,7 +17,7 @@ from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 class BotService(Module):
     @asyncTraceBack
-    async def runInEventLoop(self, botData):
+    async def runInLoop(self, botData):
         while True:
             # 初始化Bot
             botType = botData["botType"]
@@ -198,7 +197,7 @@ class BotService(Module):
             debugPrint('Message delivered to {} [{}]'.format(
                     msg.topic(), msg.partition()))
 
-    def run(self):
+    async def run(self):
         '''
         1.0 update
         concurrentModule = defaultBotConcurrentModule(
@@ -210,6 +209,9 @@ class BotService(Module):
             self.loop)
         asyncio.run_coroutine_threadsafe(self.timer.timerLoop(), self.loop)
         '''
+        '''
         asyncio.run(self.runInEventLoop(
                 loads(GetArgs()["account"].replace("'", '"')))
                 )
+        '''
+        await self.runInLoop()

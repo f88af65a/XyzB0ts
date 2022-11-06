@@ -25,7 +25,7 @@ class plugin(BotPlugin):
 
     async def cookie(self, request):
         '''cookie #查看当前id所保存的cookie'''
-        cookie = request.getCookie()
+        cookie = await request.AsyncGetCookie()
         await request.sendMessage(json.dumps(cookie))
 
     async def id(self, request):

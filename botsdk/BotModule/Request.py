@@ -48,7 +48,7 @@ class Request(dict):
                 return self.data["cookie"][target]
             return None
         else:
-            return AsyncGetCookie(id, target)
+            return await AsyncGetCookie(id, target)
 
     async def AsyncSetCookie(self, target: str, cookie, id=None):
         if "cookie" in self.data and id is None:

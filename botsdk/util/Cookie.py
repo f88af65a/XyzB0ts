@@ -69,6 +69,7 @@ class RedisCookie(Cookie):
     @timeTest
     def setCookie(self, id: str, key: str, value):
         self.sql.hset(id, key, dumps(value))
+        self.sql.save()
 
 
 class AioRedisCookie(Cookie):
@@ -108,6 +109,7 @@ class AioRedisCookie(Cookie):
     @timeTest
     async def setCookie(self, id: str, key: str, value):
         await self.sql.hset(id, key, dumps(value))
+        await self.sql.save()
 
 
 cookieDriver = None

@@ -14,44 +14,40 @@ class handle(BotPlugin):
         self.canDetach = True
         self.cache = dict()
 
-    def makeMapByList(self, keyList):
-        if (jsonKeyList := json.dumps(keyList)) in self.cache:
-            return self.cache[jsonKeyList]
+    def makeTreeByKey(self, keyList):
         tot = 1
         tree = list()
         tree.append(dict())
-        firstChar = dict()
-        for _ in range(1):
-            for i in keyList:
-                if len(i) == 0:
-                    continue
-                startList = list()
-                if i[0] in firstChar:
-                    startList += firstChar[i[0]]
-                if i[0] not in tree[0]:
+        for i in keyList:
+            if len(i) == 0:
+                continue
+            node = tree[0]
+            for j in i:
+                if j not in node:
                     tree.append(dict())
-                    tree[0][i[0]] = tot
-                    if i[0] not in firstChar:
-                        firstChar[i[0]] = list()
-                    firstChar[i[0]].append(tot)
-                    startList.append(tot)
+                    node[j] = tot
                     tot += 1
-                for j in startList:
-                    nodeMark = j
-                    for k in range(1, len(i)):
-                        if i[k] not in tree[nodeMark]:
-                            tree.append(dict())
-                            tree[nodeMark][i[k]] = tot
-                            if i[k] not in firstChar:
-                                firstChar[i[k]] = list()
-                            firstChar[i[k]].append(tot)
-                            tot += 1
-                        nodeMark = tree[nodeMark][i[k]]
-                    if "end" not in tree[nodeMark]:
-                        tree[nodeMark]["end"] = set()
-                    tree[nodeMark]["end"].add(i)
-        self.cache[jsonKeyList] = tree
+                node = tree[node[j]]
+            if "END" not in node:
+                node["END"] = i
         return tree
+
+    def checkOnTree(self, tree, key):
+        nodeList = [tree[0]]
+        for i in key:
+            newNodeList = [tree[0]]
+            for j in nodeList:
+                if "END" in j:
+                    return j["END"]
+                if i in j:
+                    newNodeList.append(tree[j[i]])
+            if not len(newNodeList):
+                return []
+            nodeList = newNodeList
+        for i in nodeList:
+            if "END" in i:
+                return i["END"]
+        return None
 
     async def checkMessage(self, request):
         msg = request.getFirstText()
@@ -60,31 +56,14 @@ class handle(BotPlugin):
         cookie = request.getCookie("q&a")
         if cookie is None:
             return
-        keyList = list(cookie.keys())
-        keyList.sort()
-        keyTree = self.makeMapByList(keyList)
-        hitSet = set()
-        for j in range(len(msg)):
-            nodeMark = 0
-            breakFlag = False
-            for i in msg[j:]:
-                if i not in keyTree[nodeMark]:
-                    break
-                nodeMark = keyTree[nodeMark][i]
-                if "end" in keyTree[nodeMark]:
-                    hitSet |= keyTree[nodeMark]["end"]
-                    breakFlag = True
-                    break
-            if breakFlag:
-                break
-        if "end" in keyTree[nodeMark]:
-            hitSet |= keyTree[nodeMark]["end"]
-        for i in hitSet:
-            try:
-                messageChain = json.loads(cookie[i])
-            except Exception:
-                messageChain = cookie[i]
-            await request.sendMessage(messageChain)
+        keyTree = self.makeTreeByKey(
+                list(cookie.keys()))
+        hit = self.checkOnTree(keyTree, msg)
+        try:
+            messageChain = json.loads(cookie[hit])
+        except Exception:
+            messageChain = cookie[hit]
+        await request.sendMessage(messageChain)
 
     async def qaSet(self, request):
         '''q&a [set/del/all/help] [关键字] [遇到关键字时触发的消息]'''
@@ -111,6 +90,9 @@ class handle(BotPlugin):
                     return
                 await request.sendMessage("关键字不存在")
             elif data[1] == "set":
+                if len(data[2]) > 16:
+                    await request.send("关键字最长为16字")
+                    return
                 messageChain = request.getMessageChain()
                 for i in messageChain:
                     if i["type"] == "Quote":
@@ -130,6 +112,9 @@ class handle(BotPlugin):
                 request.setCookie("q&a", cookie)
                 await request.sendMessage("设置成功")
         elif len(data) == 4 and data[1] == "set":
+            if len(data[2]) > 16:
+                await request.send("关键字最长为16字")
+                return
             cookie[data[2]] = data[3]
             request.setCookie("q&a", cookie)
             await request.sendMessage("设置成功")

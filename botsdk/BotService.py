@@ -54,8 +54,27 @@ class BotService(Module):
         self.reProductListLock.release()
         return ret
 
+    def SyncToZookeeper(self, bot):
+        zk = GetZKClient()
+        botPath = f"/Bot/{bot.getBotName()}"
+        botData = {
+                "name": bot.getBotName(),
+                "startTime": str(int(time.time())),
+                "data": bot.getData()
+            }
+        if zk.exists(botPath):
+            zk.set(botPath, dumps(botData))
+        elif not AddEphemeralNode("/Bot", bot.getBotName(), botData):
+            return False
+        return True
+
     @asyncTraceBack
     async def runInLoop(self, botData):
+        self.addToExit(GetZKClient().stop)
+        if GetZKClient().exists(
+                f'''/Bot/{botData["botName"]}'''):
+            debugPrint("检测到Bot以登录", fromName="BotService")
+            self.exit()
         while True:
             # 初始化Bot
             botType = botData["botType"]
@@ -71,8 +90,15 @@ class BotService(Module):
             await self.BotLoginLoop(bot)
             debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
 
-            # 初始化kafka 1.0 update
-            self.p = Producer({'bootstrap.servers': 'localhost:9092'})
+            # 同步至zookeeper
+            if not self.SyncToZookeeper(bot):
+                debugPrint(
+                        f'''账号{botName}同步至zookeeper失败''',
+                        fromName="BotService")
+                self.exit()
+            debugPrint(
+                        f'''账号{botName}同步至zookeeper成功''',
+                        fromName="BotService")
 
             # 将Service信息同步至Zookeeper
             if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
@@ -87,20 +113,8 @@ class BotService(Module):
                 return
             debugPrint('''BotService同步至zookeeper成功''', fromName="BotService")
 
-            # 同步至zookeeper
-            if not AddEphemeralNode("/Bot", botName, {
-                            "name": botName,
-                            "startTime": str(int(time.time())),
-                            "data": bot.getData()
-                        }):
-                debugPrint(
-                        f'''账号{botName}同步至zookeeper失败''',
-                        fromName="BotService")
-                return
-            self.addToExit(GetZKClient().stop)
-            debugPrint(
-                        f'''账号{botName}同步至zookeeper成功''',
-                        fromName="BotService")
+            # 初始化kafka 1.0 update
+            self.p = Producer({'bootstrap.servers': 'localhost:9092'})
 
             # 启动kafka监听线程
             t = threading.Thread(target=self.kafkaThread, args=(botName,))
@@ -132,6 +146,7 @@ class BotService(Module):
                             f'''账号{botName}开始重连''',
                             fromName="BotService")
                         await self.BotLoginLoop(bot)
+                        self.SyncToZookeeper(bot)
                     else:
                         debugPrint(
                             f'''账号{botName}获取消息失败重试:{retrySize + 1}次''',

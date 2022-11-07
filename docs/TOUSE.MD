@@ -3,16 +3,10 @@
  BOT开发环境为python3.10
 
 ### 依赖
- ```
- Python >= 3.9
-
- 框架依赖:
- aiohttp
- sqlite3/redis
-
- 插件依赖:
- 请查看插件的import
- ```
+可以查看文件[requirements](requirements)  
+需要redis  
+需要Kafka
+需要Zookeeper
 
 ### 部署
  mirai部署请前往[mirai-api-http](https://github.com/project-mirai/mirai-api-http)  

@@ -105,12 +105,7 @@ class BotService(Module):
             # 启动kafka监听线程
             t = threading.Thread(target=self.kafkaThread, args=(botName,))
             t.start()
-            '''
-            1.0 update
-            # 初始化BotRoute
-            botRoute = BotRoute(
-                bot, BotPluginsManager(bot), self, concurrentModule)
-            '''
+
             # eventLoop
             while True:
                 retrySize = 0
@@ -156,6 +151,7 @@ class BotService(Module):
                     debugPrint(
                             f"收到消息,uuid为{localUuid}",
                             fromName="BotService")
+                    
                     # 初始化request
                     request = getAttrFromModule(
                                 botPath + ".Request",
@@ -167,6 +163,7 @@ class BotService(Module):
                                     "botType": botType + "Request"
                                     },
                                 i)
+                    
                     # 过滤bot自己发的消息
                     if (await bot.filter(request)):
                         self.p.poll(0)

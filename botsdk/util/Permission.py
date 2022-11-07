@@ -43,10 +43,6 @@ async def permissionCheck(
         requestRole |= set(cookie[userId])
     if (requestRole & need or target in requestRole):
         return True
-    '''
-    1.0 update
-    childs = request.getId().split(":")[3:]
-    '''
     # 根据permission判断
     cookie = await request.AsyncGetCookie("permission", localId)
     if not cookie:
@@ -59,24 +55,6 @@ async def permissionCheck(
             or ("*" in cookie and set(cookie["*"]) & requestRole)):
         return True
     return False
-    '''
-    1.0 update
-    m = 0
-    while True:
-        if ((target in cookie
-            and (permissionRoles := set(cookie[target]))
-            and (requestRole & permissionRoles
-                 or ("*" in permissionRoles
-                     and permissionRoles["*"] & requestRole)))
-           or ("*" in cookie and set(cookie["*"]) & requestRole)):
-            return True
-        if m < len(childs) and f":{childs[m]}" in cookie:
-            cookie = cookie[f":{childs[m]}"]
-            m += 1
-        else:
-            break
-    return False
-    '''
 
 
 async def roleCheck(request, roles, add=set()):

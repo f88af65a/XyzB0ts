@@ -130,16 +130,5 @@ class TargetRouter(BotRouter):
             request.setHandleModuleName(
                 pluginsManager.getHandleByTarget(
                     request.getType(), target).__module__)
-            '''
-            1.0 update
-            # 路由
-            if (concurrentModule is not None
-                    and ret.__self__.getCanDetach()
-                    and request.getBot().getCanDetach()):
-                # 多进程方式
-                concurrentModule.addTask(request.getData())
-            else:
-                await asyncHandlePacket(ret, request)
-            '''
             await self.sendToHandle(ret, request)
         return [True, None]

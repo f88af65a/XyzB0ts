@@ -48,7 +48,9 @@
 			"syncCookie": ["System:Owner"],
 			"quitGroup": ["System:Owner"],
 			"listGroup": ["System:Owner"],
-			"listFriend": ["System:Owner"]
+			"listFriend": ["System:Owner"],
+			"chatWithGroup":["System:Owner"],
+			"chatWithFriend":["System:Owner"]
 		},
 		"user": {}
 	}

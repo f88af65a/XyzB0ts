@@ -104,22 +104,6 @@ class plugin(BotPlugin):
                         await bot.sendMessage(dynamicChain, id=needNotifyId)
                     maxDynamicId = max(maxDynamicId, max(localId))
                     dynamicId = set(localId)
-                    '''
-                    1.0 update
-                     localId = []
-                    for i in datas:
-                        localId.append(i["desc"]["dynamic_id"])
-                        if (i["desc"]["dynamic_id"] not in dynamicId
-                                and i["desc"]["dynamic_id"] > maxDynamicId):
-                            dynamicChain = bot.makeMessageChain()
-                            self.dynamicCardAnlysis(
-                                json.loads(i["card"]), dynamicChain)
-                            await self.toNotify(
-                                notifyName, bot,
-                                bot.makeMessageChain().text("[是新动态捏]")
-                                + dynamicChain)
-                            dynamicId.add(i["desc"]["dynamic_id"])
-                    '''
             except Exception:
                 printTraceBack()
 

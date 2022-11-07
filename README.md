@@ -1,11 +1,5 @@
 # XyzB0ts
- 一个简单的bot框架  
- 通过简单的约定实现了对不同bot接口的统一抽象，实现了在一个框架中运行多个相同或不同的bot  
- 通过简单的api能够快速的进行bot功能的开发
-
-## 框架主要功能
-1. 插件支持
-2. 基于角色的权限控制
+一个Bot框架
 
 ## 支持的bot
 1. [mirai-api-http](https://github.com/project-mirai/mirai-api-http)

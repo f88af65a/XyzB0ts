@@ -9,7 +9,7 @@ from ujson import loads
 from .Module import Module
 from .util.BotPluginsManager import BotPluginsManager
 from .util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
-from .util.Error import asyncTraceBack, debugPrint
+from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.TimeTest import asyncTimeTest
 from .util.Tool import getAttrFromModule
 from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
@@ -75,13 +75,17 @@ class BotRoute(Module):
     @asyncTimeTest
     async def routeRequest(self, request):
         for i in self.router:
-            if (re := await i.route(
-                    self.pluginsManager, request
-                    )) and re[0] is False:
-                debugPrint(
-                        f"消息:{request.getUuid()},"
-                        f"被{i}:{re[1]}拦截"
-                        )
+            try:
+                if (re := await i.route(
+                        self.pluginsManager, request
+                        )) and re[0] is False:
+                    debugPrint(
+                            f"消息:{request.getUuid()},"
+                            f"被{i}:{re[1]}拦截"
+                            )
+                    break
+            except Exception:
+                printTraceBack()
                 break
 
     def getBot(self):

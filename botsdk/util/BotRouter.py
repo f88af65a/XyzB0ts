@@ -7,7 +7,7 @@ from confluent_kafka import Producer
 from .TimeTest import asyncTimeTest
 
 from .BotPluginsManager import BotPluginsManager
-from .Error import asyncTraceBack, debugPrint
+from .Error import asyncTraceBack, debugPrint, printTraceBack
 from .JsonConfig import getConfig
 from .Permission import permissionCheck, roleCheck
 
@@ -34,7 +34,15 @@ class GeneralRouter(BotRouter):
         for i in pluginsManager.getGeneralList():
             if request.getBot().getBotType() not in i[1].__self__.botSet:
                 continue
-            if (ret := await i[1](request)) is not None and ret is False:
+            try:
+                if (ret := await i[1](request)) is not None and ret is False:
+                    return [False, i]
+            except Exception:
+                debugPrint(
+                    f"在执行{i}时发生异常",
+                    fromName="GeneralRouter"
+                )
+                printTraceBack()
                 return [False, i]
         return [True, None]
 
@@ -49,7 +57,15 @@ class TypeRouter(BotRouter):
             for i in listener[request.getType()]["typeListener"]:
                 if request.getBot().getBotType() not in i.__self__.botSet:
                     continue
-                await i(request)
+                try:
+                    await i(request)
+                except Exception:
+                    debugPrint(
+                        f"在执行{i}时发生异常",
+                        fromName="GeneralRouter"
+                    )
+                    printTraceBack()
+                    return [False, i]
         return [True, None]
 
 

@@ -59,6 +59,8 @@ class handle(BotPlugin):
         keyTree = self.makeTreeByKey(
                 list(cookie.keys()))
         hit = self.checkOnTree(keyTree, msg)
+        if hit is None:
+            return
         try:
             messageChain = json.loads(cookie[hit])
         except Exception:

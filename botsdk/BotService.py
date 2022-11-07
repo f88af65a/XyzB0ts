@@ -166,7 +166,7 @@ class BotService(Module):
                     debugPrint(
                             f"收到消息,uuid为{localUuid}",
                             fromName="BotService")
-                    
+
                     # 初始化request
                     request = getAttrFromModule(
                                 botPath + ".Request",
@@ -178,7 +178,7 @@ class BotService(Module):
                                     "botType": botType + "Request"
                                     },
                                 i)
-                    
+
                     # 过滤bot自己发的消息
                     if (await bot.filter(request)):
                         self.p.poll(0)

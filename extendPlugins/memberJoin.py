@@ -50,13 +50,11 @@ class plugin(BotPlugin):
             cookie = json.dumps(qaMessageChain)
             request.setCookie("memberJoin", cookie)
             await request.sendMessage("设置成功")
-        elif len(data) == 2:
-            if data[1] == "del":
-                request.setCookie("memberJoin", "")
-                await request.sendMessage("设置成功")
 
     async def memberJoin(self, request):
-        id = request.groupFormat(request["member"]["group"]["id"])
+        id = (request.getBot().getBotName()
+              + ":"
+              + request.groupFormat(request["member"]["group"]["id"]))
         cookie = request.getCookie(
             "memberJoin", id
             )

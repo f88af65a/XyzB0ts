@@ -14,9 +14,46 @@ from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.JsonConfig import getConfig
 from .util.Tool import getAttrFromModule
 from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
+from threading import Lock
 
 
 class BotService(Module):
+    def init(self):
+        self.reProductList = []
+        self.reProductListLock = Lock()
+
+    async def BotLogin(self, bot):
+        try:
+            re = await bot.login()
+        except Exception:
+            re = 1
+        if re != 0:
+            return False
+        return True
+
+    async def BotLoginLoop(self, bot):
+        loginRetrySize = 0
+        while True:
+            if not await self.BotLogin(bot):
+                loginRetrySize += 1
+                debugPrint(
+                        f'''账号{bot.getBotName()}登陆失败 已重试{loginRetrySize}次''',
+                        fromName="BotService")
+                await asyncio.sleep(min(1 << loginRetrySize, 16))
+            else:
+                break
+        return loginRetrySize
+
+    def CheckAndGetReproduct(self):
+        self.reProductListLock.acquire()
+        if len(self.reProductList) == 0:
+            ret = []
+        else:
+            ret = self.reProductList
+            self.reProductList = []
+        self.reProductListLock.release()
+        return ret
+
     @asyncTraceBack
     async def runInLoop(self, botData):
         while True:
@@ -31,18 +68,7 @@ class BotService(Module):
             debugPrint(f'''账号{botName}初始化成功''', fromName="BotService")
 
             # 登录
-            loginRetry = 0
-            while True:
-                try:
-                    re = await bot.login()
-                except Exception:
-                    re = 1
-                if re != 0:
-                    debugPrint(
-                        f'''账号{botName}登陆失败 已重试{loginRetry}次''',
-                        fromName="BotService")
-                else:
-                    break
+            await self.BotLoginLoop(bot)
             debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
 
             # 初始化kafka 1.0 update
@@ -90,37 +116,27 @@ class BotService(Module):
                 retrySize = 0
                 # fetchMessageLoop
                 while True:
+                    # bot获取消息
                     try:
                         if (ret := await bot.fetchMessage()) and ret[0] == 0:
-                            if not len(ret[1]):
+                            rep = self.CheckAndGetReproduct()
+                            if ret[1] or rep:
+                                break
+                            else:
                                 await asyncio.sleep(
                                     bot.getData()[0]
                                     ["adapterConfig"]["config"]["sleepTime"])
                                 continue
-                            else:
-                                break
                     except Exception:
                         pass
+                    # 统计出错次数
                     retrySize += 1
+                    # 出错五次开始重连
                     if retrySize >= 5:
-                        loginRetry = 0
-                        # reLoginLoop
-                        while True:
-                            try:
-                                ret = await bot.login()
-                            except Exception:
-                                ret = 1
-                            if ret != 0:
-                                debugPrint(
-                                    f'''账号{botName}重登失败重试:{loginRetry}次''',
-                                    fromName="BotService")
-                            else:
-                                break
-                            loginRetry += 1
-                            await asyncio.sleep(min(loginRetry * 5, 15))
                         debugPrint(
-                            f'''账号{botName}重登陆成功''',
+                            f'''账号{botName}开始重连''',
                             fromName="BotService")
+                        await self.BotLoginLoop(bot)
                     else:
                         debugPrint(
                             f'''账号{botName}获取消息失败重试:{retrySize + 1}次''',
@@ -128,19 +144,19 @@ class BotService(Module):
                         await asyncio.sleep(
                             random.random() + random.randint(1, 2))
                 # to router
+                for i in rep:
+                    self.p.poll(0)
+                    self.p.produce(
+                            "routeList",
+                            i.encode(),
+                            callback=self.deliveryReport)
                 for i in ret[1]:
-                    ''' 1.0 update
-                    request = getAttrFromModule(
-                                botPath + ".Request",
-                                botType + "Request")(
-                                {"bot": bot.getData(),
-                                    "uuid": uuid.uuid4()},
-                                i, botRoute)
-                    '''
+                    # 生成uuid
                     localUuid = str(uuid.uuid4())
                     debugPrint(
                             f"收到消息,uuid为{localUuid}",
                             fromName="BotService")
+                    # 初始化request
                     request = getAttrFromModule(
                                 botPath + ".Request",
                                 botType + "Request")(
@@ -151,12 +167,8 @@ class BotService(Module):
                                     "botType": botType + "Request"
                                     },
                                 i)
+                    # 过滤bot自己发的消息
                     if (await bot.filter(request)):
-                        '''
-                        1.0 update
-                        asyncio.run_coroutine_threadsafe(
-                            botRoute.route(request), self.loop)
-                        '''
                         self.p.poll(0)
                         self.p.produce(
                                 "routeList",
@@ -192,29 +204,14 @@ class BotService(Module):
             self.exit()
 
     def deliveryReport(self, err, msg):
-        if err is not None:
-            debugPrint('Message delivery failed: {}'.format(err))
-        else:
-            debugPrint('Message delivered to {} [{}]'.format(
-                    msg.topic(), msg.partition()))
+        if err is None:
+            return
+        debugPrint(f"消息发送失败:{err}", fromName="BotService")
+        self.reProductListLock.acquire()
+        self.reProductList.append(msg.value().decode())
+        self.reProductListLock.release()
 
     async def run(self):
-        '''
-        1.0 update
-        concurrentModule = defaultBotConcurrentModule(
-            int(getConfig()["workProcess"]) if getConfig()["multi"] else None,
-            int(getConfig()["workThread"]))
-        asyncio.run_coroutine_threadsafe(
-            self.runInEventLoop(
-                loads(GetArgs()["account"].split("'", '"')), concurrentModule),
-            self.loop)
-        asyncio.run_coroutine_threadsafe(self.timer.timerLoop(), self.loop)
-        '''
-        '''
-        asyncio.run(self.runInEventLoop(
-                loads(GetArgs()["account"].replace("'", '"')))
-                )
-        '''
         await self.runInLoop(
                 loads(GetArgs()["account"].replace("'", '"'))
                 )

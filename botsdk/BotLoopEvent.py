@@ -38,10 +38,6 @@ class BotLoopEvent(Module):
                     fromName="BotLoopEvent")
             self.exit()
         debugPrint('''BotLoopEvent同步至zookeeper成功''', fromName="BotLoopEvent")
-        '''
-        thread = threading.Thread(target=self.kafkaThread)
-        thread.start()
-        '''
         # LoopEvent
         try:
             plugins = self.pluginsManager.getAllPlugin()

@@ -81,6 +81,9 @@ class TargetRouter(BotRouter):
                         }}).encode("utf8"),
                 callback=self.deliveryReport
         )
+        debugPrint(
+                f"{request.getUuid()}转发至handle",
+                fromName="TargetRouter")
         self.p.flush()
 
     @asyncTraceBack

@@ -28,8 +28,6 @@ class handle(BotPlugin):
             cookie = {}
         if reData is not None and reData.group(4) is not None:
             target = reData.group(4)
-            if not type(cookie) is dict:
-                cookie = dict()
             if ((target == "enable" or target == "disable")
                     and await permissionCheck(request, target)
                     and (targetBot := request.getFirstText().split(" "))

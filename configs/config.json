@@ -35,7 +35,7 @@
 			"token": ""
 		}
 	],
-	"cookieDriver": "SqliteCookie",
+	"cookieDriver": "RedisCookie",
 	"systemCookie": {
 		"systemPermission": {
 			"load": ["System:Owner"],

@@ -127,7 +127,8 @@ class TargetRouter(BotRouter):
         target = reData.group(4)
         if ":" in target:
             needRole = ":".join(target.split(":")[:-1])
-            if not await roleCheck(request, needRole):
+            if not await roleCheck(request, {needRole}):
+                await request.sendMessage("权限限制")
                 return [True, None]
         request.setTarget(target)
         # 命令判断

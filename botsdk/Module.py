@@ -61,7 +61,7 @@ class Module:
         asyncio.run_coroutine_threadsafe(self._start(), self.loop)
         self.loop.run_forever()
 
-    def sendMessge(self, topic, message: bytes):
+    def sendMessage(self, topic, message: bytes):
         self.p.poll(0)
         self.p.produce(
             topic,

@@ -3,7 +3,6 @@ import re
 
 import ujson as json
 
-from ..BotRoute import BotRoute
 from .BotPluginsManager import BotPluginsManager
 from .Error import asyncTraceBack, debugPrint, printTraceBack
 from .JsonConfig import getConfig
@@ -21,7 +20,7 @@ class BotRouter:
 
     async def route(self,
                     pluginsManager: BotPluginsManager,
-                    route: BotRoute,
+                    route,
                     request):
         pass
 
@@ -30,7 +29,7 @@ class GeneralRouter(BotRouter):
     @asyncTimeTest
     async def route(self,
                     pluginsManager: BotPluginsManager,
-                    route: BotRoute,
+                    route,
                     request):
         for i in pluginsManager.getGeneralList():
             if request.getBot().getBotType() not in i[1].__self__.botSet:
@@ -49,7 +48,7 @@ class GeneralRouter(BotRouter):
 
 
 class TypeRouter(BotRouter):
-    async def sendToHandle(self, route: BotRoute, func, request):
+    async def sendToHandle(self, route, func, request):
         route.sendMessage(
                 "targetHandle",
                 json.dumps(
@@ -71,13 +70,13 @@ class TypeRouter(BotRouter):
     @asyncTimeTest
     async def route(self,
                     pluginsManager: BotPluginsManager,
-                    route: BotRoute,
+                    route,
                     request):
         handleList = pluginsManager.getHandleByType(request.getType())
         if handleList is None:
             return
         for i in handleList:
-            self.sendToHandle(route, i, request)
+            await self.sendToHandle(route, i, request)
         debugPrint(
             f"{request.getUuid()}转发至handle",
             fromName="TypeRouter"
@@ -92,7 +91,7 @@ class TargetRouter(BotRouter):
              + "".join(["\\" + i for i in getConfig()["commandTarget"]])
              + r"])(\S+)( \S+)*$"))
 
-    async def sendToHandle(self, route: BotRoute, func, request):
+    async def sendToHandle(self, route, func, request):
         route.sendMessage(
             "targetHandle",
             json.dumps(
@@ -115,7 +114,7 @@ class TargetRouter(BotRouter):
     @asyncTimeTest
     async def route(self,
                     pluginsManager: BotPluginsManager,
-                    route: BotRoute,
+                    route,
                     request):
         # 类型判断与命令获取
         if (target := request.getFirstText()) is None or not target:

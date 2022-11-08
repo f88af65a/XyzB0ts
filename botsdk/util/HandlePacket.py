@@ -2,8 +2,6 @@ import asyncio
 import time
 
 from .Error import asyncTraceBack, debugPrint, printTraceBack
-
-from ..BotModule.MessageChain import MessageChain
 from .TimeTest import asyncTimeTest
 
 startCallBackTask = []
@@ -11,18 +9,16 @@ endCallBackTask = []
 
 
 def asyncStartHandleNotify(func, *args, **kwargs):
-    request = args[0]
+    # request = args[0]
     debugPrint((f'''[{func.__name__}]'''
-                f"[{request.getFirstTextSplit()[0]}]"
                 "[START]"
                 f'''{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}'''
                 ))
 
 
 def asyncEndHandleNotify(func, *args, **kwargs):
-    request = args[0]
+    # request = args[0]
     debugPrint((f'''[{func.__name__}]'''
-                f"[{request.getFirstTextSplit()[0]}]"
                 "[END]"
                 f'''{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}'''
                 ))
@@ -60,13 +56,15 @@ async def asyncHandlePacket(func, *args, **kwargs):
             i(func, *args, **kwargs)
         try:
             request = args[0]
-            controlData = request.getControlData()
-            for i in range(int(controlData["size"])):
-                await asyncio.sleep(int(controlData["wait"]))
+            if "controlData" in request.getData()[0]:
+                controlData = request.getControlData()
+                for i in range(int(controlData["size"])):
+                    await asyncio.sleep(int(controlData["wait"]))
+                    await func(*args, **kwargs)
+            else:
                 await func(*args, **kwargs)
         except Exception as e:
-            await args[0].sendMessage(
-                MessageChain().text(f"执行过程中发生异常 {str(e)}"))
+            await args[0].sendMessage(f"执行过程中发生异常 {str(e)}")
             raise e
         for i in getEndCallBackTask():
             i(func, *args, **kwargs)

@@ -63,7 +63,7 @@ class BotService(Module):
                 "data": bot.getData()
             }
         if zk.exists(botPath):
-            zk.set(botPath, dumps(botData))
+            zk.set(botPath, dumps(botData).encode())
         elif not AddEphemeralNode("/Bot", bot.getBotName(), botData):
             return False
         return True
@@ -75,124 +75,138 @@ class BotService(Module):
                 f'''/Bot/{botData["botName"]}'''):
             debugPrint("检测到Bot以登录", fromName="BotService")
             self.exit()
-        while True:
-            # 初始化Bot
-            botType = botData["botType"]
-            botPath = (getConfig()["botPath"] + botType).replace("/", ".")
-            botName = botData["botName"]
-            debugPrint(f'''账号{botName}加载成功''', fromName="BotService")
-            bot = getAttrFromModule(
-                botPath + ".Bot",
-                botType + "Bot")(botData)
-            debugPrint(f'''账号{botName}初始化成功''', fromName="BotService")
+        # 初始化Bot
+        botType = botData["botType"]
+        botPath = (getConfig()["botPath"] + botType).replace("/", ".")
+        botName = botData["botName"]
+        debugPrint(f'''账号{botName}加载成功''', fromName="BotService")
+        bot = getAttrFromModule(
+            botPath + ".Bot",
+            botType + "Bot")(botData)
+        debugPrint(f'''账号{botName}初始化成功''', fromName="BotService")
 
-            # 登录
-            await self.BotLoginLoop(bot)
-            debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
+        # 登录
+        await self.BotLoginLoop(bot)
+        debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
 
-            # 同步至zookeeper
-            if not self.SyncToZookeeper(bot):
-                debugPrint(
-                        f'''账号{botName}同步至zookeeper失败''',
-                        fromName="BotService")
-                self.exit()
+        # 同步至zookeeper
+        if not self.SyncToZookeeper(bot):
             debugPrint(
-                        f'''账号{botName}同步至zookeeper成功''',
-                        fromName="BotService")
+                    f'''账号{botName}同步至zookeeper失败''',
+                    fromName="BotService")
+            self.exit()
+        debugPrint(
+                    f'''账号{botName}同步至zookeeper成功''',
+                    fromName="BotService")
 
-            # 将Service信息同步至Zookeeper
-            if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
-                            "type": "BotService",
-                            "startTime": str(int(time.time())),
-                            "botType": botType,
-                            "botName": botName
-                        }):
-                debugPrint(
-                        '''BotService同步至zookeeper失败''',
-                        fromName="BotService")
-                return
-            debugPrint('''BotService同步至zookeeper成功''', fromName="BotService")
+        # 将Service信息同步至Zookeeper
+        if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
+                        "type": "BotService",
+                        "startTime": str(int(time.time())),
+                        "botType": botType,
+                        "botName": botName
+                    }):
+            debugPrint(
+                    '''BotService同步至zookeeper失败''',
+                    fromName="BotService")
+            return
+        debugPrint('''BotService同步至zookeeper成功''', fromName="BotService")
 
-            # 初始化kafka 1.0 update
-            self.p = Producer({'bootstrap.servers': 'localhost:9092'})
+        # 初始化kafka 1.0 update
+        self.p = Producer({'bootstrap.servers': 'localhost:9092'})
 
-            # 启动kafka监听线程
-            t = threading.Thread(target=self.kafkaThread, args=(botName,))
-            t.start()
+        # 启动kafka监听线程
+        t = threading.Thread(target=self.kafkaThread, args=(botName,))
+        t.start()
 
-            # eventLoop
+        # eventLoop
+        while True:
+            retrySize = 0
+            # fetchMessageLoop
             while True:
-                retrySize = 0
-                # fetchMessageLoop
-                while True:
-                    # bot获取消息
-                    try:
-                        if (ret := await bot.fetchMessage()) and ret[0] == 0:
-                            rep = self.CheckAndGetReproduct()
-                            if ret[1] or rep:
-                                break
-                            else:
-                                await asyncio.sleep(
-                                    bot.getData()[0]
-                                    ["adapterConfig"]["config"]["sleepTime"])
-                                continue
-                    except Exception:
-                        pass
-                    # 统计出错次数
-                    retrySize += 1
-                    # 出错五次开始重连
-                    if retrySize >= 5:
+                # bot获取消息
+                try:
+                    if (ret := await bot.fetchMessage()) and ret[0] == 0:
+                        rep = self.CheckAndGetReproduct()
+                        if ret[1] or rep:
+                            break
+                        else:
+                            await asyncio.sleep(
+                                bot.getData()[0]
+                                ["adapterConfig"]["config"]["sleepTime"])
+                            continue
+                except Exception:
+                    pass
+                # 统计出错次数
+                retrySize += 1
+                # 出错五次开始重连
+                if retrySize >= 5:
+                    debugPrint(
+                        f'''账号{botName}开始重连''',
+                        fromName="BotService")
+                    await self.BotLoginLoop(bot)
+                    debugPrint(
+                        f'''账号{botName}重连成功''',
+                        fromName="BotService")
+                    if not self.SyncToZookeeper(bot):
                         debugPrint(
-                            f'''账号{botName}开始重连''',
+                            f'''账号{botName}同步失败''',
                             fromName="BotService")
-                        await self.BotLoginLoop(bot)
-                        self.SyncToZookeeper(bot)
-                    else:
-                        debugPrint(
-                            f'''账号{botName}获取消息失败重试:{retrySize + 1}次''',
-                            fromName="BotService")
-                        await asyncio.sleep(
-                            random.random() + random.randint(1, 2))
-                # to router
-                for i in rep:
+                        self.exit()
+                    debugPrint(
+                        f'''账号{botName}同步成功''',
+                        fromName="BotService")
+                else:
+                    debugPrint(
+                        f'''账号{botName}获取消息失败重试:{retrySize + 1}次''',
+                        fromName="BotService")
+                    await asyncio.sleep(
+                        random.random() + random.randint(1, 2))
+
+            # to router
+            # 重发
+            for i in rep:
+                self.p.poll(0)
+                self.p.produce(
+                        "routeList",
+                        i.encode(),
+                        callback=self.deliveryReport)
+            for i in ret[1]:
+                # 生成uuid
+                localUuid = str(uuid.uuid4())
+                debugPrint(
+                        f"收到消息,uuid为{localUuid}",
+                        fromName="BotService")
+
+                # 初始化request
+                request = getAttrFromModule(
+                    botPath + ".Request",
+                    botType + "Request")(
+                        {
+                            "bot": bot.getData(),
+                            "uuid": localUuid,
+                            "botPath": botPath + ".Request",
+                            "botType": botType + "Request"
+                        },
+                        i
+                    )
+
+                # 过滤bot自己发的消息
+                if (await bot.filter(request)):
                     self.p.poll(0)
                     self.p.produce(
                             "routeList",
-                            i.encode(),
-                            callback=self.deliveryReport)
-                for i in ret[1]:
-                    # 生成uuid
-                    localUuid = str(uuid.uuid4())
+                            dumps(
+                                {"code": 0, "data": request.getData()}
+                                ).encode("utf8"),
+                            callback=self.deliveryReport
+                        )
                     debugPrint(
-                            f"收到消息,uuid为{localUuid}",
-                            fromName="BotService")
+                        f"{localUuid}送至Router",
+                        fromName="BotService")
 
-                    # 初始化request
-                    request = getAttrFromModule(
-                                botPath + ".Request",
-                                botType + "Request")(
-                                {
-                                    "bot": bot.getData(),
-                                    "uuid": localUuid,
-                                    "botPath": botPath + ".Request",
-                                    "botType": botType + "Request"
-                                    },
-                                i)
-
-                    # 过滤bot自己发的消息
-                    if (await bot.filter(request)):
-                        self.p.poll(0)
-                        self.p.produce(
-                                "routeList",
-                                dumps(
-                                    {"code": 0, "data": request.getData()}
-                                    ).encode("utf8"),
-                                callback=self.deliveryReport)
-                        debugPrint(
-                            f"{localUuid}送至Router",
-                            fromName="BotService")
-                self.p.flush()
-                await asyncio.sleep(0)
+            self.p.flush()
+            await asyncio.sleep(0)
 
     def kafkaThread(self, botName):
         try:

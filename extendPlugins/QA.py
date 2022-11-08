@@ -92,8 +92,8 @@ class handle(BotPlugin):
                     return
                 await request.sendMessage("关键字不存在")
             elif data[1] == "set":
-                if len(data[2]) > 16:
-                    await request.send("关键字最长为16字")
+                if len(data[2]) > 16 or len(data[2]) < 2:
+                    await request.send("关键字最短为2字,最长为16字")
                     return
                 messageChain = request.getMessageChain()
                 for i in messageChain:
@@ -114,8 +114,8 @@ class handle(BotPlugin):
                 request.setCookie("q&a", cookie)
                 await request.sendMessage("设置成功")
         elif len(data) == 4 and data[1] == "set":
-            if len(data[2]) > 16:
-                await request.send("关键字最长为16字")
+            if len(data[2]) > 16 or len(data[2]) < 2:
+                await request.send("关键字最短为2字,最长为16字")
                 return
             cookie[data[2]] = data[3]
             request.setCookie("q&a", cookie)

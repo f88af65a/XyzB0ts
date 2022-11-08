@@ -9,9 +9,7 @@
 	"localFilePath": "localFile/",
 	"workProcess": 4,
 	"workThread": 4,
-	"debug": false,
 	"debugPrint": 5,
-	"deBugGroupId": [],
 	"commandTarget": [
 		"/",
 		"#",

@@ -125,6 +125,10 @@ class TargetRouter(BotRouter):
         if reData is None or reData.group(4) is None:
             return [False, None]
         target = reData.group(4)
+        if ":" in target:
+            needRole = ":".join(target.split(":")[:-1])
+            if not await roleCheck(request, needRole):
+                return [True, None]
         request.setTarget(target)
         # 命令判断
         if (ret := pluginsManager.getTarget(

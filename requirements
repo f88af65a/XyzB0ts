@@ -5,3 +5,4 @@ redis
 ujson
 pillow
 dnspython
+jsonpath

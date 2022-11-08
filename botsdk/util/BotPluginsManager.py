@@ -142,6 +142,12 @@ class BotPluginsManager:
             return re.__self__
         return None
 
+    def getHandleByType(self, messageType: str):
+        if (messageType in self.getListener()
+                and "typeListener" in self.getListener()[messageType]):
+            return self.getListener()[messageType]["typeListener"]
+        return None
+
     def getTypeListener(self, messageType: str):
         if messageType in self.getListener():
             return self.getListener()[messageType]["typeListener"]

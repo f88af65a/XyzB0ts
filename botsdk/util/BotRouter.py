@@ -1,15 +1,14 @@
 import asyncio
-import ujson as json
 import re
 
-from confluent_kafka import Producer
+import ujson as json
 
-from .TimeTest import asyncTimeTest
-
+from ..BotRoute import BotRoute
 from .BotPluginsManager import BotPluginsManager
 from .Error import asyncTraceBack, debugPrint, printTraceBack
 from .JsonConfig import getConfig
 from .Permission import permissionCheck, roleCheck
+from .TimeTest import asyncTimeTest
 
 
 class BotRouter:
@@ -22,6 +21,7 @@ class BotRouter:
 
     async def route(self,
                     pluginsManager: BotPluginsManager,
+                    route: BotRoute,
                     request):
         pass
 
@@ -30,6 +30,7 @@ class GeneralRouter(BotRouter):
     @asyncTimeTest
     async def route(self,
                     pluginsManager: BotPluginsManager,
+                    route: BotRoute,
                     request):
         for i in pluginsManager.getGeneralList():
             if request.getBot().getBotType() not in i[1].__self__.botSet:
@@ -48,24 +49,39 @@ class GeneralRouter(BotRouter):
 
 
 class TypeRouter(BotRouter):
+    async def sendToHandle(self, route: BotRoute, func, request):
+        route.sendMessage(
+                "targetHandle",
+                json.dumps(
+                    {
+                        "code": 0,
+                        "data": {
+                            "path": func.__module__,
+                            "handle": func.__name__,
+                            "request": request.getData()
+                        }
+                    }
+                ).encode("utf8")
+        )
+        debugPrint(
+            f"{request.getUuid()}转发至handle",
+            fromName="TypeRouter"
+        )
+
     @asyncTimeTest
     async def route(self,
                     pluginsManager: BotPluginsManager,
+                    route: BotRoute,
                     request):
-        if request.getType() in pluginsManager.getListener():
-            listener = pluginsManager.getListener()
-            for i in listener[request.getType()]["typeListener"]:
-                if request.getBot().getBotType() not in i.__self__.botSet:
-                    continue
-                try:
-                    await i(request)
-                except Exception:
-                    debugPrint(
-                        f"在执行{i}时发生异常",
-                        fromName="GeneralRouter"
-                    )
-                    printTraceBack()
-                    return [False, i]
+        handleList = pluginsManager.getHandleByType(request.getType())
+        if handleList is None:
+            return
+        for i in handleList:
+            self.sendToHandle(route, i, request)
+        debugPrint(
+            f"{request.getUuid()}转发至handle",
+            fromName="TypeRouter"
+        )
         return [True, None]
 
 
@@ -75,37 +91,31 @@ class TargetRouter(BotRouter):
             (r"^(\[(\S*=\S*)&?\])?(["
              + "".join(["\\" + i for i in getConfig()["commandTarget"]])
              + r"])(\S+)( \S+)*$"))
-        self.p = Producer({'bootstrap.servers': 'localhost:9092'})
 
-    def deliveryReport(self, err, msg):
-        if err is not None:
-            debugPrint('Message delivery failed: {}'.format(err))
-        else:
-            debugPrint('Message delivered to {} [{}]'.format(
-                    msg.topic(), msg.partition()))
-
-    async def sendToHandle(self, func, request):
-        self.p.poll(0)
-        self.p.produce(
-                "targetHandle",
-                json.dumps(
-                    {"code": 0,
-                     "data": {
+    async def sendToHandle(self, route: BotRoute, func, request):
+        route.sendMessage(
+            "targetHandle",
+            json.dumps(
+                {
+                    "code": 0,
+                    "data": {
                         "path": func.__module__,
                         "handle": func.__name__,
                         "request": request.getData()
-                        }}).encode("utf8"),
-                callback=self.deliveryReport
+                    }
+                }
+            ).encode("utf8")
         )
         debugPrint(
-                f"{request.getUuid()}转发至handle",
-                fromName="TargetRouter")
-        self.p.flush()
+            f"{request.getUuid()}转发至handle",
+            fromName="TargetRouter"
+        )
 
     @asyncTraceBack
     @asyncTimeTest
     async def route(self,
                     pluginsManager: BotPluginsManager,
+                    route: BotRoute,
                     request):
         # 类型判断与命令获取
         if (target := request.getFirstText()) is None or not target:
@@ -149,5 +159,5 @@ class TargetRouter(BotRouter):
             request.setHandleModuleName(
                 pluginsManager.getHandleByTarget(
                     request.getType(), target).__module__)
-            await self.sendToHandle(ret, request)
+            await self.sendToHandle(route, ret, request)
         return [True, None]

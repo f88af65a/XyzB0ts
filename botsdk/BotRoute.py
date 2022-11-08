@@ -77,12 +77,14 @@ class BotRoute(Module):
         for i in self.router:
             try:
                 if (re := await i.route(
-                        self.pluginsManager, request
+                        self.pluginsManager,
+                        self,
+                        request
                         )) and re[0] is False:
                     debugPrint(
-                            f"消息:{request.getUuid()},"
-                            f"被{i}:{re[1]}拦截"
-                            )
+                        f"消息:{request.getUuid()},"
+                        f"被{i}:{re[1]}拦截"
+                    )
                     break
             except Exception:
                 printTraceBack()

@@ -5,7 +5,7 @@ import threading
 import time
 import uuid
 
-from confluent_kafka import Consumer, Producer
+from confluent_kafka import Consumer
 from ujson import dumps, loads
 
 from .Module import Module
@@ -14,13 +14,11 @@ from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.JsonConfig import getConfig
 from .util.Tool import getAttrFromModule
 from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
-from threading import Lock
 
 
 class BotService(Module):
     def init(self):
-        self.reProductList = []
-        self.reProductListLock = Lock()
+        pass
 
     async def BotLogin(self, bot):
         try:
@@ -43,16 +41,6 @@ class BotService(Module):
             else:
                 break
         return loginRetrySize
-
-    def CheckAndGetReproduct(self):
-        self.reProductListLock.acquire()
-        if len(self.reProductList) == 0:
-            ret = []
-        else:
-            ret = self.reProductList
-            self.reProductList = []
-        self.reProductListLock.release()
-        return ret
 
     def SyncToZookeeper(self, bot):
         zk = GetZKClient()
@@ -112,9 +100,6 @@ class BotService(Module):
             return
         debugPrint('''BotService同步至zookeeper成功''', fromName="BotService")
 
-        # 初始化kafka 1.0 update
-        self.p = Producer({'bootstrap.servers': 'localhost:9092'})
-
         # 启动kafka监听线程
         t = threading.Thread(target=self.kafkaThread, args=(botName,))
         t.start()
@@ -127,8 +112,7 @@ class BotService(Module):
                 # bot获取消息
                 try:
                     if (ret := await bot.fetchMessage()) and ret[0] == 0:
-                        rep = self.CheckAndGetReproduct()
-                        if ret[1] or rep:
+                        if ret[1]:
                             break
                         else:
                             await asyncio.sleep(
@@ -164,13 +148,6 @@ class BotService(Module):
                         random.random() + random.randint(1, 2))
 
             # to router
-            # 重发
-            for i in rep:
-                self.p.poll(0)
-                self.p.produce(
-                        "routeList",
-                        i.encode(),
-                        callback=self.deliveryReport)
             for i in ret[1]:
                 # 生成uuid
                 localUuid = str(uuid.uuid4())
@@ -193,19 +170,18 @@ class BotService(Module):
 
                 # 过滤bot自己发的消息
                 if (await bot.filter(request)):
-                    self.p.poll(0)
-                    self.p.produce(
-                            "routeList",
-                            dumps(
-                                {"code": 0, "data": request.getData()}
-                                ).encode("utf8"),
-                            callback=self.deliveryReport
-                        )
+                    self.sendMessage(
+                        "routeList",
+                        dumps(
+                            {
+                                "code": 0,
+                                "data": request.getData()
+                            }
+                        ).encode()
+                    )
                     debugPrint(
                         f"{localUuid}送至Router",
                         fromName="BotService")
-
-            self.p.flush()
             await asyncio.sleep(0)
 
     def kafkaThread(self, botName):
@@ -228,14 +204,6 @@ class BotService(Module):
         except Exception:
             printTraceBack()
             self.exit()
-
-    def deliveryReport(self, err, msg):
-        if err is None:
-            return
-        debugPrint(f"消息发送失败:{err}", fromName="BotService")
-        self.reProductListLock.acquire()
-        self.reProductList.append(msg.value().decode())
-        self.reProductListLock.release()
 
     async def run(self):
         await self.runInLoop(

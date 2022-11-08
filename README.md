@@ -9,8 +9,8 @@
  [邀请链接](https://kaihei.co/LUTGj9)
 
 # 快速开始
- [部署与依赖](/docs/TOUSE.MD)  
- [插件制作](/docs/HOWTOSTART.MD)
+ [部署与依赖](/docs/HOWTODEPLOY.MD)  
+ [插件制作](/docs/HOWTOMAKEPLUGIN.MD)
 
 ## 一些链接
  [ADAPTER说明](/docs/ADAPTER.MD)

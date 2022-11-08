@@ -9,7 +9,7 @@ class handle(BotPlugin):
     def onLoad(self):
         self.name = "QA"
         self.addTarget("GroupMessage", "q&a", self.qaSet)
-        self.addFormat(self.checkMessage)
+        self.addType("GroupMessage", self.checkMessage)
         self.addBotType("Mirai")
         self.canDetach = True
         self.cache = dict()

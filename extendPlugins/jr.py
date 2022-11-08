@@ -23,7 +23,7 @@ class plugin(BotPlugin):
             response = json.loads(response)
             await request.send(str(jsonpath(response, data[2])))
         except Exception as e:
-            request.send(str(e))
+            await request.send(str(e))
             return
 
 

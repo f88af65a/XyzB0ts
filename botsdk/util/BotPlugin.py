@@ -48,13 +48,13 @@ class BotPlugin:
     def addTargetWithArgs(self, typeName: str, targetName: str, func):
         argparser = ArgParser(help=func.__doc__)
 
-        async def forward(self, request):
-            args = request.getFirstTextSplit()
+        async def forward(request):
+            args = request.getFirstTextSplit()[1:]
             if args is not None:
                 try:
                     args = argparser.Parse(args)
-                    if "h" in args:
-                        if args["h"] is None:
+                    if "help" in args:
+                        if args["help"] is None:
                             await request.send(argparser.GetAllHelp())
                         else:
                             await request.send(argparser.GetHelp(args["h"]))
@@ -63,7 +63,7 @@ class BotPlugin:
                     await request.send(str(e))
                     return
                 request.setArgs(dict(args))
-            await func(self, request)
+            await func(request)
         if typeName not in self.getListener():
             self.getListener()[typeName] = {"typeListener": set(),
                                             "targetListener": dict()}

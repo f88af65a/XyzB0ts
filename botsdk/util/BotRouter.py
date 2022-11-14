@@ -48,15 +48,15 @@ class GeneralRouter(BotRouter):
 
 
 class TypeRouter(BotRouter):
-    async def sendToHandle(self, route, func, request):
+    async def sendToHandle(self, route, request):
         route.sendMessage(
                 "targetHandle",
                 json.dumps(
                     {
                         "code": 0,
                         "data": {
-                            "path": func.__module__,
-                            "handle": func.__name__,
+                            "msgType": 0,
+                            "type": request.getType(),
                             "request": request.getData()
                         }
                     }
@@ -72,11 +72,13 @@ class TypeRouter(BotRouter):
                     pluginsManager: BotPluginsManager,
                     route,
                     request):
+        '''
         handleList = pluginsManager.getHandleByType(request.getType())
         if handleList is None:
             return
         for i in handleList:
-            await self.sendToHandle(route, i, request)
+        '''
+        await self.sendToHandle(route, request)
         debugPrint(
             f"{request.getUuid()}转发至handle",
             fromName="TypeRouter"
@@ -98,6 +100,7 @@ class TargetRouter(BotRouter):
                 {
                     "code": 0,
                     "data": {
+                        "msgType": 1,
                         "target": target,
                         "request": request.getData()
                     }

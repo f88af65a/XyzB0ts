@@ -25,10 +25,7 @@ class plugin(BotPlugin):
         self.api = "http://ip-api.com/json/{}"
 
     async def dns(self, request):
-        '''dns [domain]
-        -d [dns服务器]
-        -t [记录类型]
-        '''
+        '''查询域名记录'''
         args = request.getArgs()
         dnsRequestData = {
             "domain": args["domain"],

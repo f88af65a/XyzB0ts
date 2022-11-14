@@ -24,11 +24,17 @@ class ArgParser:
         self.positionalList = list()
         self.optionalMap = dict()
         self.help = help
-        self.Add("-h", "--help", NoneOpt=True)
+        self.Add(
+            "-h", "--help",
+            NoneOpt=True,
+            required=False,
+            meta="参数",
+            help="查看帮助"
+        )
 
     def Add(self, *args, **kwargs):
         if not len(args):
-            raise BaseException("缺少参数")
+            raise Exception("缺少参数")
         action = Action(*args, **kwargs)
         if not args[0].startswith(self.prev):
             action.SetDest(args[0])
@@ -36,7 +42,7 @@ class ArgParser:
         else:
             for i in action.GetOptionals():
                 if not i.startswith(self.prev):
-                    raise BaseException("Optionals参数缺少-")
+                    raise Exception("Optionals参数缺少-")
                 if i.startswith(self.prev * 2):
                     action.SetDest(i[2:])
                 self.optionalMap[i] = len(self.actionList)
@@ -60,13 +66,13 @@ class ArgParser:
                 arg = args[argMark]
                 if arg.startswith(self.prev):
                     if arg not in self.optionalMap:
-                        raise BaseException(f"{arg}不存在")
+                        raise Exception(f"{arg}不存在")
                     action = self.actionList[self.optionalMap[arg]]
                     argMark += 1
                     continue
                 else:
                     if positionalMark >= len(self.positionalList):
-                        raise BaseException(f"{arg}位置参数过多")
+                        raise Exception(f"{arg}位置参数过多")
                     action = self.actionList[
                             self.positionalList[positionalMark]]
                     positionalMark += 1
@@ -75,14 +81,15 @@ class ArgParser:
             else:
                 arg = args[argMark]
             if arg is None and not action.IsNoneOpt():
-                raise BaseException(f"{action.GetDest()}参数不能为空")
+                raise Exception(f"{action.GetDest()}参数不能为空")
             action(space, arg)
             argMark += 1
             consumeMark = argMark
             usedAction.add(action)
-        for i in self.actionList:
-            if i.GetRequired() and i not in usedAction:
-                raise BaseException(f"缺少参数{i.GetDest()}")
+        if "help" not in space:
+            for i in self.actionList:
+                if i.GetRequired() and i not in usedAction:
+                    raise Exception(f"缺少参数{i.GetDest()}")
         return space
 
     def GetAllHelp(self):

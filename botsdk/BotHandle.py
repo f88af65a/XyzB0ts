@@ -38,13 +38,17 @@ class BotHandle(Module):
         c.subscribe(['targetHandle'])
         self.addToExit(c.close)
         pluginsManager = BotPluginsManager()
+        debugPrint('''插件初始化完成''', fromName="BotHandle")
         while True:
+            # 获取msg
             msg = c.poll(1.0)
             if msg is None:
                 continue
             if msg.error():
                 debugPrint(msg.error())
                 continue
+
+            # 初始化msg
             msg = loads(msg.value())
             if "code" not in msg:
                 debugPrint("MSG中缺少code", fromName="BotRoute")
@@ -55,30 +59,49 @@ class BotHandle(Module):
                 debugPrint("MSG中缺少data", fromName="BotRoute")
                 continue
             msg = msg["data"]
-            try:
-                handle = pluginsManager.getHandleByTarget(msg["target"])
-                if handle is None:
-                    debugPrint(
-                        f'''{msg["target"]}的handle不存在''',
-                        fromName="BotHandle"
-                    )
-                    continue
-            except Exception:
-                printTraceBack()
-                continue
+
+            # 初始化request
             request = msg["request"]
             request = getAttrFromModule(
                     request[0]["botPath"],
                     request[0]["botType"]
                 )(request[0], request[1])
-            debugPrint(f"成功收到消息:{request.getUuid()}", fromName="BotHandle")
-            asyncio.run_coroutine_threadsafe(
-                    self.DoInEventLoop(
-                        handle,
-                        request
-                    ),
-                    self.loop
+            debugPrint(f"收到消息:{request.getUuid()}", fromName="BotHandle")
+
+            # 获取Handle
+            try:
+                handles = self.GetHandleByMessage(
+                        pluginsManager, msg, request
                 )
+                if not handles:
+                    debugPrint(
+                        f"消息:{request.getUuid()}获取Handle失败",
+                        fromName="BotHandle"
+                    )
+            except Exception:
+                printTraceBack()
+                continue
+            # 调用handle
+            debugPrint(f"成功收到消息:{request.getUuid()}", fromName="BotHandle")
+            for i in handles:
+                asyncio.run_coroutine_threadsafe(
+                        self.DoInEventLoop(
+                            i,
+                            request
+                        ),
+                        self.loop
+                    )
+
+    def GetHandleByMessage(self, pluginsManager, msg, request):
+        if msg["msgType"] == 0:
+            return list(pluginsManager.getHandleByType(
+                msg["type"]
+            ))
+        elif msg["msgType"] == 1:
+            return [pluginsManager.getHandleByTarget(
+                request.getType(),
+                msg["target"]
+            )]
 
     async def DoInEventLoop(self, handle, request):
         try:

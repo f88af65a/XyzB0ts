@@ -146,7 +146,7 @@ class BotPluginsManager:
 
     def getHandleByTarget(self, messageType: str, target: str):
         if (re := self.getTarget(messageType, target)) is not None:
-            return re.__self__
+            return self.getPluginByHandle(re)
         return None
 
     def getHandleByType(self, messageType: str):

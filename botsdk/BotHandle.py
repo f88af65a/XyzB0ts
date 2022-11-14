@@ -1,12 +1,13 @@
 import asyncio
-import importlib
 import os
-import time
-from ujson import loads
 import threading
+import time
+
 from confluent_kafka import Consumer
+from ujson import loads
 
 from .Module import Module
+from .util.BotPluginsManager import BotPluginsManager
 from .util.Error import debugPrint, printTraceBack
 from .util.HandlePacket import asyncHandlePacket
 from .util.Tool import getAttrFromModule
@@ -36,6 +37,7 @@ class BotHandle(Module):
         })
         c.subscribe(['targetHandle'])
         self.addToExit(c.close)
+        pluginsManager = BotPluginsManager()
         while True:
             msg = c.poll(1.0)
             if msg is None:
@@ -54,15 +56,13 @@ class BotHandle(Module):
                 continue
             msg = msg["data"]
             try:
-                module = importlib.reload(importlib.import_module(msg["path"]))
-                plugin = getattr(module, "handle")()
-                plugin.onLoad()
-                if not plugin.initBySystem():
+                handle = pluginsManager.getHandleByTarget(msg["target"])
+                if handle is None:
                     debugPrint(
-                            f'''{msg["path"]}.{msg["handle"]}初始化失败''',
-                            fromName="BotHandle")
+                        f'''{msg["target"]}的handle不存在''',
+                        fromName="BotHandle"
+                    )
                     continue
-                handle = getattr(plugin, msg["handle"])
             except Exception:
                 printTraceBack()
                 continue

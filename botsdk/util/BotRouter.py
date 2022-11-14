@@ -91,15 +91,14 @@ class TargetRouter(BotRouter):
              + "".join(["\\" + i for i in getConfig()["commandTarget"]])
              + r"])(\S+)( \S+)*$"))
 
-    async def sendToHandle(self, route, func, request):
+    async def sendToHandle(self, route, target, request):
         route.sendMessage(
             "targetHandle",
             json.dumps(
                 {
                     "code": 0,
                     "data": {
-                        "path": func.__module__,
-                        "handle": func.__name__,
+                        "target": target,
                         "request": request.getData()
                     }
                 }
@@ -164,5 +163,5 @@ class TargetRouter(BotRouter):
             request.setHandleModuleName(
                 pluginsManager.getHandleByTarget(
                     request.getType(), target).__module__)
-            await self.sendToHandle(route, ret, request)
+            await self.sendToHandle(route, target, request)
         return [True, None]

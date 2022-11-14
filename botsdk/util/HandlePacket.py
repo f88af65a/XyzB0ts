@@ -9,19 +9,35 @@ endCallBackTask = []
 
 
 def asyncStartHandleNotify(func, *args, **kwargs):
-    # request = args[0]
-    debugPrint((f'''[{func.__name__}]'''
-                "[START]"
-                f'''{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}'''
-                ))
+    request = args[0]
+    pData = ""
+    try:
+        pData += f"[{request.getTarget()}]"
+    except Exception:
+        pass
+    if hasattr(func, "__name__"):
+        pData += f"[{func.__name__}]"
+    if not pData:
+        pData += "[None]"
+    pData += "[START]"
+    pData += f'''{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}'''
+    debugPrint(pData, fromName="HandlePack")
 
 
 def asyncEndHandleNotify(func, *args, **kwargs):
-    # request = args[0]
-    debugPrint((f'''[{func.__name__}]'''
-                "[END]"
-                f'''{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}'''
-                ))
+    request = args[0]
+    pData = ""
+    try:
+        pData += f"[{request.getTarget()}]"
+    except Exception:
+        pass
+    if hasattr(func, "__name__"):
+        pData += f"[{func.__name__}]"
+    if not pData:
+        pData += "[None]"
+    pData += "[END]"
+    pData += f'''{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}'''
+    debugPrint(pData, fromName="HandlePack")
 
 
 def addToStartCallBack(func):

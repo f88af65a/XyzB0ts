@@ -56,9 +56,16 @@ class BotPlugin:
                     if "help" in args:
                         if args["help"] is None:
                             await request.send(
-                                    f"{targetName} {argparser.GetAllHelp()}")
+                                argparser.GetHelp()
+                                + "\n"
+                                + targetName
+                                + argparser.GetHelpLine()
+                                + "\n"
+                                + argparser.GetAllOptHelp()
+                            )
                         else:
-                            await request.send(argparser.GetHelp(args["help"]))
+                            await request.send(
+                                    argparser.GetOptHelp(args["help"]))
                         return
                 except Exception as e:
                     await request.send(str(e))

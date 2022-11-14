@@ -92,26 +92,13 @@ class ArgParser:
                     raise Exception(f"缺少参数{i.GetDest()}")
         return space
 
-    def GetAllHelp(self):
-        if self.help:
-            ret = f"{self.help}\n"
-        else:
-            ret = ""
-        for i in range(len(self.actionList)):
-            action = self.actionList[i]
-            isOptional = False
-            if action.GetOptionals()[0].startswith("-"):
-                isOptional = True
-            if not action.GetRequired():
-                ret += "["
-            ret += f'''{"/".join(action.GetOptionals())}'''
-            if isOptional:
-                ret += f''' {action.GetMeta()}'''
-            if not action.GetRequired():
-                ret += "]"
-            if i != len(self.actionList):
-                ret += " "
-        ret += "\n"
+    def GetHelp(self):
+        if not self.help:
+            return ""
+        return self.help
+
+    def GetAllOptHelp(self):
+        ret = ""
         for i in range(len(self.actionList)):
             action = self.actionList[i]
             isOptional = False
@@ -129,7 +116,25 @@ class ArgParser:
                 ret += "\n"
         return ret
 
-    def GetHelp(self, destOrOpt):
+    def GetHelpLine(self):
+        ret = ""
+        for i in range(len(self.actionList)):
+            action = self.actionList[i]
+            isOptional = False
+            if action.GetOptionals()[0].startswith("-"):
+                isOptional = True
+            if not action.GetRequired():
+                ret += "["
+            ret += f'''{"/".join(action.GetOptionals())}'''
+            if isOptional:
+                ret += f''' {action.GetMeta()}'''
+            if not action.GetRequired():
+                ret += "]"
+            if i != len(self.actionList):
+                ret += " "
+        return ret
+
+    def GetOptHelp(self, destOrOpt):
         for i in self.actionList:
             isOptional = False
             if i.GetOptionals()[0].startswith("-"):

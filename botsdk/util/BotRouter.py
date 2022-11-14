@@ -135,7 +135,8 @@ class TargetRouter(BotRouter):
         if (ret := pluginsManager.getTarget(
                 request.getType(), target)) is not None:
             # 判断类型是否正确
-            if request.getBot().getBotType() not in ret.__self__.botSet:
+            if (request.getBot().getBotType()
+                    not in pluginsManager.getPluginByHandle(ret).botSet):
                 return [True, None]
             # 权限判断
             if not await permissionCheck(request, target):

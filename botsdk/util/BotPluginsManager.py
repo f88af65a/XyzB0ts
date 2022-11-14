@@ -17,6 +17,8 @@ class BotPluginsManager:
         self.generalList = list()
         # {"targetName"}
         self.targetSet = set()
+        # {handle: plugins} 注:只保存了target的
+        self.handleToPlugin = dict()
         # 初始化
         self.loadAllPlugin()
 
@@ -87,6 +89,11 @@ class BotPluginsManager:
                 handleListener[i]["typeListener"])
             self.listener[i]["targetListener"] |= (
                 handleListener[i]["targetListener"])
+        for i in handleListener:
+            if "targetListener" not in handleListener[i]:
+                continue
+            for j in handleListener[i]["targetListener"].values():
+                self.handleToPlugin[j] = handle
         self.generalList += handle.getGeneralList()
         self.generalList.sort(key=lambda i: i[0])
         self.plugins[handle.getName()] = handle
@@ -158,3 +165,8 @@ class BotPluginsManager:
                 and target in self.getListener()["targetListener"]):
             return self.getListener()["typeListener"][target]
         return []
+
+    def getPluginByHandle(self, handle):
+        if handle in self.handleToPlugin:
+            return self.handleToPlugin[handle]
+        return None

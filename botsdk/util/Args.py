@@ -120,6 +120,7 @@ class ArgParser:
             if isOptional:
                 ret += (
                         f'''{"/".join(action.GetOptionals())} '''
+                        f'''{action.GetMeta()} '''
                         f'''{action.GetHelp()}'''
                 )
             else:
@@ -137,9 +138,10 @@ class ArgParser:
                 if isOptional:
                     return (
                             f'''{"/".join(i.GetOptionals())} '''
-                            f'''{i.GetHelp(destOrOpt)}'''
+                            f'''{i.GetMeta()} '''
+                            f'''{i.GetHelp()}'''
                     )
-                return f'''{i.GetDest()} {i.GetHelp(destOrOpt)}'''
+                return f'''{i.GetDest()} {i.GetHelp()}'''
         raise BaseException(f"{destOrOpt} 不存在")
 
 

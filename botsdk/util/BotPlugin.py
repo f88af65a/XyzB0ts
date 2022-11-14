@@ -58,7 +58,7 @@ class BotPlugin:
                             await request.send(
                                     f"{targetName} {argparser.GetAllHelp()}")
                         else:
-                            await request.send(argparser.GetHelp(args["h"]))
+                            await request.send(argparser.GetHelp(args["help"]))
                         return
                 except Exception as e:
                     await request.send(str(e))

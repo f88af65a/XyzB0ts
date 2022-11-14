@@ -59,6 +59,7 @@ class BotPlugin:
                                 argparser.GetHelp()
                                 + "\n"
                                 + targetName
+                                + " "
                                 + argparser.GetHelpLine()
                                 + "\n"
                                 + argparser.GetAllOptHelp()

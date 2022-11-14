@@ -102,12 +102,12 @@ class ArgParser:
             isOptional = False
             if action.GetOptionals()[0].startswith("-"):
                 isOptional = True
-            if action.GetRequired():
+            if not action.GetRequired():
                 ret += "["
             ret += f'''{"/".join(action.GetOptionals())}'''
             if isOptional:
                 ret += f''' {action.GetMeta()}'''
-            if action.GetRequired():
+            if not action.GetRequired():
                 ret += "]"
             if i != len(self.actionList):
                 ret += " "

@@ -5,7 +5,20 @@ from botsdk.util.BotPlugin import BotPlugin
 class plugin(BotPlugin):
     def onLoad(self):
         self.name = "dns"
-        self.addTarget("GroupMessage", "dns", self.dns)
+        parser = self.addTargetWithArgs("GroupMessage", "dns", self.dns)
+        parser.Add("domain", help="需要查询的域名")
+        parser.Add(
+            "-d", "--dns",
+            meta="DNS地址",
+            help="修改默认使用的dns地址",
+            required=False
+        )
+        parser.Add(
+            "-t", "--target",
+            meta="记录类型",
+            help="记录类型,默认为A记录",
+            required=False
+        )
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.canDetach = True
@@ -16,24 +29,16 @@ class plugin(BotPlugin):
         -d [dns服务器]
         -t [记录类型]
         '''
-        requestData = request.getFirstTextSplit()
-        if len(requestData) == 1:
-            await request.sendMessage(self.getIpInfo.__doc__)
-            return
+        args = request.getArgs()
         dnsRequestData = {
-            "domain": requestData[1],
+            "domain": args["domain"],
             "d": ["223.5.5.5", "1.1.1.1", "8.8.8.8"],
             "t": "A"
         }
-        for i in range(2, len(requestData)):
-            if (len(requestData[i]) > 1
-                    and requestData[i][0] == "-"
-                    and i + 1 < len(requestData)):
-                key = requestData[i][1:]
-                if key == "d":
-                    dnsRequestData["d"] = requestData[i+1].split(",")
-                elif key == "t":
-                    dnsRequestData["t"] = requestData[i+1]
+        if "target" in args:
+            dnsRequestData["d"] = args["target"].split(",")
+        if "dns" in args:
+            dnsRequestData["t"] = args["dns"]
         try:
             resolver = dns.resolver.Resolver()
             resolver.nameservers = dnsRequestData["d"]
@@ -51,7 +56,6 @@ class plugin(BotPlugin):
             await request.sendMessage(str(e))
             return
         await request.sendMessage(responsePrint)
-
 
 
 def handle(*args, **kwargs):

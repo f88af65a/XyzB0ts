@@ -142,3 +142,9 @@ class Request(dict):
 
     def isMessage(self):
         pass
+
+    def getArgs(self):
+        return self.data["args"]
+
+    def setArgs(self, args):
+        self.data["args"] = args

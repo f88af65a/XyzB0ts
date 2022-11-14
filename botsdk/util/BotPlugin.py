@@ -3,6 +3,7 @@ import uuid
 
 import ujson as json
 
+from .Args import ArgParser
 from .Error import printTraceBack
 
 
@@ -43,6 +44,31 @@ class BotPlugin:
             self.getListener()[typeName] = {"typeListener": set(),
                                             "targetListener": dict()}
         self.getListener()[typeName]["targetListener"][targetName] = func
+
+    def addTargetWithArgs(self, typeName: str, targetName: str, func):
+        argparser = ArgParser(help=func.__doc__)
+
+        async def forward(self, request):
+            args = request.getFirstTextSplit()
+            if args is not None:
+                try:
+                    args = argparser.Parse(args)
+                    if "h" in args:
+                        if args["h"] is None:
+                            await request.send(argparser.GetAllHelp())
+                        else:
+                            await request.send(argparser.GetHelp(args["h"]))
+                        return
+                except Exception as e:
+                    await request.send(str(e))
+                    return
+                request.setArgs(dict(args))
+            await func(self, request)
+        if typeName not in self.getListener():
+            self.getListener()[typeName] = {"typeListener": set(),
+                                            "targetListener": dict()}
+        self.getListener()[typeName]["targetListener"][targetName] = forward
+        return argparser
 
     def addGeneral(self, priority, func):
         self.getGeneralList().append((priority, func))

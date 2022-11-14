@@ -65,7 +65,7 @@ class BotHandle(Module):
                 handle = getattr(plugin, msg["handle"])
             except Exception:
                 printTraceBack()
-                return
+                continue
             request = msg["request"]
             request = getAttrFromModule(
                     request[0]["botPath"],

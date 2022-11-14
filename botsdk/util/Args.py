@@ -133,13 +133,13 @@ class ArgParser:
             isOptional = False
             if i.GetOptionals()[0].startswith("-"):
                 isOptional = True
-            if (i.GetDest() == destOrOpt or destOrOpt in i.GetOptionals):
+            if (i.GetDest() == destOrOpt or destOrOpt in i.GetOptionals()):
                 if isOptional:
                     return (
                             f'''{"/".join(i.GetOptionals())} '''
-                            f'''{i.GetHelp()}'''
+                            f'''{i.GetHelp(destOrOpt)}'''
                     )
-                return f'''{i.GetDest()} {i.GetHelp()}'''
+                return f'''{i.GetDest()} {i.GetHelp(destOrOpt)}'''
         raise BaseException(f"{destOrOpt} 不存在")
 
 

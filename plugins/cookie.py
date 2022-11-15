@@ -1,7 +1,7 @@
 import ujson as json
 
 from botsdk.util.BotPlugin import BotPlugin
-from botsdk.util.Cookie import getCookie, setCookie
+from botsdk.util.Cookie import AsyncGetCookie, AsyncSetCookie
 
 
 class plugin(BotPlugin):
@@ -39,16 +39,16 @@ class plugin(BotPlugin):
         if len(data) < 2:
             await request.sendMessage(self.adminCookieControl.__doc__)
         elif len(data) == 2:
-            await request.sendMessage(str(getCookie(data[1])))
+            await request.sendMessage(str(await AsyncSetCookie(data[1])))
         elif len(data) == 3:
             try:
                 cookieDict = json.loads(data[2])
                 cookie = await request.AsyncGetCookie()
                 for i in cookie:
                     if i in cookieDict:
-                        setCookie(data[1], i, cookieDict[i])
+                        await AsyncSetCookie(data[1], i, cookieDict[i])
                     else:
-                        setCookie(data[1], i)
+                        await AsyncSetCookie(data[1], i)
                 await request.sendMessage("修改完成")
             except Exception:
                 await request.sendMessage("参数错误")
@@ -63,7 +63,7 @@ class plugin(BotPlugin):
                     await request.sendMessage("参数错误")
                     return
             try:
-                setCookie(data[1], data[2], value)
+                await AsyncSetCookie(data[1], data[2], value)
                 await request.sendMessage("修改完成")
             except Exception:
                 await request.sendMessage("参数错误")
@@ -74,9 +74,9 @@ class plugin(BotPlugin):
         if len(data) != 3:
             await request.sendMessage(self.syncCookie.__doc__)
             return
-        SrcCookie = getCookie(data[2])
+        SrcCookie = await AsyncGetCookie(data[2])
         for i in SrcCookie:
-            setCookie(data[1], i, SrcCookie[i])
+            await AsyncSetCookie(data[1], i, SrcCookie[i])
         await request.sendMessage("同步完成")
 
 

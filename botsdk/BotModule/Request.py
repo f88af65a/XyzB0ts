@@ -33,9 +33,14 @@ class Request(dict):
         else:
             return getCookie(id, target)
 
-    def setCookie(self, target: str, cookie, id=None):
+    def setCookie(self, target: str, cookie=None, id=None):
         if "cookie" in self.data and id is None:
             self.data["cookie"][target] = cookie
+        if cookie is None:
+            try:
+                del self.data["cookie"][target]
+            except Exception:
+                pass
         setCookie(id if id else self.getId(), target, cookie)
 
     async def AsyncGetCookie(self, target: str = None, id=None):

@@ -41,7 +41,7 @@ class plugin(BotPlugin):
                     cookie[data[2][i]].append(data[3])
         elif data[1] == "remove":
             for i in range(len(data[2])):
-                if data[3] not in cookie[data[2][i]]:
+                if data[3] in cookie[data[2][i]]:
                     cookie[data[2][i]].remove(data[3])
         else:
             await request.sendMessage("你干啥呢")

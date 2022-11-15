@@ -72,7 +72,7 @@ class plugin(BotPlugin):
                 if ll == rr and ll != 0:
                     try:
                         parame = await self.parameterParse(
-                                s[left + 1: i], d, cache
+                            s[left + 1: i], d, cache
                         )
                     except Exception as e:
                         parame = str(e)

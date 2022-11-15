@@ -107,9 +107,12 @@ class AioRedisCookie(Cookie):
 
     # 暂时无返回值
     @timeTest
-    async def setCookie(self, id: str, key: str, value):
-        await self.sql.hset(id, key, dumps(value))
-        await self.sql.save()
+    async def setCookie(self, id: str, key: str, value=None):
+        if value is None:
+            await self.sql.hdel(id, key)
+        else:
+            await self.sql.hset(id, key, dumps(value))
+            await self.sql.save()
 
 
 cookieDriver = None
@@ -128,7 +131,7 @@ def getCookie(id: str, key: str = None):
     return getCookieDriver().getCookie(id, key)
 
 
-def setCookie(id: str, key: str, value):
+def setCookie(id: str, key: str, value=None):
     getCookieDriver().setCookie(id, key, value)
 
 

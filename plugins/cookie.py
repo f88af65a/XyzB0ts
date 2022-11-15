@@ -43,14 +43,27 @@ class plugin(BotPlugin):
         elif len(data) == 3:
             try:
                 cookieDict = json.loads(data[2])
-                for i in cookieDict:
-                    setCookie(data[1], i, cookieDict[i])
+                cookie = await request.AsyncGetCookie()
+                for i in cookie:
+                    if i in cookieDict:
+                        setCookie(data[1], i, cookieDict[i])
+                    else:
+                        setCookie(data[1], i)
                 await request.sendMessage("修改完成")
             except Exception:
                 await request.sendMessage("参数错误")
         elif len(data) == 4:
+            value = None
+            if data[3] == "/":
+                value = None
+            else:
+                try:
+                    value = json.loads(data[3])
+                except Exception:
+                    await request.sendMessage("参数错误")
+                    return
             try:
-                setCookie(data[1], data[2], json.loads(data[3]))
+                setCookie(data[1], data[2], value)
                 await request.sendMessage("修改完成")
             except Exception:
                 await request.sendMessage("参数错误")

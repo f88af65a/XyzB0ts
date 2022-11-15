@@ -17,9 +17,9 @@ class plugin(BotPlugin):
 
     async def delMemberJoin(self, request):
         '''回复delMemberJoin来设置加群消息'''
-        cookie = request.getCookie("memberJoin")
+        cookie = await request.AsyncGetCookie("memberJoin")
         cookie = ""
-        request.setCookie("memberJoin", cookie)
+        await request.AsyncSetCookie("memberJoin", cookie)
         await request.sendMessage("设置成功")
 
     async def setMemberJoin(self, request):
@@ -46,21 +46,21 @@ class plugin(BotPlugin):
             if not isQuote:
                 await request.sendMessage(self.setMemberJoin.__doc__)
                 return
-            cookie = request.getCookie("memberJoin")
+            cookie = await request.AsyncGetCookie("memberJoin")
             cookie = json.dumps(qaMessageChain)
-            request.setCookie("memberJoin", cookie)
+            await request.AsyncSetCookie("memberJoin", cookie)
             await request.sendMessage("设置成功")
 
     async def memberJoin(self, request):
         id = (request.getBot().getBotName()
               + ":"
               + request.groupFormat(request["member"]["group"]["id"]))
-        cookie = request.getCookie(
+        cookie = await request.AsyncGetCookie(
             "memberJoin", id
             )
         if not cookie:
             return
-        lastTime = request.getCookie(
+        lastTime = await request.AsyncGetCookie(
             "memberJoinLastTime", id
             )
         if lastTime is None:
@@ -69,7 +69,7 @@ class plugin(BotPlugin):
             lastTime = int(lastTime)
         if int(time.time()) - lastTime < 30:
             return
-        request.setCookie("memberJoinLastTime", str(int(time.time())), id)
+        await request.AsyncSetCookie("memberJoinLastTime", str(int(time.time())), id)
         await request.sendMessage(
             json.loads(cookie), id=id,
             messageType="GroupMessage"

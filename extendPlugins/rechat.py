@@ -12,7 +12,7 @@ class plugin(BotPlugin):
 
     async def rechat(self, request):
         bot = request.getBot()
-        cookie = request.getCookie("rechatState")
+        cookie = await request.AsyncGetCookie("rechatState")
         if cookie is not None and cookie["rechatState"] == "开启":
             chain = []
             groupid = request.getGroupId()
@@ -34,7 +34,7 @@ class plugin(BotPlugin):
         if len(data) < 2:
             await request.sendMessage(self.fuduji.__doc__)
             return
-        cookie = request.getCookie("rechatState")
+        cookie = await request.AsyncGetCookie("rechatState")
         if cookie is None:
             cookie = {"rechatState": "关闭"}
         oldState = cookie["rechatState"]

@@ -53,7 +53,7 @@ class handle(BotPlugin):
         msg = request.getFirstText()
         if not msg or not request.isMessage():
             return
-        cookie = request.getCookie("q&a")
+        cookie = await request.AsyncGetCookie("q&a")
         if cookie is None:
             return
         keyTree = self.makeTreeByKey(
@@ -75,7 +75,7 @@ class handle(BotPlugin):
             return
         if len(data) > 4:
             data = data[0:3] + [" ".join(data[4:])]
-        cookie = request.getCookie("q&a")
+        cookie = await request.AsyncGetCookie("q&a")
         if cookie is None:
             cookie = dict()
         if len(data) == 2:

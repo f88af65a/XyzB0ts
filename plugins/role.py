@@ -29,7 +29,7 @@ class plugin(BotPlugin):
         data[2] = data[2].split(",")
         for i in range(len(data[2])):
             data[2][i] = request.userFormat(data[2][i])
-        cookie = request.getCookie("roles", localId)
+        cookie = await request.AsyncGetCookie("roles", localId)
         if cookie is None:
             cookie = dict()
         for i in range(len(data[2])):
@@ -61,7 +61,7 @@ class plugin(BotPlugin):
         localId = request.getId()
         if request.isSingle():
             localId = request.getBot().getBotName()
-        cookie = request.getCookie("permission", localId)
+        cookie = await request.AsyncGetCookie("permission", localId)
         if cookie is None:
             cookie = dict()
         if data[2] not in cookie:

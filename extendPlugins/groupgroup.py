@@ -10,7 +10,7 @@ class plugin(BotPlugin):
         self.canDetach = True
 
     async def sendToAllGroup(self, request, msg):
-        group = request.getCookie("group", id="group")
+        group = await request.AsyncGetCookie("group", id="group")
         if group is None:
             group = {}
         for i in group:
@@ -29,7 +29,7 @@ class plugin(BotPlugin):
         if len(data) != 3:
             await request.sendMessage(self.group.__doc__)
             return
-        cookie = request.getCookie("group", id="group")
+        cookie = await request.AsyncGetCookie("group", id="group")
         if cookie is None:
             cookie = {}
         if data[1] == "add":

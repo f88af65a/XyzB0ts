@@ -47,7 +47,7 @@ class plugin(BotPlugin):
             if len(data[i]) != 2 or data[i][0] == "":
                 await request.sendMessage("格式有误")
                 return
-        cookie = request.getCookie("format")
+        cookie = await request.AsyncGetCookie("format")
         if cookie is None:
             cookie = {}
         for i in data:

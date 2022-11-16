@@ -101,7 +101,7 @@ class plugin(BotPlugin):
                 and time.time() < limit[uid]):
             return
         limit[uid] = time.time() + 30
-        request.setCookie("wallLimit", limit, id="wall")
+        await request.AsyncSetCookie("wallLimit", limit, id="wall")
         sqlId = self.sql.incr("msgId")
         sendData = request.getFirstText()
         fixName = self.getFix(int(request.getUserId().split(":")[-1]))
@@ -139,7 +139,7 @@ class plugin(BotPlugin):
         if data[1] == "add":
             if (fmtData := request.userFormat(data[2])) not in cookie:
                 cookie.append(fmtData)
-                request.setCookie("wallKick", cookie, id="wall")
+                await request.AsyncSetCookie("wallKick", cookie, id="wall")
                 bot = request.getBot()
                 for i in group:
                     await bot.kick(

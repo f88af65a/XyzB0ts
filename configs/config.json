@@ -7,8 +7,6 @@
 	"botPath": "bot/",
 	"sqlPath": "botsql.sql",
 	"localFilePath": "localFile/",
-	"workProcess": 4,
-	"workThread": 4,
 	"debugPrint": 5,
 	"commandTarget": [
 		"/",

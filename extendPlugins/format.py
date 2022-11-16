@@ -56,7 +56,7 @@ class plugin(BotPlugin):
                     del cookie[i[0]]
             else:
                 cookie[i[0]] = i[1]
-        request.setCookie("format", cookie)
+        await request.AsyncSetCookie("format", cookie)
         await request.sendMessage("修改完成")
 
     async def say(self, request):

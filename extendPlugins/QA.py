@@ -87,7 +87,7 @@ class handle(BotPlugin):
             if data[1] == "del":
                 if data[2] in cookie:
                     del cookie[data[2]]
-                    request.setCookie("q&a", cookie)
+                    await request.AsyncSetCookie("q&a", cookie)
                     await request.sendMessage("删除成功")
                     return
                 await request.sendMessage("关键字不存在")
@@ -111,14 +111,14 @@ class handle(BotPlugin):
                                 if "url" in qaMessageChain[-1]:
                                     del qaMessageChain[-1]["url"]
                 cookie[data[2]] = json.dumps(qaMessageChain)
-                request.setCookie("q&a", cookie)
+                await request.AsyncSetCookie("q&a", cookie)
                 await request.sendMessage("设置成功")
         elif len(data) == 4 and data[1] == "set":
             if len(data[2]) > 16 or len(data[2]) < 2:
                 await request.send("关键字最短为2字,最长为16字")
                 return
             cookie[data[2]] = data[3]
-            request.setCookie("q&a", cookie)
+            await request.AsyncSetCookie("q&a", cookie)
             await request.sendMessage("设置成功")
         else:
             await request.sendMessage(self.qaSet.__doc__)

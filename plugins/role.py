@@ -46,7 +46,7 @@ class plugin(BotPlugin):
         else:
             await request.sendMessage("你干啥呢")
             return
-        request.setCookie("roles", cookie, localId)
+        await request.AsyncSetCookie("roles", cookie, localId)
         await request.sendMessage("修改完成")
 
     async def permission(self, request):
@@ -75,7 +75,7 @@ class plugin(BotPlugin):
         else:
             await request.sendMessage("你干啥呢")
             return
-        request.setCookie("permission", cookie, localId)
+        await request.AsyncSetCookie("permission", cookie, localId)
         await request.sendMessage("修改完成")
 
 

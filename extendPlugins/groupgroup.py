@@ -37,14 +37,14 @@ class plugin(BotPlugin):
                 cookie[data[2]] = []
             if request.getId() not in cookie[data[2]]:
                 cookie[data[2]].append(request.getId())
-                request.setCookie("group", cookie, id="group")
+                await request.AsyncSetCookie("group", cookie, id="group")
         elif data[1] == "del":
             if request.getId() in cookie[data[2]]:
                 cookie[data[2]].remove(request.getId())
-                request.setCookie("group", cookie, id="group")
+                await request.AsyncSetCookie("group", cookie, id="group")
             if len(cookie[data[2]]) == 0:
                 del cookie[data[2]]
-                request.setCookie("group", cookie, id="group")
+                await request.AsyncSetCookie("group", cookie, id="group")
         else:
             await request.sendMessage("?")
             return

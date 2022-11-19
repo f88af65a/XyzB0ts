@@ -39,7 +39,7 @@ class plugin(BotPlugin):
         if len(data) < 2:
             await request.sendMessage(self.adminCookieControl.__doc__)
         elif len(data) == 2:
-            await request.sendMessage(str(await AsyncSetCookie(data[1])))
+            await request.sendMessage(str(await request.AsyncGetCookie()))
         elif len(data) == 3:
             try:
                 cookieDict = json.loads(data[2])

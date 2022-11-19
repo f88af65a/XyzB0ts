@@ -44,7 +44,7 @@ class plugin(BotPlugin):
             return
         if oldState != newState:
             cookie["rechatState"] = newState
-            request.setCookie("rechatState", cookie)
+            await request.AsyncSetCookie("rechatState", cookie)
         await request.sendMessage("修改完成")
 
 

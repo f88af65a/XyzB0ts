@@ -36,7 +36,7 @@
 
 #### 关键字判定
  对关键字的判断是一个消息中首个`Plain`中首个`text` `split(" ")`后除去`控制字段`的形似`/命令 参数 参数...`的格式  
- 现在一个完整的命令格式是`控制字段 /命令 参数 参数...`  
+ 现在一个完整的命令格式是`[控制字段]/命令 参数 参数...`  
  具体判定方式请参考实现
 
 
@@ -75,23 +75,19 @@
 
 # 数据持久化
  实现见[botsdk.util.Cookie](/botsdk/util/Cookie.py)  
- Cookie封装了操作SQLite3的方式保存经过base64编码的Json用于保存数据
 
 
 ### 获取cookie
- 推荐的使用方式为getCookie(request.getId(), key)
- 其中request.getId()对群消息返回值为"Group:群号",对好友消息返回值为"User:Q号"
+ 推荐的使用方式为request.getCookie()
 
 
 ### 设置cookie
- 推荐的使用方式为setCookie(request.getId(), key, value)
- 修改方式为setCookieByDict(groupid, cookie)或setCookie(groupid, cookie)  
+ 推荐的使用方式为request.setCookie()
 
 
 # 权限系统
  实现见[botsdk.util.Permission](/botsdk/util/Permission.py)  
- 权限管理插件可以参考plugins.permission  
- 内置权限共有系统权限与群内权限两种，可能会做好友消息的权限
+ 权限管理插件可以参考plugins.permission
 
 
 ### 权限

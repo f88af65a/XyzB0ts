@@ -151,7 +151,7 @@ class plugin(BotPlugin):
         elif data[1] == "del":
             if (fmtData := request.userFormat(data[2])) in cookie:
                 cookie.remove(fmtData)
-                request.setCookie("wallKick", cookie, id="wall")
+                await request.AsyncSetCookie("wallKick", cookie, id="wall")
         else:
             await request.sendMessage("错误的操作")
             return
@@ -183,7 +183,7 @@ class plugin(BotPlugin):
             cookie = {}
         uid = request.userFormat(data[1])
         cookie[uid] = time.time() + int(data[2])
-        request.setCookie("wallLimit", cookie, id="wall")
+        await request.AsyncSetCookie("wallLimit", cookie, id="wall")
         await self.sendToAllGroup(
             request,
             f'''{self.getFix(int(data[1]))}被禁言了一段时间'''
@@ -202,11 +202,11 @@ class plugin(BotPlugin):
         if data[1] == "add":
             if (fmtData := request.groupFormat(data[2])) not in cookie:
                 cookie.append(fmtData)
-                request.setCookie("wallGroup", cookie, id="wall")
+                await request.AsyncSetCookie("wallGroup", cookie, id="wall")
         elif data[1] == "del":
             if (fmtData := request.groupFormat(data[2])) in cookie:
                 cookie.remove(fmtData)
-                request.setCookie("wallGroup", cookie, id="wall")
+                await request.AsyncSetCookie("wallGroup", cookie, id="wall")
         await request.sendMessage("修改完成")
 
     async def get(self, request):

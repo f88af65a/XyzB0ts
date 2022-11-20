@@ -7,6 +7,8 @@ class plugin(BotPlugin):
         self.name = "fmttime"
         parser = self.addTargetWithArgs("GroupMessage", "time", self.fmttime)
         parser.Add("time", help="时间戳")
+        parser = self.addTargetWithArgs("GROUP:9", "time", self.fmttime)
+        parser.Add("time", help="时间戳")
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.canDetach = True

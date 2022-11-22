@@ -60,6 +60,12 @@ class Request(dict):
             self.data["cookie"][target] = cookie
         await AsyncSetCookie(id if id else self.getId(), target, cookie)
 
+    def setPluginManager(self, manager):
+        self.pluginManager = manager
+
+    def getPluginManager(self):
+        return self.pluginManager
+
     def setHandleModuleName(self, name):
         self.data["handleModuleName"] = name
 

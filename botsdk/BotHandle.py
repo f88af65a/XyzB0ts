@@ -83,6 +83,7 @@ class BotHandle(Module):
                 continue
             # 调用handle
             debugPrint(f"成功收到消息:{request.getUuid()}", fromName="BotHandle")
+            request.setPluginManager(pluginsManager)
             for i in handles:
                 asyncio.run_coroutine_threadsafe(
                         self.DoInEventLoop(

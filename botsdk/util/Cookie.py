@@ -72,7 +72,7 @@ class RedisCookie(Cookie):
             self.sql.hdel(id, key)
         else:
             self.sql.hset(id, key, dumps(value))
-            self.sql.bgsave()
+            self.sql.save()
 
 
 class AioRedisCookie(Cookie):
@@ -115,7 +115,7 @@ class AioRedisCookie(Cookie):
             await self.sql.hdel(id, key)
         else:
             await self.sql.hset(id, key, dumps(value))
-            await self.sql.bgsave()
+            await self.sql.save()
 
 
 cookieDriver = None

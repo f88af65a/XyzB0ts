@@ -22,7 +22,7 @@ class plugin(BotPlugin):
                     "%Y-%m-%d %H:%M:%S",
                     time.localtime(int(args["time"])))
                 )
-        except Exception as e:
+        except Exception:
             await request.send("输入的时间有误")
 
 

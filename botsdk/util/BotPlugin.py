@@ -76,6 +76,7 @@ class BotPlugin:
         if typeName not in self.getListener():
             self.getListener()[typeName] = {"typeListener": set(),
                                             "targetListener": dict()}
+        forward.__doc__ = func.__doc__
         self.getListener()[typeName]["targetListener"][targetName] = forward
         return argparser
 

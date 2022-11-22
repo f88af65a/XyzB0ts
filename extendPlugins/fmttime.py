@@ -14,7 +14,7 @@ class plugin(BotPlugin):
         self.canDetach = True
 
     async def fmttime(self, request):
-        '''格式化时间'''
+        '''time [时间戳] #格式化时间'''
         args = request.getArgs()
         try:
             await request.send(

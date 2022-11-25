@@ -15,8 +15,8 @@ class BotPluginsManager:
         self.listener = dict()
         # [(优先级,函数)]
         self.generalList = list()
-        # {"targetName"}
-        self.targetSet = set()
+        # {type:{"targetName"}}
+        self.targetSet = dict()
         # {handle: plugins} 注:只保存了target的
         self.handleToPlugin = dict()
         # 初始化
@@ -68,11 +68,11 @@ class BotPluginsManager:
         # 检查target是否重复
         handleListener = handle.getListener()
         for i in handleListener:
-            if "targetListener" not in handleListener[i]:
+            if ("targetListener" not in handleListener[i]
+                    or i not in self.targetSet):
                 continue
-            for j in handleListener[i]:
-                if (i in self.getListener()
-                        and j in self.getListener()[i]["targetListener"]):
+            for j in handleListener[i]["targetListener"].keys():
+                if j in self.targetSet[i]:
                     debugPrint(
                             f"插件{handle.getName()} 类型{i}中使用了相同的target {j}")
                     return False
@@ -94,6 +94,13 @@ class BotPluginsManager:
                 continue
             for j in handleListener[i]["targetListener"].values():
                 self.handleToPlugin[j] = handle
+        for i in handleListener:
+            if "targetListener" not in handleListener[i]:
+                continue
+            if i not in self.targetSet:
+                self.targetSet[i] = set()
+            for j in handleListener[i]["targetListener"].keys():
+                self.targetSet[i].add(j)
         self.generalList += handle.getGeneralList()
         self.generalList.sort(key=lambda i: i[0])
         self.plugins[handle.getName()] = handle
@@ -170,3 +177,32 @@ class BotPluginsManager:
         if handle in self.handleToPlugin:
             return self.handleToPlugin[handle]
         return None
+
+    def allTargetEditDistance(self, requestType, target):
+        def minDistance(word1: str, word2: str) -> int:
+            # https://leetcode.cn/problems/edit-distance/solution/bian-ji-ju-chi-by-leetcode-solution/
+            n = len(word1)
+            m = len(word2)
+            if n * m == 0:
+                return n + m
+            D = [[0] * (m + 1) for _ in range(n + 1)]
+            for i in range(n + 1):
+                D[i][0] = i
+            for j in range(m + 1):
+                D[0][j] = j
+            for i in range(1, n + 1):
+                for j in range(1, m + 1):
+                    left = D[i - 1][j] + 1
+                    down = D[i][j - 1] + 1
+                    left_down = D[i - 1][j - 1] 
+                    if word1[i - 1] != word2[j - 1]:
+                        left_down += 1
+                    D[i][j] = min(left, down, left_down)
+            return D[n][m]
+        ret = []
+        if requestType not in self.targetSet:
+            return ret
+        for i in self.targetSet[requestType]:
+            ret.append(minDistance(target, i))
+        ret.sort(key=lambda x: x[0])
+        return ret

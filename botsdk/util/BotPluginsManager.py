@@ -194,7 +194,7 @@ class BotPluginsManager:
                 for j in range(1, m + 1):
                     left = D[i - 1][j] + 1
                     down = D[i][j - 1] + 1
-                    left_down = D[i - 1][j - 1] 
+                    left_down = D[i - 1][j - 1]
                     if word1[i - 1] != word2[j - 1]:
                         left_down += 1
                     D[i][j] = min(left, down, left_down)

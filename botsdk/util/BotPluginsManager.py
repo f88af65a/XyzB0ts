@@ -203,6 +203,6 @@ class BotPluginsManager:
         if requestType not in self.targetSet:
             return ret
         for i in self.targetSet[requestType]:
-            ret.append(minDistance(target, i))
+            ret.append([minDistance(target, i), i])
         ret.sort(key=lambda x: x[0])
         return ret

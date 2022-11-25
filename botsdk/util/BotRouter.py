@@ -172,12 +172,12 @@ class TargetRouter(BotRouter):
                 request.getType(), target)
             if ed:
                 minEd = ed[0][0]
-                if minEd and minEd < len(target):
+                if minEd and minEd < 3 and minEd < len(target):
                     printStr = "你需要的是不是:\n"
                     for i in range(len(ed)):
                         if ed[i][0] != minEd:
                             break
                         else:
                             printStr += f"{ed[i][1]}\n"
-                    request.send(printStr[:-1])
+                    await request.send(printStr[:-1])
         return [True, None]

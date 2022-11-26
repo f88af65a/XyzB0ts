@@ -2,7 +2,7 @@ import asyncio
 import re
 
 import ujson as json
-
+from thefuzz import fuzz
 from .BotPluginsManager import BotPluginsManager
 from .Error import asyncTraceBack, debugPrint, printTraceBack
 from .JsonConfig import getConfig
@@ -72,12 +72,6 @@ class TypeRouter(BotRouter):
                     pluginsManager: BotPluginsManager,
                     route,
                     request):
-        '''
-        handleList = pluginsManager.getHandleByType(request.getType())
-        if handleList is None:
-            return
-        for i in handleList:
-        '''
         await self.sendToHandle(route, request)
         debugPrint(
             f"{request.getUuid()}转发至handle",
@@ -168,16 +162,12 @@ class TargetRouter(BotRouter):
                     request.getType(), target).__module__)
             await self.sendToHandle(route, target, request)
         else:
-            ed = pluginsManager.allTargetEditDistance(
-                request.getType(), target)
-            if ed:
-                minEd = ed[0][0]
-                if minEd and minEd < 3 and minEd < len(target):
-                    printStr = "你需要的是不是:\n"
-                    for i in range(len(ed)):
-                        if ed[i][0] != minEd:
-                            break
-                        else:
-                            printStr += f"{ed[i][1]}\n"
-                    await request.send(printStr[:-1])
+            targets = pluginsManager.getTargetByType(request.getType(), target)
+            if targets:
+                helpTargets = []
+                for i in range(len(targets)):
+                    if fuzz.ratio(targets[i], target) >= 60:
+                        helpTargets.append(targets[i])
+                if helpTargets:
+                    await request.send("TIPS:\n" + "\n".join(helpTargets))
         return [True, None]

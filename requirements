@@ -6,3 +6,6 @@ ujson
 pillow
 dnspython
 jsonpath
+art
+thefuzz
+python-Levenshtein

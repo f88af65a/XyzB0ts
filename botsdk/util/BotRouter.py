@@ -162,7 +162,7 @@ class TargetRouter(BotRouter):
                     request.getType(), target).__module__)
             await self.sendToHandle(route, target, request)
         else:
-            targets = pluginsManager.getTargetByType(request.getType(), target)
+            targets = pluginsManager.getTargetByType(request.getType())
             if targets:
                 helpTargets = []
                 for i in range(len(targets)):

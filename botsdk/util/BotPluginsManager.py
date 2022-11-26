@@ -179,4 +179,6 @@ class BotPluginsManager:
         return None
 
     def getTargetByType(self, requestType):
-        return self.targetSet.get(requestType, [])
+        if requestType in self.targetSet:
+            return list(self.targetSet.get(requestType))
+        return []

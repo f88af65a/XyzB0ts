@@ -183,7 +183,7 @@ class MiraiBot(Bot):
     async def messageFromId(self, messageId: int, targetId: int):
         return await self.adapter.messageFromId(
             sessionKey=self.sessionKey,
-            id=messageId,
+            messageId=messageId,
             target=targetId
         )
 

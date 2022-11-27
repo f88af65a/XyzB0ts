@@ -113,7 +113,7 @@
             "method": "get",
             "parameter": {
                 "sessionKey": "str",
-                "id": "str",
+                "messageId": "int",
                 "target": "int"
             }
         },

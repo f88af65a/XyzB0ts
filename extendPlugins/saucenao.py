@@ -31,7 +31,10 @@ class plugin(BotPlugin):
             if i["type"] == "Quote":
                 bot = request.getBot()
                 quoteMessageId = i["id"]
-                quoteMessageChain = await bot.messageFromId(quoteMessageId)
+                quoteMessageChain = await bot.messageFromId(
+                    quoteMessageId,
+                    request.getGroupId()
+                    )
                 if quoteMessageChain["code"] != 0:
                     await request.sendMessage("消息不在缓存中")
                     return

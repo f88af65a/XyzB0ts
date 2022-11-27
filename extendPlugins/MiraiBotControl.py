@@ -92,7 +92,10 @@ class plugin(BotPlugin):
                 await request.sendMessage(self.chatWithGroup.__doc__)
                 return
             bot = request.getBot()
-            quoteMessageChain = await bot.messageFromId(message[1]["id"])
+            quoteMessageChain = await bot.messageFromId(
+                message[1]["id"],
+                request.getGroupId()
+                )
             if quoteMessageChain["code"] != 0:
                 await request.sendMessage("消息不在缓存中")
                 return
@@ -122,7 +125,10 @@ class plugin(BotPlugin):
                 await request.sendMessage(self.chatWithGroup.__doc__)
                 return
             bot = request.getBot()
-            quoteMessageChain = await bot.messageFromId(message[1]["id"])
+            quoteMessageChain = await bot.messageFromId(
+                message[1]["id"],
+                request.getGroupId()
+                )
             if quoteMessageChain["code"] != 0:
                 await request.sendMessage("消息不在缓存中")
                 return

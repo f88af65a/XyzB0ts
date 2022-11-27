@@ -34,7 +34,9 @@ class plugin(BotPlugin):
                     bot = request.getBot()
                     quoteMessageId = i["id"]
                     quoteMessageChain = await bot.messageFromId(
-                        quoteMessageId)
+                        quoteMessageId,
+                        request.getGroupId()
+                        )
                     quoteMessageChain = (
                         quoteMessageChain["data"]["messageChain"][1:])
                     qaMessageChain = []
@@ -69,7 +71,8 @@ class plugin(BotPlugin):
             lastTime = int(lastTime)
         if int(time.time()) - lastTime < 30:
             return
-        await request.AsyncSetCookie("memberJoinLastTime", str(int(time.time())), id)
+        await request.AsyncSetCookie(
+            "memberJoinLastTime", str(int(time.time())), id)
         await request.sendMessage(
             json.loads(cookie), id=id,
             messageType="GroupMessage"

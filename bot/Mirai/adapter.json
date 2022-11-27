@@ -113,7 +113,8 @@
             "method": "get",
             "parameter": {
                 "sessionKey": "str",
-                "id": "str"
+                "id": "str",
+                "target": "int"
             }
         },
         "sendNudge": {

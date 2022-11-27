@@ -180,10 +180,11 @@ class MiraiBot(Bot):
             memberId=memberId
         )
 
-    async def messageFromId(self, messageId: int):
+    async def messageFromId(self, messageId: int, targetId: int):
         return await self.adapter.messageFromId(
             sessionKey=self.sessionKey,
-            id=messageId
+            id=messageId,
+            target=targetId
         )
 
     async def kick(self, target: int, memberId: int, msg: str = ""):

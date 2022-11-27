@@ -101,7 +101,9 @@ class handle(BotPlugin):
                         bot = request.getBot()
                         quoteMessageId = i["id"]
                         quoteMessageChain = await bot.messageFromId(
-                            quoteMessageId)
+                            quoteMessageId,
+                            request.getGroupId()
+                            )
                         quoteMessageChain = (
                             quoteMessageChain["data"]["messageChain"][1:])
                         qaMessageChain = []

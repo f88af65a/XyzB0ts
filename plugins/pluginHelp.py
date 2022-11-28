@@ -10,7 +10,7 @@ class plugin(BotPlugin):
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "help", self.helper)
         self.addTarget("FriendMessage", "help", self.helper)
-        self.addTarget("Group:9", "help", self.helper)
+        self.addTarget("GROUP:9", "help", self.helper)
 
     async def helper(self, request):
         """help [命令名]"""

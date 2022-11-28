@@ -1,6 +1,5 @@
 from botsdk.BotModule.Request import Request
 from botsdk.util.Cookie import AsyncGetCookie, AsyncSetCookie
-from ujson import loads
 
 
 class KaiheilaRequest(Request):
@@ -39,13 +38,13 @@ class KaiheilaRequest(Request):
     # 获取消息的首串文本消息
     def getFirstText(self):
         if self["type"] == 9:
-            return self["content"]
+            return self['extra']['kmarkdown']["raw_content"]
         else:
             return ""
 
     def setFirstText(self, s):
         if self["type"] == 1:
-            self["content"] = s
+            self['extra']['kmarkdown']["raw_content"] = s
 
     # 获取消息类型
     def getType(self):
@@ -66,7 +65,7 @@ class KaiheilaRequest(Request):
             serverData = await self.getBot().guildview(self.getServerId())
             if serverData is None:
                 return False
-            serverData = loads(serverData)
+            serverData = serverData["data"]
             await AsyncSetCookie(
                 "System:Kook:Server",
                 self.getServerId(),

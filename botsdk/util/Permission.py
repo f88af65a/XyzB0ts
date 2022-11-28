@@ -47,13 +47,18 @@ async def permissionCheck(
     cookie = await request.AsyncGetCookie("permission", localId)
     if not cookie:
         return False
-    if ((target in cookie
-            and (permissionRoles := set(cookie[target]))
-            and (requestRole & permissionRoles
-                 or ("*" in permissionRoles
-                     and permissionRoles["*"] & requestRole)))
-            or ("*" in cookie and set(cookie["*"]) & requestRole)):
+    # 如果有通匹符且有角色
+    if "*" in cookie and set(cookie["*"]) & requestRole:
         return True
+    # 命令有设置权限
+    if target in cookie:
+        permissionRoles = set(cookie[target])
+        # 有权限
+        if requestRole & permissionRoles:
+            return True
+        # 通匹
+        if "*" in permissionRoles and permissionRoles["*"] & requestRole:
+            return True
     return False
 
 

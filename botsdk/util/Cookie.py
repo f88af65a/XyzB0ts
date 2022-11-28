@@ -77,7 +77,7 @@ class RedisCookie(Cookie):
 
 class AioRedisCookie(Cookie):
     def __init__(self):
-        self.sql = redis.Redis(
+        self.sql = aioredis.Redis(
             host="localhost", port=6379, decode_responses=True)
         '''
         for i in self.sql.keys("*"):

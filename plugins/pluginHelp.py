@@ -51,7 +51,7 @@ class plugin(BotPlugin):
                 retMessage = helpMessage.__doc__
             else:
                 retMessage = "过多的参数"
-        retMessage += "----------------\n"
+        retMessage += "\n----------------\n"
         retMessage += "Bot相关问题与反馈:https://kook.top/LUTGj9"
         await request.sendMessage(retMessage)
 

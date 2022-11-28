@@ -20,7 +20,9 @@ class plugin(BotPlugin):
             await request.send(self.func.__doc__)
             return
         try:
-            await request.send(art.text2art(data[1]))
+            await request.send(
+                art.text2art(data[1], "rand")
+            )
         except Exception as e:
             await request.send(str(e))
 

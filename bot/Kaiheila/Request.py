@@ -1,4 +1,6 @@
 from botsdk.BotModule.Request import Request
+from botsdk.util.Cookie import AsyncGetCookie, AsyncSetCookie
+from ujson import loads
 
 
 class KaiheilaRequest(Request):
@@ -13,28 +15,7 @@ class KaiheilaRequest(Request):
     # needOverRide
     # 获取角色
     async def getRoles(self):
-        roles = self.getBot().getRoles()
-        if self["extra"]["guild_id"] not in roles:
-            re = (await self.getBot().getServerRoles(
-                self["extra"]["guild_id"]))["data"]["items"]
-            roles = {}
-            for i in re:
-                roles[i["role_id"]] = i
-            self.getBot().addToRoles(self["extra"]["guild_id"], roles)
-        else:
-            roles = roles[self["extra"]["guild_id"]]
-        ret = set()
-        requestRoles = self["extra"]["author"]["roles"]
-        for i in requestRoles:
-            if i not in roles:
-                re = (await self.getBot().getServerRoles(
-                    self["extra"]["guild_id"]))["data"]["items"]
-                roles = {}
-                for j in re:
-                    roles[j["role_id"]] = j
-                self.getBot().addToRoles(self["extra"]["guild_id"], roles)
-            ret.add(roles[i]["name"])
-        return ret
+        return {str(i) for i in self["extra"]["author"]["roles"]}
 
     # 获取发送者的BotId
     def getUserId(self):
@@ -75,3 +56,24 @@ class KaiheilaRequest(Request):
 
     def isMessage(self):
         return self["channel_type"] in self.messageType
+
+    async def isGroupOwner(self):
+        serverData = await AsyncGetCookie(
+            "System:Kook:Server",
+            self.getServerId()
+        )
+        if serverData is None:
+            serverData = await self.getBot().guildview(self.getServerId())
+            if serverData is None:
+                return False
+            serverData = loads(serverData)
+            await AsyncSetCookie(
+                "System:Kook:Server",
+                self.getServerId(),
+                serverData
+            )
+        return serverData["user_id"] == self["author_id"]
+
+    # util
+    def getServerId(self):
+        return self["extra"]["guild_id"]

@@ -5,15 +5,20 @@ from botsdk.util.BotNotifyModule import AsyncGetNotifyList
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.ZookeeperTool import GetBotByName
 from botsdk.util.Cache import GetCacheInstance
+from botsdk.util.JsonConfig import getConfig
 
 
 class plugin(BotPlugin):
     def onLoad(self):
         self.name = "FunctionalTest"
         self.addBotType("Mirai")
-        self.addBotType("Mirai")
+        self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "setCache", self.setCache)
+        self.addTarget("GROUP:9", "setCache", self.getRole)
         self.addTarget("GroupMessage", "getCache", self.getCache)
+        self.addTarget("GROUP:9", "getCache", self.getRole)
+        self.addTarget("GroupMessage", "getRole", self.getRole)
+        self.addTarget("GROUP:9", "getRole", self.getRole)
         self.canDetach = True
 
     def init(self):
@@ -42,6 +47,22 @@ class plugin(BotPlugin):
         await request.send(
             str(await GetCacheInstance().GetCache(data[1]))
         )
+
+    async def getRole(self, request):
+        ret = await request.getRoles()
+        userId = request.getUserId()
+        if userId is None:
+            return False
+        systemCookie = getConfig()["systemCookie"]
+        if userId in systemCookie["user"]:
+            ret |= set(systemCookie["user"][userId])
+        localId = request.getId()
+        if request.isSingle():
+            localId = request.getBot().getBotName()
+        cookie = await request.AsyncGetCookie("roles", localId)
+        if cookie and userId in cookie:
+            ret |= set(cookie[userId])
+        await request.send(str(ret))
 
     async def notifyTest(self):
         while True:

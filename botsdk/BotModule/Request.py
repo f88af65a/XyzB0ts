@@ -159,3 +159,6 @@ class Request(dict):
 
     def setArgs(self, args):
         self.data["args"] = args
+
+    async def isGroupOwner():
+        pass

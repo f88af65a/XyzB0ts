@@ -1,6 +1,6 @@
 {
     "config": {
-        "ownerRole": "Bot.Manager",
+        "ownerRole": "None",
         "sleepTime": 0
     },
     "api": {
@@ -54,6 +54,13 @@
             "method": "get",
             "parameter": {
 
+            }
+        },
+        "guildview": {
+            "path": "/guild/view",
+            "method": "get",
+            "parameter": {
+                "guild_id": "str"
             }
         }
     }

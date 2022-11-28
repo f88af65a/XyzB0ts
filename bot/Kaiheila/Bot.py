@@ -21,9 +21,6 @@ class KaiheilaBot(Bot):
         self.initFlag()
         self.data["roles"] = {}
 
-    def getRoles(self):
-        return self.data["roles"]
-
     def addToRoles(self, serverId, roles):
         self.data["roles"][serverId] = roles
 
@@ -200,3 +197,6 @@ class KaiheilaBot(Bot):
 
     async def filter(self, request):
         return not (self.data["me"]["id"] == request["author_id"])
+
+    async def guildview(self, serverId):
+        return await self.adapter.guildview(guild_id=serverId)

@@ -4,10 +4,13 @@ from botsdk.BotModule.Request import Request
 
 class MiraiRequest(Request):
     def init(self):
-        self.messageType = (
-            {"FriendMessage", "GroupMessage",
-             "TempMessage", "StrangerMessage",
-             "OtherClientMessage"})
+        self.messageType = {
+            "FriendMessage",
+            "GroupMessage",
+            "TempMessage",
+            "StrangerMessage",
+            "OtherClientMessage"
+        }
         self.signalMessage = {
             "FriendMessage",
             "NewFriendRequestEvent",
@@ -142,3 +145,7 @@ class MiraiRequest(Request):
 
     def isMessage(self):
         return self.getType() in self.messageType
+
+    async def isGroupOwner(self):
+        if self.getBot().getOwnerRole() in self.getRoles():
+            return True

@@ -28,7 +28,7 @@ class Request(dict):
                 self.data["cookie"] = getCookie(self.getId())
                 return self.data["cookie"]
             if target not in self.data["cookie"]:
-                self.data["target"] = setCookie(
+                self.data["cookie"][target] = setCookie(
                     self.getId(),
                     target
                 )
@@ -54,7 +54,7 @@ class Request(dict):
                 self.data["cookie"] = await AsyncGetCookie(self.getId())
                 return self.data["cookie"]
             if target not in self.data["cookie"]:
-                self.data["target"] = await AsyncGetCookie(
+                self.data["cookie"][target] = await AsyncGetCookie(
                     self.getId(),
                     target
                 )

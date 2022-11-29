@@ -1,5 +1,4 @@
-from ..util.Cookie import getCookie, setCookie
-from ..util.Cookie import AsyncGetCookie, AsyncSetCookie
+from ..util.Cookie import AsyncGetCookie, AsyncSetCookie, getCookie, setCookie
 from ..util.GetModule import getBot
 
 
@@ -24,12 +23,16 @@ class Request(dict):
     def getCookie(self, target: str = None, id=None):
         if id is None:
             if "cookie" not in self.data:
-                self.data["cookie"] = getCookie(self.getId())
+                self.data["cookie"] = {}
             if target is None:
+                self.data["cookie"] = getCookie(self.getId())
                 return self.data["cookie"]
-            if target in self.data["cookie"]:
-                return self.data["cookie"][target]
-            return None
+            if target not in self.data["cookie"]:
+                self.data["target"] = setCookie(
+                    self.getId(),
+                    target
+                )
+            return self.data["cookie"][target]
         else:
             return getCookie(id, target)
 
@@ -46,18 +49,27 @@ class Request(dict):
     async def AsyncGetCookie(self, target: str = None, id=None):
         if id is None:
             if "cookie" not in self.data:
-                self.data["cookie"] = await AsyncGetCookie(self.getId())
+                self.data["cookie"] = {}
             if target is None:
+                self.data["cookie"] = await AsyncGetCookie(self.getId())
                 return self.data["cookie"]
-            if target in self.data["cookie"]:
-                return self.data["cookie"][target]
-            return None
+            if target not in self.data["cookie"]:
+                self.data["target"] = await AsyncGetCookie(
+                    self.getId(),
+                    target
+                )
+            return self.data["cookie"][target]
         else:
             return await AsyncGetCookie(id, target)
 
     async def AsyncSetCookie(self, target: str, cookie, id=None):
         if "cookie" in self.data and id is None:
             self.data["cookie"][target] = cookie
+        if cookie is None:
+            try:
+                del self.data["cookie"][target]
+            except Exception:
+                pass
         await AsyncSetCookie(id if id else self.getId(), target, cookie)
 
     def setPluginManager(self, manager):

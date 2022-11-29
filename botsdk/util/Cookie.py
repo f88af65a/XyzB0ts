@@ -92,7 +92,7 @@ class AioRedisCookie(Cookie):
 
     # 不存在返回None，存入什么返回什么
     @timeTest
-    async def getCookie(self, id: str, key: str = None):
+    async def AsyncGetCookie(self, id: str, key: str = None):
         if key:
             if await self.sql.hexists(id, key):
                 return loads(await self.sql.hget(id, key))
@@ -103,7 +103,7 @@ class AioRedisCookie(Cookie):
 
     # 暂时无返回值
     @timeTest
-    async def setCookie(self, id: str, key: str, value=None):
+    async def AsyncSetCookie(self, id: str, key: str, value=None):
         if value is None:
             await self.sql.hdel(id, key)
         else:
@@ -149,8 +149,8 @@ async def GetAsyncCookieDriver():
 
 
 async def AsyncGetCookie(id: str, key: str = None):
-    return await GetAsyncCookieDriver().asyncGetCookie(id, key)
+    return (await (await GetAsyncCookieDriver()).AsyncGetCookie(id, key))
 
 
 async def AsyncSetCookie(id: str, key: str, value):
-    await GetAsyncCookieDriver().asyncSetCookie(id, key, value)
+    (await (await GetAsyncCookieDriver()).AsyncSetCookie(id, key, value))

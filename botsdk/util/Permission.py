@@ -1,3 +1,5 @@
+from botsdk.util.Cookie import AsyncGetCookie
+
 from .JsonConfig import getConfig
 
 '''
@@ -15,6 +17,7 @@ async def permissionCheck(
         add: set = set()):
     requestRole = await request.getRoles() | {"*"} | add
     userId = request.getUserId()
+    userBotId = request.getId()
     if userId is None:
         return False
     # 系统权限判断
@@ -28,6 +31,20 @@ async def permissionCheck(
             return True
         else:
             return False
+    # BanTarget判断
+    botCookie = await AsyncGetCookie(
+        request.getBot().getBotName(),
+        "BanTarget"
+    )
+    if botCookie is not None:
+        if "*" in botCookie and botCookie["*"]:
+            banSet = set(botCookie["*"])
+            if target in banSet:
+                return False
+        if userBotId in botCookie:
+            banSet = set(botCookie[userBotId])
+            if target in banSet:
+                return False
     # Onwer权限判断
     if not request.isSingle() and await request.isGroupOwner():
         return True

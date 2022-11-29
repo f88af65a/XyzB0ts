@@ -95,6 +95,7 @@ class handle(BotPlugin):
                     await request.send("关键字最短为2字,最长为16字")
                     return
                 messageChain = request.getMessageChain()
+                quoteMessageChain = None
                 for i in messageChain:
                     if i["type"] == "Quote":
                         bot = request.getBot()
@@ -111,6 +112,9 @@ class handle(BotPlugin):
                             if j["type"] == "Image":
                                 if "url" in qaMessageChain[-1]:
                                     del qaMessageChain[-1]["url"]
+                if quoteMessageChain is None:
+                    await request.send(self.qaSet.__doc__)
+                    return
                 cookie[data[2]] = json.dumps(qaMessageChain)
                 await request.AsyncSetCookie("q&a", cookie)
                 await request.sendMessage("设置成功")

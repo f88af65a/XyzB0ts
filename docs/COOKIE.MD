@@ -5,3 +5,7 @@ Bot名称:[Kaiheila/QQ]:[Group/User]:Id
 System:Cache:{Cache关键字}
 ## KOOK服务器数据存储
 System:Kook:Server
+## Bot数据
+[Bot名称]
+### BanTarget
+    {"*",[], "ID":[]}

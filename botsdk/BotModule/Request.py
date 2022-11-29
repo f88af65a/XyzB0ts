@@ -124,7 +124,7 @@ class Request(dict):
 
     # needOverRide
     # 获取请求数据中的角色
-    def getRoles(self):
+    async def getRoles(self):
         pass
 
     # 获取发送者的BotId

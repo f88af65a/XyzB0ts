@@ -37,7 +37,6 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:9", "mcbe", self.getBe)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.canDetach = True
 
     async def getMc(self, request):
         "/mc ip [端口]不写默认25565"

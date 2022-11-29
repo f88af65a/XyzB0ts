@@ -9,7 +9,6 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:9", "hello", self.hello)
         self.addTarget("GroupMessage", "hello", self.hello)
         self.addTarget("FriendMessage", "hello", self.hello)
-        self.canDetach = True
 
     async def hello(self, request):
         "hello #hello"

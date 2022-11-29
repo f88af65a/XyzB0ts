@@ -7,7 +7,6 @@ class plugin(BotPlugin):
         self.addBotType("Mirai")
         self.name = "recall"
         self.addTarget("GroupMessage", "recall", self.recall)
-        self.canDetach = True
 
     async def recall(self, request):
         '''#recall 撤回被回复的消息'''

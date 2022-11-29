@@ -20,7 +20,6 @@ class plugin(BotPlugin):
         self.addType("BotInvitedJoinGroupRequestEvent", self.groupInvite)
         self.addType("NewFriendRequestEvent", self.friendRequest)
         self.addBotType("Mirai")
-        self.canDetach = True
 
     async def groupInvite(self, request):
         await request.getBot().BotInvitedJoinGroupRequestEvent(

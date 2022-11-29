@@ -25,7 +25,6 @@ class plugin(BotPlugin):
         self.addTarget("FriendMessage", "wall.get", self.get)
         self.addTarget("GroupMessage", "wall.say", self.say)
         self.addTarget("FriendMessage", "wall.say", self.say)
-        self.canDetach = True
         self.sql = redis.Redis(
             host="localhost", port=6379, decode_responses=True, db=4)
         '''

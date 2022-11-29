@@ -19,7 +19,6 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:9", "getCache", self.getRole)
         self.addTarget("GroupMessage", "getRole", self.getRole)
         self.addTarget("GROUP:9", "getRole", self.getRole)
-        self.canDetach = True
 
     def init(self):
         self.addLoopEvent(self.notifyTest)

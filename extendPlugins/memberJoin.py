@@ -13,7 +13,6 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "setMemberJoin", self.setMemberJoin)
         self.addTarget("GroupMessage", "delMemberJoin", self.delMemberJoin)
         self.addBotType("Mirai")
-        self.canDetach = True
 
     async def delMemberJoin(self, request):
         '''回复delMemberJoin来设置加群消息'''

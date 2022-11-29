@@ -8,11 +8,16 @@ class plugin(BotPlugin):
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "角色", self.role)
         self.addTarget("FriendMessage", "角色", self.role)
+        self.addTarget("GroupMessage", "role", self.role)
+        self.addTarget("FriendMessage", "role", self.role)
         self.addTarget("GroupMessage", "权限", self.permission)
         self.addTarget("FriendMessage", "权限", self.permission)
+        self.addTarget("GroupMessage", "permission", self.permission)
+        self.addTarget("FriendMessage", "permission", self.permission)
         self.addTarget("GROUP:9", "角色", self.role)
         self.addTarget("GROUP:9", "权限", self.permission)
-        self.canDetach = True
+        self.addTarget("GROUP:9", "role", self.role)
+        self.addTarget("GROUP:9", "permission", self.permission)
 
     async def role(self, request):
         '''#角色 add/remove ID 角色'''
@@ -23,13 +28,10 @@ class plugin(BotPlugin):
         if ":" in data[3]:
             await request.sendMessage("角色中不许包含:")
             return
-        localId = request.getId()
-        if request.isSingle():
-            localId = request.getBot().getBotName()
         data[2] = data[2].split(",")
         for i in range(len(data[2])):
             data[2][i] = request.userFormat(data[2][i])
-        cookie = await request.AsyncGetCookie("roles", localId)
+        cookie = await request.AsyncGetCookie("roles")
         if cookie is None:
             cookie = dict()
         for i in range(len(data[2])):
@@ -46,7 +48,7 @@ class plugin(BotPlugin):
         else:
             await request.sendMessage("你干啥呢")
             return
-        await request.AsyncSetCookie("roles", cookie, localId)
+        await request.AsyncSetCookie("roles", cookie)
         await request.sendMessage("修改完成")
 
     async def permission(self, request):

@@ -11,7 +11,6 @@ class plugin(BotPlugin):
         self.name = "art"
         self.addTarget("GroupMessage", "art", self.func)
         self.addTarget("GROUP:9", "art", self.func)
-        self.canDetach = True
 
     async def func(self, request):
         '''art [英文文本] #艺术'''

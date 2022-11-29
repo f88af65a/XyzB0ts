@@ -10,7 +10,6 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:9", "random", self.random)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.canDetach = True
 
     async def random(self, request):
         '''random 最小值 最大值'''

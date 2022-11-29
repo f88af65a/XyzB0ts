@@ -8,7 +8,6 @@ class plugin(BotPlugin):
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "bot", self.botinfo)
         self.addTarget("GROUP:9", "bot", self.botinfo)
-        self.canDetach = True
 
     async def botinfo(self, request):
         '''bot #打印bot信息'''

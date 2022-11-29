@@ -9,7 +9,6 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:9", "notify", self.manageNotify)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.canDetach = True
         '''
         {
         "通知名":[待通知列表]

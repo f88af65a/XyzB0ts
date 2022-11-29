@@ -11,7 +11,6 @@ class handle(BotPlugin):
         self.addTarget("GroupMessage", "q&a", self.qaSet)
         self.addType("GroupMessage", self.checkMessage)
         self.addBotType("Mirai")
-        self.canDetach = True
         self.cache = dict()
 
     def makeTreeByKey(self, keyList):

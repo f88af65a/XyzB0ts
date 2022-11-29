@@ -11,7 +11,6 @@ class plugin(BotPlugin):
         self.name = "mirlkoi"
         self.addTarget("GroupMessage", "mirlkoi.random", self.randomImg)
         self.addTarget("GroupMessage", "mirlkoi", self.mirlkoiImg)
-        self.canDetach = True
 
     async def randomImg(self, request):
         '''#mirlkoi.random 从mirlkoi获取一张随机图'''

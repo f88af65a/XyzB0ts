@@ -21,7 +21,6 @@ class plugin(BotPlugin):
         )
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.canDetach = True
         self.api = "http://ip-api.com/json/{}"
 
     async def dns(self, request):

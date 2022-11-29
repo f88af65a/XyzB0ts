@@ -11,7 +11,6 @@ class plugin(BotPlugin):
         parser.Add("time", help="时间戳")
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.canDetach = True
 
     async def fmttime(self, request):
         '''time [时间戳] #格式化时间'''

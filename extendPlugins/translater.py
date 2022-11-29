@@ -14,7 +14,6 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "翻译", self.translater)
         self.addTarget("GroupMessage", "fanyi", self.translater)
         self.addBotType("Mirai")
-        self.canDetach = True
 
     def init(self):
         self.api = self.getConfig()["api"]

@@ -9,7 +9,6 @@ class plugin(BotPlugin):
         self.name = "ip-api"
         self.addTarget("GroupMessage", "ip", self.getIpInfo)
         self.addBotType("Mirai")
-        self.canDetach = True
         self.api = "http://ip-api.com/json/{}"
 
     async def getIpInfo(self, request):

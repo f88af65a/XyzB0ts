@@ -20,7 +20,6 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "pixiv.rank", self.rank)
         self.permissionSet = {"OWNER", "ADMINISTRATOR", "MEMBER"}
         self.limitTags = {"R18", "R-18", "R18G", "R-18G", "R18-G"}
-        self.canDetach = True
 
     def init(self):
         self.url = self.getConfig()["hibiapiUrl"]

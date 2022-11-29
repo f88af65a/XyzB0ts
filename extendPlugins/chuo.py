@@ -6,7 +6,6 @@ class plugin(BotPlugin):
         self.name = "chuo"
         self.addType("NudgeEvent", self.nudge)
         self.addBotType("Mirai")
-        self.canDetach = True
 
     async def nudge(self, request):
         if str(request["target"]) == request.getBot().getQq():

@@ -16,7 +16,6 @@ class plugin(BotPlugin):
             "output_type=2&numres=16&api_key={key}&url={url}"
         )
         self.key = None
-        self.canDetach = True
 
     def init(self):
         self.key = self.getConfig()["saucenaoKey"]

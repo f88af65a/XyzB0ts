@@ -7,7 +7,6 @@ class plugin(BotPlugin):
         self.name = "groupgroup"
         self.addTarget("GroupMessage", "group.say", self.say)
         self.addTarget("GroupMessage", "group", self.group)
-        self.canDetach = True
 
     async def sendToAllGroup(self, request, msg):
         group = await request.AsyncGetCookie("group", id="group")

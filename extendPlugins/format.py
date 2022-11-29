@@ -18,7 +18,6 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "say", self.say)
         self.addTarget("GROUP:9", "say", self.say)
         self.addFormat(self.doFormat)
-        self.canDetach = True
 
     async def doFormat(self, request):
         if ((re := request.getFirstText()) is None or not re

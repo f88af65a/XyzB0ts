@@ -10,7 +10,6 @@ from botsdk.util.Error import debugPrint
 class KaiheilaBot(Bot):
     # needOverRide
     def init(self):
-        self.canDetach = False
         self.stateMap = {
             0: self.getGatewayState,
             1: self.connWsState,

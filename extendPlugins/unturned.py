@@ -11,7 +11,6 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:9", "un", self.unSearch)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.canDetach = True
 
     async def unSearch(self, request):
         "/un 服务器ip [端口默认27015]"

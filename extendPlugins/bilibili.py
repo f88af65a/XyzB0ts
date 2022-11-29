@@ -20,7 +20,6 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:9", "follower", self.follower)
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.canDetach = True
 
     def init(self):
         for i in self.getConfig()["listen"]:

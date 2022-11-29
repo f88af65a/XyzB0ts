@@ -9,11 +9,8 @@ from .Error import printTraceBack
 
 class BotPlugin:
     def __init__(self):
+        # 插件名称
         self.name = ""
-        # 插件所定义的任务
-        self.futures = dict()
-        # 是否可以分离到线程中安全执行
-        self.canDetach = False
         # UUID
         self.uuid = uuid.uuid4()
         # 配置文件,在pluginInit中初始化
@@ -126,9 +123,6 @@ class BotPlugin:
 
     def getLoopEvent(self):
         return self.loopEvent
-
-    def getCanDetach(self):
-        return self.canDetach
 
     def getUuid(self):
         return self.uuid

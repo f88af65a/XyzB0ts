@@ -14,7 +14,6 @@ class plugin(BotPlugin):
         self.addType("GroupMessage", self.typeHandle)
         self.parseRequest = {}
         self.addParseRequest("get", self.get)
-        self.canDetach = True
 
     def addParseRequest(self, key, func):
         self.parseRequest[key] = func

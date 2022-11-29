@@ -10,7 +10,6 @@ class plugin(BotPlugin):
         self.addBotType("Mirai")
         self.name = "bgps"
         self.addTarget("GroupMessage", "bgps", self.bgps)
-        self.canDetach = True
 
     def init(self):
         self.url = (

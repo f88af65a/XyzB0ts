@@ -12,8 +12,7 @@ from .JsonConfig import getConfig
 
 async def permissionCheck(
         request, target: str,
-        add: set = set(), need: set = set(),
-        botName: str = None):
+        add: set = set()):
     requestRole = await request.getRoles() | {"*"} | add
     userId = request.getUserId()
     if userId is None:
@@ -22,7 +21,7 @@ async def permissionCheck(
     systemCookie = getConfig()["systemCookie"]
     if userId in systemCookie["user"]:
         requestRole |= set(systemCookie["user"][userId])
-    if "System:Owner" in requestRole or requestRole & need:
+    if "System:Owner" in requestRole:
         return True
     if target in systemCookie["systemPermission"]:
         if set(systemCookie["systemPermission"][target]) & requestRole:
@@ -32,19 +31,18 @@ async def permissionCheck(
     # Onwer权限判断
     if not request.isSingle() and await request.isGroupOwner():
         return True
-    # 确认id
-    # 判断为群或者好友聊天获取不同的cookie
-    localId = request.getId()
-    if request.isSingle():
-        localId = request.getBot().getBotName()
-    # 角色判断
-    cookie = await request.AsyncGetCookie("roles", localId)
+    # 从cookie中获取request的角色
+    cookie = await request.AsyncGetCookie("roles")
     if cookie and userId in cookie:
         requestRole |= set(cookie[userId])
-    if (requestRole & need or target in requestRole):
-        return True
-    # 根据permission判断
-    cookie = await request.AsyncGetCookie("permission", localId)
+    # 获取cookie中的permission
+    if request.isSingle():
+        cookie = await request.AsyncGetCookie(
+            "permission",
+            request.getBot().getBotName()
+        )
+    else:
+        cookie = await request.AsyncGetCookie("permission")
     if not cookie:
         return False
     # 如果有通匹符且有角色

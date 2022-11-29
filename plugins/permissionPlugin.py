@@ -21,8 +21,10 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:9", "role", self.role)
         self.addTarget("GROUP:9", "permission", self.permission)
         self.addTarget("GroupMessage", "getRole", self.getRole)
+        self.addTarget("FriendMessage", "getRole", self.getRole)
         self.addTarget("GROUP:9", "getRole", self.getRole)
         self.addTarget("GroupMessage", "banTarget", self.banTarget)
+        self.addTarget("FriendMessage", "banTarget", self.banTarget)
         self.addTarget("GROUP:9", "banTarget", self.banTarget)
 
     async def role(self, request):

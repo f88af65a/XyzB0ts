@@ -134,6 +134,12 @@ def setCookie(id: str, key: str, value=None):
 asyncCookieDriver = None
 
 
+async def InitAsyncCookieDriver(*args, **kwargs):
+    global asyncCookieDriver
+    asyncCookieDriver = AioRedisCookie()
+    await asyncCookieDriver.init()
+
+
 async def GetAsyncCookieDriver():
     global asyncCookieDriver
     if asyncCookieDriver is None:

@@ -80,12 +80,14 @@ class BotService(Module):
         # 同步至zookeeper
         if not self.SyncToZookeeper(bot):
             debugPrint(
-                    f'''账号{botName}同步至zookeeper失败''',
-                    fromName="BotService")
+                f'''账号{botName}同步至zookeeper失败''',
+                fromName="BotService"
+            )
             self.exit()
         debugPrint(
-                    f'''账号{botName}同步至zookeeper成功''',
-                    fromName="BotService")
+            f'''账号{botName}同步至zookeeper成功''',
+            fromName="BotService"
+        )
 
         # 将Service信息同步至Zookeeper
         if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {

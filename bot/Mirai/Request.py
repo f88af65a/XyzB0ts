@@ -147,5 +147,7 @@ class MiraiRequest(Request):
         return self.getType() in self.messageType
 
     async def isGroupOwner(self):
-        if self.getBot().getOwnerRole() in self.getRoles():
-            return True
+        for i in self.getBot().getOwnerRole():
+            if i in self.getRoles():
+                return True
+        return False

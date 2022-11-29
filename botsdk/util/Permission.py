@@ -30,7 +30,7 @@ async def permissionCheck(
         else:
             return False
     # Onwer权限判断
-    if await request.isGroupOwner():
+    if not request.isSingle() and await request.isGroupOwner():
         return True
     # 确认id
     # 判断为群或者好友聊天获取不同的cookie

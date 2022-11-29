@@ -46,7 +46,8 @@
 			"listGroup": ["System:Owner"],
 			"listFriend": ["System:Owner"],
 			"chatWithGroup":["System:Owner"],
-			"chatWithFriend":["System:Owner"]
+			"chatWithFriend":["System:Owner"],
+			"banTarget":["System:Owner"]
 		},
 		"user": {}
 	}

@@ -99,7 +99,7 @@ class AioRedisCookie(Cookie):
             return None
         else:
             ret = await self.sql.hgetall(id)
-            return {i: loads(ret[i]) for i in ret}
+            return {i.decode(): loads(ret[i]) for i in ret}
 
     # 暂时无返回值
     @timeTest
@@ -152,5 +152,5 @@ async def AsyncGetCookie(id: str, key: str = None):
     return (await (await GetAsyncCookieDriver()).AsyncGetCookie(id, key))
 
 
-async def AsyncSetCookie(id: str, key: str, value):
+async def AsyncSetCookie(id: str, key: str, value=None):
     (await (await GetAsyncCookieDriver()).AsyncSetCookie(id, key, value))

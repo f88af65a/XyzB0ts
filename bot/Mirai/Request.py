@@ -57,6 +57,7 @@ class MiraiRequest(Request):
     def getType(self):
         return self["type"]
 
+    # 返回格式BotName:平台:类型:ID
     def getId(self):
         if ((msgtype := self.getType()) == "GroupMessage"
                 or msgtype == "TempMessage"):
@@ -127,6 +128,7 @@ class MiraiRequest(Request):
             ret |= {self["sender"]["permission"]}
         return ret
 
+    # 返回格式平台:类型:ID
     def getUserId(self):
         userId = None
         msgType = self.getType()

@@ -61,8 +61,8 @@ class plugin(BotPlugin):
         if ":" in data[3]:
             await request.sendMessage("角色中不许包含:")
             return
-        data[2] = request.userFormat(data[2])
-        cookie = AsyncGetCookie(data[2], "roles")
+        data[2] = f"{request.getBot().getBotName()}:{request.userFormat(data[2])}"
+        cookie = await AsyncGetCookie(data[2], "roles")
         if cookie is None:
             cookie = dict()
         if data[2] not in cookie:

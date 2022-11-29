@@ -5,23 +5,25 @@ from botsdk.util.JsonConfig import getConfig
 
 class plugin(BotPlugin):
     def onLoad(self):
-        self.name = "role"
+        self.name = "permissionPlugin"
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
-        self.addTarget("GroupMessage", "角色", self.grouprole)
-        self.addTarget("FriendMessage", "角色", self.friendrole)
-        self.addTarget("GroupMessage", "role", self.grouprole)
-        self.addTarget("FriendMessage", "role", self.friendrole)
+        self.addTarget("GroupMessage", "角色", self.role)
+        self.addTarget("FriendMessage", "角色", self.role)
+        self.addTarget("GroupMessage", "role", self.role)
+        self.addTarget("FriendMessage", "role", self.role)
         self.addTarget("GroupMessage", "权限", self.permission)
         self.addTarget("FriendMessage", "权限", self.permission)
         self.addTarget("GroupMessage", "permission", self.permission)
         self.addTarget("FriendMessage", "permission", self.permission)
-        self.addTarget("GROUP:9", "角色", self.grouprole)
+        self.addTarget("GROUP:9", "角色", self.role)
         self.addTarget("GROUP:9", "权限", self.permission)
-        self.addTarget("GROUP:9", "role", self.grouprole)
+        self.addTarget("GROUP:9", "role", self.role)
         self.addTarget("GROUP:9", "permission", self.permission)
         self.addTarget("GroupMessage", "getRole", self.getRole)
         self.addTarget("GROUP:9", "getRole", self.getRole)
+        self.addTarget("GroupMessage", "banTarget", self.banTarget)
+        self.addTarget("GROUP:9", "banTarget", self.banTarget)
 
     async def role(self, request):
         '''#角色 add/remove ID 角色'''
@@ -40,7 +42,7 @@ class plugin(BotPlugin):
                 f"{request.userFormat(data[2])}"
             )
         else:
-            data[2] = request.userFormat(data[2])
+            data[2] = request.getId()
         cookie = await AsyncGetCookie(data[2], "roles")
         if cookie is None:
             cookie = dict()
@@ -107,7 +109,7 @@ class plugin(BotPlugin):
         '''banTarget add/remove 命令 ID'''
         commandList = ["add", "remove"]
         data = request.getFirstTextSplit()
-        if len(data) != 3 or data[1] not in commandList:
+        if len(data) != 4 or data[1] not in commandList:
             await request.send(self.banTarget.__doc__)
             return
         cookie = await AsyncGetCookie(
@@ -122,7 +124,7 @@ class plugin(BotPlugin):
             if data[2] not in cookie[data[3]]:
                 cookie[data[3]].append(data[2])
         elif data[1] == "remove":
-            if data[2] not in cookie[data[3]]:
+            if data[2] in cookie[data[3]]:
                 cookie[data[3]].remove(data[2])
         await AsyncSetCookie(
             request.getBot().getBotName(),

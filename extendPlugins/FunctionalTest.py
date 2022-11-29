@@ -13,9 +13,9 @@ class plugin(BotPlugin):
         self.addBotType("Mirai")
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "setCache", self.setCache)
-        self.addTarget("GROUP:9", "setCache", self.getRole)
+        self.addTarget("GROUP:9", "setCache", self.setCache)
         self.addTarget("GroupMessage", "getCache", self.getCache)
-        self.addTarget("GROUP:9", "getCache", self.getRole)
+        self.addTarget("GROUP:9", "getCache", self.getCache)
 
     def init(self):
         self.addLoopEvent(self.notifyTest)
@@ -33,6 +33,16 @@ class plugin(BotPlugin):
             return
         await GetCacheInstance().SetCache(data[1], data[2], data[3])
         await request.send("设置成功")
+
+    async def getCache(self, request):
+        "getCache key #获取cache"
+        data = request.getFirstTextSplit()
+        if len(data) != 2:
+            await request.send(self.getCache.__doc__)
+            return
+        await request.send(
+            str(await GetCacheInstance().GetCache(data[1]))
+        )
 
     async def notifyTest(self):
         while True:

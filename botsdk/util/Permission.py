@@ -66,10 +66,7 @@ async def roleCheck(request, roles, add=set()):
     systemCookie = getConfig()["systemCookie"]
     if userId in systemCookie["user"]:
         requestRole |= set(systemCookie["user"][userId])
-    localId = request.getId()
-    if request.isSingle():
-        localId = request.getBot().getBotName()
-    cookie = await request.AsyncGetCookie("roles", localId)
+    cookie = await request.AsyncGetCookie("roles")
     if cookie and userId in cookie:
         requestRole |= set(cookie[userId])
     return bool(requestRole & roles)

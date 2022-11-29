@@ -16,10 +16,11 @@ class handle(BotPlugin):
                 or request.isSingle()
                 or not request.isMessage()):
             return True
+        BotName = request.getBot().getBotName()
         cookie = await request.AsyncGetCookie("switch")
         if cookie is None:
             cookie = {}
-        if not msg and msg[0] in self.commandTarget:
+        if msg and msg[0] in self.commandTarget:
             msg = msg[1:]
             isChangeStateFlag = False
             stateFlag = False
@@ -34,9 +35,9 @@ class handle(BotPlugin):
                 msg = msg[8:]
                 isChangeStateFlag = True
             if isChangeStateFlag and await permissionCheck(request, target):
-                botName = msg
-                if msg == request.getBot().getBotName():
-                    cookie[botName] = stateFlag
+                targetBotName = msg
+                if targetBotName == BotName:
+                    cookie[BotName] = stateFlag
                     await request.AsyncSetCookie("switch", cookie)
                     await request.sendMessage("修改完成")
-        return True if (botName in cookie and cookie[botName]) else False
+        return True if (BotName in cookie and cookie[BotName]) else False

@@ -1,5 +1,4 @@
 import copy
-import time
 
 import ujson as json
 
@@ -61,19 +60,12 @@ class plugin(BotPlugin):
             )
         if not cookie:
             return
-        lastTime = await request.AsyncGetCookie(
-            "memberJoinLastTime", id
-            )
-        if lastTime is None:
-            lastTime = 0
-        else:
-            lastTime = int(lastTime)
-        if int(time.time()) - lastTime < 30:
-            return
-        await request.AsyncSetCookie(
-            "memberJoinLastTime", str(int(time.time())), id)
+        messageChain = (
+            request.makeMessageChain().at(request["member"]["id"])
+            + request.makeMessageChain(json.loads(cookie))
+        )
         await request.sendMessage(
-            json.loads(cookie), id=id,
+            messageChain.getData(), id=id,
             messageType="GroupMessage"
             )
 

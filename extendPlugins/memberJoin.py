@@ -57,17 +57,14 @@ class plugin(BotPlugin):
               + request.groupFormat(request["member"]["group"]["id"]))
         cookie = await request.AsyncGetCookie(
             "memberJoin", id
-            )
+        )
         if not cookie:
             return
         messageChain = (
             request.makeMessageChain().at(request["member"]["id"])
             + request.makeMessageChain(json.loads(cookie))
         )
-        await request.sendMessage(
-            messageChain.getData(), id=id,
-            messageType="GroupMessage"
-            )
+        await request.sendMessage(messageChain)
 
 
 def handle():

@@ -134,6 +134,9 @@ class Request(dict):
     def groupFormat(self, groupId):
         return self.getBot().groupFormat(groupId)
 
+    def getRecvTime(self):
+        return self.data["recvTime"]
+
     # needOverRide
     # 获取请求数据中的角色
     async def getRoles(self):

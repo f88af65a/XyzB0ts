@@ -165,7 +165,8 @@ class BotService(Module):
                             "bot": bot.getData(),
                             "uuid": localUuid,
                             "botPath": botPath + ".Request",
-                            "botType": botType + "Request"
+                            "botType": botType + "Request",
+                            "recvTime": int(time.time())
                         },
                         i
                     )

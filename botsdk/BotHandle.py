@@ -67,7 +67,20 @@ class BotHandle(Module):
                     request[0]["botType"]
                 )(request[0], request[1])
             debugPrint(f"收到消息:{request.getUuid()}", fromName="BotHandle")
-
+            if time.time() - request.getRecvTime() >= 30:
+                debugPrint(
+                    (
+                        f"消息{request.getUuid()}超时 当前时间:"
+                        f'''{time.strftime(
+                            "%Y-%m-%d %H:%M:%S", time.localtime()
+                            )} '''
+                        f'''接受时间:{time.strftime(
+                            "%Y-%m-%d %H:%M:%S", request.getRecvTime()
+                            )}'''
+                    ),
+                    fromName="BotHandle"
+                )
+                continue
             # 获取Handle
             try:
                 handles = self.GetHandleByMessage(

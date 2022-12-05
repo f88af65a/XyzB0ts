@@ -14,6 +14,7 @@ class plugin(BotPlugin):
         self.name = "mirlkoi"
         self.addBotType("Mirai")
         self.addTarget("GroupMessage", "mirlkoi", self.mirlkoi)
+        self.addTarget("GroupMessage", "整点图", self.mirlkoi)
         self.urls = [
             "api.iw233.cn",
             "ap1.iw233.cn",

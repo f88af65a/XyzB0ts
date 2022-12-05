@@ -26,7 +26,6 @@ class plugin(BotPlugin):
                     self.urls[random.randint(0, len(self.urls) - 1)]
                     )
             )).encode("utf8"))
-            print(ret["pic"])
             await request.send(
                 request.makeMessageChain().image(url=ret["pic"][0])
             )

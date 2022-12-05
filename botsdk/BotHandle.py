@@ -78,6 +78,7 @@ class BotHandle(Module):
                         f"消息:{request.getUuid()}获取Handle失败",
                         fromName="BotHandle"
                     )
+                    continue
             except Exception:
                 printTraceBack()
                 continue
@@ -95,9 +96,16 @@ class BotHandle(Module):
 
     def GetHandleByMessage(self, pluginsManager, msg, request):
         if msg["msgType"] == 0:
-            return list(pluginsManager.getHandleByType(
+            ret = pluginsManager.getHandleByType(
                 msg["type"]
-            ))
+            )
+            if ret is None:
+                debugPrint(
+                        f'''{msg["type"]}缺少Handle''',
+                        fromName="BotHandle"
+                    )
+                return ret
+            return list(ret)
         elif msg["msgType"] == 1:
             return [pluginsManager.getHandleByTarget(
                 request.getType(),

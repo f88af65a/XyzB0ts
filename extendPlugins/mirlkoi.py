@@ -1,7 +1,10 @@
-import ujson as json
 import random
+import time
+
+import ujson as json
 
 from botsdk.util.BotPlugin import BotPlugin
+from botsdk.util.Cache import GetCacheInstance
 from botsdk.util.HttpRequest import get
 
 
@@ -19,7 +22,18 @@ class plugin(BotPlugin):
         self.url = "http://{}/api.php?sort=iw233&type=json"
 
     async def mirlkoi(self, request):
-        '''#mirlkoi.random 从mirlkoi获取一张随机图'''
+        '''#mirlkoi 从mirlkoi获取一张随机图'''
+        cd = await GetCacheInstance().GetCache(
+            f"mirlkoi:mirlkoi:{request.getId()}"
+        )
+        if cd is not None:
+            await request.send("冷却中")
+            return
+        await GetCacheInstance().SetCache(
+            f"mirlkoi:mirlkoi:{request.getId()}",
+            {"cdTime": str(int(time.time()))},
+            10
+        )
         try:
             ret = json.loads((await get(
                 self.url.format(

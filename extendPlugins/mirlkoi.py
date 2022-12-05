@@ -1,4 +1,5 @@
 import ujson as json
+import random
 
 from botsdk.util.BotPlugin import BotPlugin
 from botsdk.util.HttpRequest import get
@@ -7,29 +8,28 @@ from botsdk.util.HttpRequest import get
 class plugin(BotPlugin):
     '''https://iw233.cn/ 提供的api'''
     def onLoad(self):
-        self.addBotType("Mirai")
         self.name = "mirlkoi"
-        self.addTarget("GroupMessage", "mirlkoi.random", self.randomImg)
-        self.addTarget("GroupMessage", "mirlkoi", self.mirlkoiImg)
+        self.addBotType("Mirai")
+        self.addTarget("GroupMessage", "mirlkoi", self.mirlkoi)
+        self.urls = [
+            "api.iw233.cn",
+            "ap1.iw233.cn",
+            "dev.iw233.cn"
+        ]
+        self.url = "http://{}/api.php?sort=iw233&type=json"
 
-    async def randomImg(self, request):
+    async def mirlkoi(self, request):
         '''#mirlkoi.random 从mirlkoi获取一张随机图'''
         try:
             ret = json.loads((await get(
-                "https://iw233.cn/API/Random.php?type=json")).encode("utf8"))
-            await request.sendMessage(
-                request.makeMessageChain().image(url=ret["pic"]))
-        except Exception:
-            await request.sendMessage("获取失败")
-            return
-
-    async def mirlkoiImg(self, request):
-        '''#mirlkoi 从mirlkoi获取一张精品图'''
-        try:
-            ret = json.loads((await get(
-                "https://iw233.cn/API/MirlKoi.php?type=json")).encode("utf8"))
-            await request.sendMessage(
-                request.makeMessageChain().image(url=ret["pic"]))
+                self.url.format(
+                    self.urls[random.randint(0, len(self.urls) - 1)]
+                    )
+            )).encode("utf8"))
+            print(ret["pic"])
+            await request.send(
+                request.makeMessageChain().image(url=ret["pic"][0])
+            )
         except Exception:
             await request.sendMessage("获取失败")
             return

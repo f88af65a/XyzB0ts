@@ -67,15 +67,17 @@ class BotHandle(Module):
                     request[0]["botType"]
                 )(request[0], request[1])
             debugPrint(f"收到消息:{request.getUuid()}", fromName="BotHandle")
-            if time.time() - request.getRecvTime() >= 30:
+            if time.time() - request.getRecvTime() >= 60:
                 debugPrint(
                     (
                         f"消息{request.getUuid()}超时 当前时间:"
                         f'''{time.strftime(
-                            "%Y-%m-%d %H:%M:%S", time.localtime()
+                            "%H:%M:%S", time.localtime()
                             )} '''
                         f'''接受时间:{time.strftime(
-                            "%Y-%m-%d %H:%M:%S", request.getRecvTime()
+                            "%H:%M:%S", time.localtime(
+                                request.getRecvTime()
+                                )
                             )}'''
                     ),
                     fromName="BotHandle"
@@ -106,18 +108,22 @@ class BotHandle(Module):
                         ),
                         self.loop
                     )
+        debugPrint(
+            "BotHandle意外结束",
+            fromName="BotHandle"
+        )
 
     def GetHandleByMessage(self, pluginsManager, msg, request):
         if msg["msgType"] == 0:
             ret = pluginsManager.getHandleByType(
                 msg["type"]
             )
-            if ret is None:
+            if not ret:
                 debugPrint(
                         f'''{msg["type"]}缺少Handle''',
                         fromName="BotHandle"
                     )
-                return ret
+                return None
             return list(ret)
         elif msg["msgType"] == 1:
             return [pluginsManager.getHandleByTarget(

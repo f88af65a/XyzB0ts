@@ -64,7 +64,10 @@ class plugin(BotPlugin):
             request.makeMessageChain().at(request["member"]["id"])
             + request.makeMessageChain(json.loads(cookie))
         )
-        await request.sendMessage(messageChain)
+        await request.send(
+            messageChain,
+            messageType="GroupMessage"
+            )
 
 
 def handle():

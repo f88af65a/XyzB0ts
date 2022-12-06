@@ -59,12 +59,19 @@ class MiraiRequest(Request):
 
     # 返回格式BotName:平台:类型:ID
     def getId(self):
-        if ((msgtype := self.getType()) == "GroupMessage"
-                or msgtype == "TempMessage"):
+        msgType = self.getType()
+        if (msgType == "GroupMessage"
+                or msgType == "TempMessage"):
             return (
                 self.getBot().getBotName()
                 + ":"
                 + self.groupFormat(self["sender"]["group"]["id"])
+                )
+        elif msgType == "MemberJoinEvent":
+            return (
+                self.getBot().getBotName()
+                + ":"
+                + self.groupFormat(self["member"]["group"]["id"])
                 )
         else:
             return (

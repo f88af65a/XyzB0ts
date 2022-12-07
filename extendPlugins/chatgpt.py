@@ -16,10 +16,14 @@ class plugin(BotPlugin):
         self.responseDict = dict()
         self.responseDictLock = threading.Lock()
 
+    def init(self):
+        self.token = self.getConfig()["token"]
+        self.proxy = self.getConfig()["proxy"]
+
     def chatBotThread(self, message, requestUUID):
         config = {
-            "session_token": "",
-            "proxy": ""
+            "session_token": self.token,
+            "proxy": self.proxy
         }
         chatbot = Chatbot(config, conversation_id=None)
         for i in range(2):

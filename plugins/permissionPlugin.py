@@ -99,10 +99,7 @@ class plugin(BotPlugin):
         systemCookie = getConfig()["systemCookie"]
         if userId in systemCookie["user"]:
             ret |= set(systemCookie["user"][userId])
-        localId = request.getId()
-        if request.isSingle():
-            localId = request.getBot().getBotName()
-        cookie = await request.AsyncGetCookie("roles", localId)
+        cookie = await request.AsyncGetCookie("roles")
         if cookie and userId in cookie:
             ret |= set(cookie[userId])
         await request.send(str(ret))

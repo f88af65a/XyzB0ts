@@ -17,15 +17,17 @@ class plugin(BotPlugin):
         self.responseDictLock = threading.Lock()
 
     def chatBotThread(self, message, requestUUID):
-        try:
-            config = {
-                "session_token": "",
-                "proxy": ""
-            }
-            chatbot = Chatbot(config, conversation_id=None)
-            ret = chatbot.get_chat_response(message)["message"]
-        except Exception:
-            ret = "请求异常"
+        config = {
+            "session_token": "",
+            "proxy": ""
+        }
+        chatbot = Chatbot(config, conversation_id=None)
+        for i in range(2):
+            try:
+                ret = chatbot.get_chat_response(message)["message"]
+                break
+            except Exception:
+                ret = "请求异常"
         self.responseDictLock.acquire()
         self.responseDict[requestUUID] = ret
         self.responseDictLock.release()
@@ -36,6 +38,7 @@ class plugin(BotPlugin):
         if len(data) == 1:
             await request.sendMessage(self.chat.__doc__)
             return
+        data = [data[0], " ".join(data[1:])]
         requestUUID = None
         while True:
             requestUUID = str(uuid.uuid4())

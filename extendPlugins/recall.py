@@ -15,17 +15,17 @@ class plugin(BotPlugin):
             if i["type"] == "Quote":
                 bot = request.getBot()
                 quoteMessageId = i["id"]
-                try:
-                    await bot.recall(
-                        quoteMessageId,
-                        request.getId().split(":")[-1]
-                    )
+                ret = await bot.recall(
+                    quoteMessageId,
+                    request.getId().split(":")[-1]
+                )
+                if ret is not None and "code" in ret and ret["code"] == 0:
                     await request.sendMessage("撤回成功")
-                except Exception:
+                else:
                     await request.sendMessage("撤回失败")
                 return
         await request.sendMessage(
-            "能撤回吗，没有这个能力，再发下去，要输越南了，回复都不会，找个班上吧。"
+            "????"
             )
 
 

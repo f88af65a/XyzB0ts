@@ -16,7 +16,10 @@ class plugin(BotPlugin):
                 bot = request.getBot()
                 quoteMessageId = i["id"]
                 try:
-                    await bot.recall(quoteMessageId)
+                    await bot.recall(
+                        quoteMessageId,
+                        request.getId().split(":")[-1]
+                    )
                     await request.sendMessage("撤回成功")
                 except Exception:
                     await request.sendMessage("撤回失败")

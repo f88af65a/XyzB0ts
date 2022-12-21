@@ -131,9 +131,10 @@ class MiraiBot(Bot):
             kind=kind
         )
 
-    async def recall(self, target: int):
+    async def recall(self, messageId: int, target: int):
         return await self.adapter.recall(
             sessionKey=self.sessionKey,
+            messageId=messageId,
             target=target
         )
 

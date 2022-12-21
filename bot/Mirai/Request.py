@@ -126,8 +126,8 @@ class MiraiRequest(Request):
         self.getBot().sendNudge(
             int(self.getBot().getQq()), int(target), nudgeType)
 
-    async def recall(self, target):
-        self.getBot().recall(int(target))
+    async def recall(self, messageId, target):
+        self.getBot().recall(int(messageId), int(target))
 
     async def getRoles(self):
         ret = set()

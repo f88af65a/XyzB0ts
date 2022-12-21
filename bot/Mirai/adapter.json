@@ -132,6 +132,7 @@
             "method": "post",
             "parameter": {
                 "sessionKey": "str",
+                "messageId": "int",
                 "target": "int"
             }
         },

@@ -21,7 +21,8 @@ async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
                 headers=headers,
                 connector=localData.conn,
                 connector_owner=False,
-                timeout=timeout) as session:
+                timeout=timeout,
+                skip_auto_headers={"User-Agent"}) as session:
             async with session.get(
                     url,
                     proxy=proxy if proxy is not None else None,
@@ -35,7 +36,8 @@ async def get(url, proxy=None, headers=None, byte=None, timeout: int = 15):
         return None
 
 
-async def post(url, data, headers=None, byte=None, timeout: int = 15):
+async def post(url, data=None, proxy=None,
+               headers=None, byte=None, timeout: int = 15):
     global localData
     if getattr(localData, "conn", None) is None:
         localData.conn = aiohttp.TCPConnector()
@@ -44,9 +46,16 @@ async def post(url, data, headers=None, byte=None, timeout: int = 15):
         async with aiohttp.ClientSession(
                 connector=localData.conn,
                 connector_owner=False,
-                timeout=timeout) as session:
-            async with session.post(url, data=json.dumps(data).encode("utf8"),
+                timeout=timeout,
+                skip_auto_headers={"User-Agent"}) as session:
+            if data is None:
+                data = b""
+            else:
+                data = json.dumps(data).encode("utf8")
+            async with session.post(url,
+                                    data=data,
                                     headers=headers,
+                                    proxy=proxy,
                                     verify_ssl=False) as r:
                 if byte is True:
                     return await r.read()

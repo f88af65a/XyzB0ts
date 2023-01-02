@@ -1,12 +1,13 @@
 import sys
 
+import motor.motor_asyncio
+import pymongo
 import redis
 from redis import asyncio as aioredis
 from ujson import dumps, loads
 
-from .TimeTest import timeTest
-
 from .JsonConfig import getConfig
+from .TimeTest import timeTest
 
 '''
 系统部分信息会储存于System中
@@ -15,9 +16,6 @@ Bot相关信息会存到{BotName}中
 
 
 class Cookie:
-    def getAllCookie(self):
-        pass
-
     # 存在则返回，不存在返回None
     def getCookie(self, id: str, key: str = None):
         pass
@@ -46,13 +44,6 @@ class RedisCookie(Cookie):
             except Exception as e:
                 print(e)
         '''
-
-    @timeTest
-    def getAllCookie(self):
-        re = dict()
-        for i in self.sql.keys("*"):
-            re[i] = self.getCookie(i)
-        return re
 
     # 不存在返回None，存入什么返回什么
     @timeTest
@@ -83,13 +74,6 @@ class AioRedisCookie(Cookie):
         self.sql = await aioredis.from_url(
             "redis://localhost:6379", db=0)
 
-    @timeTest
-    async def getAllCookie(self):
-        re = dict()
-        for i in await self.sql.keys("*"):
-            re[i] = await self.getCookie(i)
-        return re
-
     # 不存在返回None，存入什么返回什么
     @timeTest
     async def AsyncGetCookie(self, id: str, key: str = None):
@@ -109,6 +93,53 @@ class AioRedisCookie(Cookie):
         else:
             await self.sql.hset(id, key, dumps(value))
             await self.sql.save()
+
+
+class AioMongoDBCookie(Cookie):
+    def __init__(self):
+        pass
+
+    async def init(self):
+        self.conn = motor.motor_asyncio.AsyncIOMotorClient(
+            "mongodb://127.0.0.1:27017"
+        )
+        self.db = self.conn.get_database("XyzB0ts")
+        self.dataSet = self.db.get_collection("Cookie")
+        await self.dataSet.create_index(
+            [("ID", pymongo.ASCENDING)]
+        )
+
+    # 不存在返回None，存入什么返回什么
+    @timeTest
+    async def AsyncGetCookie(self, id: str, key: str = None):
+        result = await self.dataSet.find_one(
+            {"ID": id}
+        )
+        if not result:
+            return None
+        if "_id" in result:
+            del result["_id"]
+        if "ID" in result:
+            del result["ID"]
+        if key:
+            return result.get(key, None)
+        return result
+
+    # 暂时无返回值
+    @timeTest
+    async def AsyncSetCookie(self, id: str, key: str, value=None):
+        if key == "_id" or key == "ID":
+            return
+        if value is None:
+            await self.dataSet.update_one(
+                {"ID": id},
+                {"$unset": {key: None}}
+            )
+        else:
+            await self.dataSet.update_one(
+                {"ID": id},
+                {"$set": {key: value}}
+            )
 
 
 cookieDriver = None
@@ -136,14 +167,14 @@ asyncCookieDriver = None
 
 async def InitAsyncCookieDriver(*args, **kwargs):
     global asyncCookieDriver
-    asyncCookieDriver = AioRedisCookie()
+    asyncCookieDriver = AioMongoDBCookie()
     await asyncCookieDriver.init()
 
 
 async def GetAsyncCookieDriver():
     global asyncCookieDriver
     if asyncCookieDriver is None:
-        asyncCookieDriver = AioRedisCookie()
+        asyncCookieDriver = AioMongoDBCookie()
         await asyncCookieDriver.init()
     return asyncCookieDriver
 

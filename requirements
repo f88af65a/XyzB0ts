@@ -9,3 +9,5 @@ jsonpath
 art
 thefuzz
 python-Levenshtein
+pymongo
+motor

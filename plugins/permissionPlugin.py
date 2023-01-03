@@ -12,13 +12,13 @@ class plugin(BotPlugin):
         self.addTarget("FriendMessage", "角色", self.role)
         self.addTarget("GroupMessage", "role", self.role)
         self.addTarget("FriendMessage", "role", self.role)
+        self.addTarget("GROUP:9", "角色", self.role)
+        self.addTarget("GROUP:9", "role", self.role)
         self.addTarget("GroupMessage", "权限", self.permission)
         self.addTarget("FriendMessage", "权限", self.permission)
         self.addTarget("GroupMessage", "permission", self.permission)
         self.addTarget("FriendMessage", "permission", self.permission)
-        self.addTarget("GROUP:9", "角色", self.role)
         self.addTarget("GROUP:9", "权限", self.permission)
-        self.addTarget("GROUP:9", "role", self.role)
         self.addTarget("GROUP:9", "permission", self.permission)
         self.addTarget("GroupMessage", "getRole", self.getRole)
         self.addTarget("FriendMessage", "getRole", self.getRole)
@@ -92,6 +92,7 @@ class plugin(BotPlugin):
         await request.sendMessage("修改完成")
 
     async def getRole(self, request):
+        "getRole #查看当前所拥有的角色"
         ret = await request.getRoles()
         userId = request.getUserId()
         if userId is None:

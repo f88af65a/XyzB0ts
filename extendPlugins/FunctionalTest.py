@@ -17,8 +17,15 @@ class plugin(BotPlugin):
         self.addTarget("GROUP:9", "setCache", self.setCache)
         self.addTarget("GroupMessage", "getCache", self.getCache)
         self.addTarget("GROUP:9", "getCache", self.getCache)
-        self.addTarget("GroupMessage", "permission", self.permissionCheckTest)
-        self.addTarget("GROUP:9", "permission", self.permissionCheckTest)
+        self.addTarget(
+            "GroupMessage", "permissionCheck", self.permissionCheckTest
+        )
+        self.addTarget(
+            "FriendMessage", "permissionCheck", self.permissionCheckTest
+        )
+        self.addTarget(
+            "GROUP:9", "permissionCheck", self.permissionCheckTest
+        )
 
     def init(self):
         self.addLoopEvent(self.notifyTest)
@@ -61,7 +68,7 @@ class plugin(BotPlugin):
                 await bot.sendMessage(dynamicChain, id=i)
 
     async def permissionCheckTest(self, request):
-        "permission target #测试权限"
+        "permissionCheck target #测试权限"
         data = request.getFirstTextSplit()
         if len(data) != 2:
             await request.send(self.permissionCheckTest.__doc__)

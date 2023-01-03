@@ -106,7 +106,8 @@ class AioMongoDBCookie(Cookie):
         self.db = self.conn.get_database("XyzB0ts")
         self.dataSet = self.db.get_collection("Cookie")
         await self.dataSet.create_index(
-            [("ID", pymongo.ASCENDING)]
+            [("ID", pymongo.ASCENDING)],
+            unique=True
         )
 
     # 不存在返回None，存入什么返回什么

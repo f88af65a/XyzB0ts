@@ -112,18 +112,24 @@ class AioMongoDBCookie(Cookie):
     # 不存在返回None，存入什么返回什么
     @timeTest
     async def AsyncGetCookie(self, id: str, key: str = None):
-        result = await self.dataSet.find_one(
-            {"ID": id}
-        )
-        if not result:
+        if key == "_id" or key == "ID":
             return None
-        if "_id" in result:
-            del result["_id"]
-        if "ID" in result:
-            del result["ID"]
-        if key:
-            return result.get(key, None)
-        return result
+        if not key:
+            result = await self.dataSet.find_one(
+                {"ID": id}
+            )
+            if "_id" in result:
+                del result["_id"]
+            if "ID" in result:
+                del result["ID"]
+            return result
+        result = await self.dataSet.find_one(
+            {"ID": id},
+            {key: 1}
+        )
+        if result is None or key not in result:
+            return None
+        return result[key]
 
     # 暂时无返回值
     @timeTest

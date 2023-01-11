@@ -31,6 +31,8 @@ class plugin(BotPlugin):
                     if requestId in cookie[i]:
                         haveList.append(i)
                 await request.sendMessage(str(haveList))
+            else:
+                await request.sendMessage(self.manageNotify.__doc__)
         elif len(data) == 3:
             cookie = getCookie("System:Notify", "NotifyList")
             if cookie is None:
@@ -48,6 +50,10 @@ class plugin(BotPlugin):
                     cookie[data[2]].remove(request.getId())
                     setCookie("System:Notify", "NotifyList", cookie)
                 await request.sendMessage("修改完成")
+            else:
+                await request.sendMessage(self.manageNotify.__doc__)
+        else:
+            await request.sendMessage(self.manageNotify.__doc__)
 
 
 def handle():

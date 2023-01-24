@@ -145,12 +145,14 @@ class AioMongoDBCookie(Cookie):
         if value is None:
             await self.dataSet.update_one(
                 {"ID": id},
-                {"$unset": {key: None}}
+                {"$unset": {key: None}},
+                upsert=True
             )
         else:
             await self.dataSet.update_one(
                 {"ID": id},
-                {"$set": {key: value}}
+                {"$set": {key: value}},
+                upsert=True
             )
 
 

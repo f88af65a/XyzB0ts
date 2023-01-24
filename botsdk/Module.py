@@ -29,8 +29,8 @@ class Module:
         for i in self.exitList:
             try:
                 i[0](*i[1], **i[2])
-            except Exception:
-                printTraceBack()
+            except Exception as e:
+                logging.exception(e)
         _exit(1)
 
     '''

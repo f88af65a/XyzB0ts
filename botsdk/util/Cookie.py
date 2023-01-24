@@ -123,7 +123,7 @@ class AioMongoDBCookie(Cookie):
                 {"ID": id}
             )
             if not result:
-                return dict()
+                return None
             if "_id" in result:
                 del result["_id"]
             if "ID" in result:

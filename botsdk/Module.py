@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from os import _exit
 from threading import Lock
 
@@ -43,7 +44,11 @@ class Module:
 
     async def onStart(self):
         for i in self.onStartList:
-            await i(self)
+            try:
+                await i(self)
+            except Exception as e:
+                logging.exception(e)
+                self.exit()
 
     def AddOnStart(self, f):
         self.onStartList.append(f)

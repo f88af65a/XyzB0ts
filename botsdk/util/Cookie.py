@@ -105,10 +105,13 @@ class AioMongoDBCookie(Cookie):
         )
         self.db = self.conn.get_database("XyzB0ts")
         self.dataSet = self.db.get_collection("Cookie")
-        await self.dataSet.create_index(
-            [("ID", pymongo.ASCENDING)],
-            unique=True
-        )
+        try:
+            await self.dataSet.create_index(
+                [("ID", pymongo.ASCENDING)],
+                unique=True
+            )
+        except Exception:
+            pass
 
     # 不存在返回None，存入什么返回什么
     @timeTest

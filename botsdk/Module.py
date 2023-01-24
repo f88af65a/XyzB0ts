@@ -5,7 +5,7 @@ from threading import Lock
 
 from confluent_kafka import Producer
 
-from .util.Error import debugPrint, printTraceBack
+from .util.Error import debugPrint
 from .util.JsonConfig import getConfig
 
 

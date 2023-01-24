@@ -9,3 +9,5 @@ System:Kook:Server
 [Bot名称]
 ### BanTarget
     {"*",[], "ID":[]}
+## permission
+    {"权限":[角色],}

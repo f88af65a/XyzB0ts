@@ -119,6 +119,8 @@ class AioMongoDBCookie(Cookie):
             result = await self.dataSet.find_one(
                 {"ID": id}
             )
+            if not result:
+                return dict()
             if "_id" in result:
                 del result["_id"]
             if "ID" in result:

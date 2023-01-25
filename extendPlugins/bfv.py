@@ -45,9 +45,9 @@ class plugin(BotPlugin):
             f'''命中率: {response["accuracy"]}\n'''
             f'''爆头率: {response["headshots"]}\n'''
             f'''击杀数: {response["kills"]} | {"{:.2f}".format(
-                response["kills"]/response["roundsPlayed"])}\n'''
+                response["kills"]/max(response["roundsPlayed"], 1))}\n'''
             f'''死亡数: {response["deaths"]} | {"{:.2f}".format(
-                response["deaths"]/response["roundsPlayed"])}\n'''
+                response["deaths"]/max(response["roundsPlayed"], 1))}\n'''
             f'''最高连杀: {response["highestKillStreak"]}\n'''
             f'''游戏时间: {response["timePlayed"]}'''
         )

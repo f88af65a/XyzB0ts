@@ -67,7 +67,6 @@ class handle(BotPlugin):
             f"QA:CD:{request.getId()}"
         )
         if cd is not None:
-            await request.send("冷却中")
             return
         await GetCacheInstance().SetCache(
             f"QA:CD:{request.getId()}",

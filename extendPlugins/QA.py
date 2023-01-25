@@ -71,7 +71,7 @@ class handle(BotPlugin):
         await GetCacheInstance().SetCache(
             f"QA:CD:{request.getId()}",
             {"cdTime": str(int(time.time()))},
-            2
+            3
         )
         try:
             messageChain = json.loads(cookie[hit])

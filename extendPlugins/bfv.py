@@ -12,8 +12,12 @@ class plugin(BotPlugin):
         self.addBotType("Kaiheila")
         self.addTarget("GroupMessage", "bfv.search", self.search)
         self.addTarget("GROUP:9", "bfv.search", self.search)
+        self.addTarget("GroupMessage", "bfv.搜人", self.search)
+        self.addTarget("GROUP:9", "bfv.搜人", self.search)
         self.addTarget("GroupMessage", "bfv.server.search", self.serverSearch)
         self.addTarget("GROUP:9", "bfv.server.search", self.serverSearch)
+        self.addTarget("GroupMessage", "bfv.搜服", self.serverSearch)
+        self.addTarget("GROUP:9", "bfv.搜服", self.serverSearch)
 
     async def search(self, request):
         '''bfv.search id #查询战绩'''

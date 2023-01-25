@@ -89,8 +89,8 @@ class plugin(BotPlugin):
                 f'''{i["prefix"]}\n'''
                 f'''人数: {i["playerAmount"]}/{i["maxPlayers"]}'''
                 f''' (+{i["inQue"]})\n'''
-                f'''地图: {i["mode"]}\n'''
-                f'''模式: {i["currentMap"]}'''
+                f'''模式: {i["mode"]}\n'''
+                f'''地图: {i["currentMap"]}'''
             )
         await request.send("搜到以下服务器\n" + "\n".join(retMsg))
 

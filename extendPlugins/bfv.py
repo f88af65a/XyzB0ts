@@ -39,6 +39,7 @@ class plugin(BotPlugin):
             return
         await request.send(
             f'''{response["userName"]}\n'''
+            f'''rank: {response["rank"]}\n'''
             f'''KD: {response["killDeath"]}\n'''
             f'''KPM: {response["killsPerMinute"]}\n'''
             f'''SPM: {response["scorePerMinute"]}\n'''

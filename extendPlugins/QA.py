@@ -1,8 +1,10 @@
 import copy
+import time
 
 import ujson as json
 
 from botsdk.util.BotPlugin import BotPlugin
+from botsdk.util.Cache import GetCacheInstance
 
 
 class handle(BotPlugin):
@@ -60,6 +62,18 @@ class handle(BotPlugin):
         hit = self.checkOnTree(keyTree, msg)
         if hit is None:
             return
+        # CD
+        cd = await GetCacheInstance().GetCache(
+            f"QA:CD:{request.getId()}"
+        )
+        if cd is not None:
+            await request.send("冷却中")
+            return
+        await GetCacheInstance().SetCache(
+            f"QA:CD:{request.getId()}",
+            {"cdTime": str(int(time.time()))},
+            2
+        )
         try:
             messageChain = json.loads(cookie[hit])
         except Exception:

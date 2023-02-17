@@ -5,6 +5,7 @@ import ujson as json
 
 from .Args import ArgParser
 from .Error import printTraceBack
+from .Cookie import AsyncGetCookie, AsyncSetCookie
 
 
 class BotPlugin:
@@ -135,3 +136,29 @@ class BotPlugin:
 
     def getGeneralList(self):
         return self.generalList
+
+    # 持久化存储数据
+    async def Push(self, key: str, value):
+        '''
+        持久化数据
+        Push(key, value)
+        key为要存储的数据的关键字
+        value为需要存储的json数据
+        若value为None则删除该数据
+        '''
+        return AsyncSetCookie(
+            f"Plugin:{self.getName()}",
+            key,
+            value
+        )
+
+    async def Pull(self, key: str):
+        '''
+        获取持久化的数据
+        Pull(key)
+        key为要获取的数据的关键字
+        '''
+        return AsyncGetCookie(
+            f"Plugin:{self.getName()}",
+            key
+        )

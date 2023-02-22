@@ -20,7 +20,7 @@ class plugin(BotPlugin):
         data = request.getFirstTextSplit()
         if len(data) == 1:
             await request.sendMessage(self.manageNotify.__doc__)
-        if len(data) == 2:
+        elif len(data) == 2:
             cookie = getCookie("System:Notify", "NotifyList")
             if cookie is None:
                 cookie = {}

@@ -25,3 +25,6 @@ class MessageChain:
 
     def image(self, *args, **kwargs):
         pass
+
+    def add(self, data):
+        self.data.append(data)

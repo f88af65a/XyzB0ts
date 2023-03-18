@@ -199,3 +199,74 @@ class KaiheilaBot(Bot):
 
     async def guildview(self, serverId):
         return await self.adapter.guildview(guild_id=serverId)
+
+    async def addServerUserRole(self, userId, serverId, roleId):
+        return await self.adapter.guildrolegrant(
+            guild_id=serverId,
+            user_id=userId,
+            role_id=roleId
+        )
+
+    async def delServerUserRole(self, userId, serverId, roleId):
+        return await self.adapter.guildrolerevoke(
+            guild_id=serverId,
+            user_id=userId,
+            role_id=roleId
+        )
+
+    async def updatePrivateMessage(self, messageId, content):
+        return await self.adapter.directmessageupdate(
+            msg_id=messageId,
+            content=content
+        )
+
+    async def createChannel(self, guildId,
+                            parentId, name,
+                            type, limitAmount,
+                            voiceQuality, isCategory
+                            ):
+        return await self.adapter.channelcreate(
+            guild_id=guildId,
+            parent_id=parentId,
+            name=name,
+            type=type,
+            limit_amount=limitAmount,
+            voice_quality=voiceQuality,
+            is_category=isCategory
+        )
+
+    async def createRole(self, guildId, name):
+        return await self.adapter.guildrolecreate(
+            guild_id=guildId,
+            name=name
+        )
+
+    async def getChannelRole(self, channelId):
+        return await self.adapter.channelroleindex(
+            channel_id=channelId
+        )
+
+    async def createChannelRole(self, channelId, type, value):
+        return await self.adapter.channelrolecreate(
+            channel_id=channelId,
+            type=type,
+            value=value
+        )
+
+    async def updateChannelRole(self, channelId,
+                                type, value,
+                                allow, deny):
+        return await self.adapter.channelroleupdate(
+            channel_id=channelId,
+            type=type,
+            value=value,
+            allow=allow,
+            deny=deny
+        )
+
+    async def updateRole(self, guildId, roleId, **kwargs):
+        return await self.adapter.guildroleupdate(
+            guild_id=guildId,
+            role_id=roleId,
+            **kwargs
+        )

@@ -29,6 +29,9 @@ class Cookie:
     async def asyncSetCookie(self, id: str, key: str, value):
         self.setCookie(id, key, value)
 
+    async def FindCookie(self, key: str):
+        pass
+
 
 class RedisCookie(Cookie):
     def __init__(self):
@@ -112,6 +115,18 @@ class AioMongoDBCookie(Cookie):
             )
         except Exception:
             pass
+        try:
+            await self.db.get_collection("Wall").create_index(
+                [("senderId", pymongo.ASCENDING)]
+            )
+        except Exception:
+            pass
+        try:
+            await self.db.get_collection("Wall").create_index(
+                [("sourceId", pymongo.ASCENDING)]
+            )
+        except Exception:
+            pass
 
     # 不存在返回None，存入什么返回什么
     @timeTest
@@ -154,6 +169,19 @@ class AioMongoDBCookie(Cookie):
                 {"$set": {key: value}},
                 upsert=True
             )
+
+    async def AsyncFindCookie(self, key: str):
+        cursor = self.dataSet.find(
+            {"ID": {"$regex": key}},
+            {"_id": 0}
+        )
+        ret = []
+        async for i in cursor:
+            ret.append(i)
+        return ret
+
+    def GetCollection(self, s):
+        return self.db.get_collection(s)
 
 
 cookieDriver = None
@@ -199,3 +227,6 @@ async def AsyncGetCookie(id: str, key: str = None):
 
 async def AsyncSetCookie(id: str, key: str, value=None):
     (await (await GetAsyncCookieDriver()).AsyncSetCookie(id, key, value))
+
+async def AsyncFindCookie(id: str, key: str):
+    (await (await GetAsyncCookieDriver()).AsyncFindCookie(id, key))

@@ -1,4 +1,5 @@
 # 当前Cookie使用
+主键为ID
 
 ## 群组/个人数据存放
 [Bot名称]:[Kaiheila/QQ]:[Group/User]:Id

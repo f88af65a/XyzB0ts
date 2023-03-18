@@ -26,6 +26,9 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "banTarget", self.banTarget)
         self.addTarget("FriendMessage", "banTarget", self.banTarget)
         self.addTarget("GROUP:9", "banTarget", self.banTarget)
+        self.addTarget("FriendMessage", "角色权限列表", self.permissionList)
+        self.addTarget("GroupMessage", "角色权限列表", self.permissionList)
+        self.addTarget("GROUP:9", "角色权限列表", self.permissionList)
 
     async def role(self, request):
         '''#角色 add/remove ID 角色'''
@@ -36,12 +39,11 @@ class plugin(BotPlugin):
         if ":" in data[3]:
             await request.sendMessage("角色中不许包含:")
             return
-
         userId = request.userFormat(data[2])
         if request.isSingle():
             data[2] = (
                 f"{request.getBot().getBotName()}:"
-                f"{request.userFormat(data[2])}"
+                f"{userId}"
             )
         else:
             data[2] = request.getId()
@@ -57,7 +59,7 @@ class plugin(BotPlugin):
             if data[3] in cookie[userId]:
                 cookie[userId].remove(data[3])
         else:
-            await request.sendMessage("你干啥呢")
+            await request.sendMessage(self.role.__doc__)
             return
         await AsyncSetCookie(data[2], "roles", cookie)
         await request.sendMessage("修改完成")
@@ -86,24 +88,39 @@ class plugin(BotPlugin):
             if data[3] in cookie[data[2]]:
                 cookie[data[2]].remove(data[3])
         else:
-            await request.sendMessage("你干啥呢")
+            await request.sendMessage(self.permission.__doc__)
             return
         await request.AsyncSetCookie("permission", cookie, localId)
         await request.sendMessage("修改完成")
 
     async def getRole(self, request):
         "getRole #查看当前所拥有的角色"
-        ret = await request.getRoles()
-        userId = request.getUserId()
-        if userId is None:
-            return False
-        systemCookie = getConfig()["systemCookie"]
-        if userId in systemCookie["user"]:
-            ret |= set(systemCookie["user"][userId])
-        cookie = await request.AsyncGetCookie("roles")
-        if cookie and userId in cookie:
-            ret |= set(cookie[userId])
-        await request.send(str(ret))
+        data = request.getFirstTextSplit()
+        if len(data) == 1:
+            ret = await request.getRoles()
+            userId = request.getUserId()
+            if userId is None:
+                return False
+            systemCookie = getConfig()["systemCookie"]
+            if userId in systemCookie["user"]:
+                ret |= set(systemCookie["user"][userId])
+            cookie = await request.AsyncGetCookie("roles")
+            if cookie and userId in cookie:
+                ret |= set(cookie[userId])
+            await request.send(str(ret))
+            return
+        targetId = data[1]
+        if request.isSingle():
+            cookie = await request.AsyncGetCookie(
+                "roles", request.getBot().getBotName() + ":" + targetId)
+        else:
+            cookie = await request.AsyncGetCookie("roles")
+        if cookie is None:
+            cookie = {}
+        if targetId not in cookie:
+            cookie[targetId] = []
+        cookie = cookie[targetId]
+        await request.send("该用户含有以下角色:\n" + "\n".join(cookie))
 
     async def banTarget(self, request):
         '''banTarget add/remove 命令 ID'''
@@ -132,6 +149,28 @@ class plugin(BotPlugin):
             cookie
         )
         await request.send("修改完成")
+
+    '''
+    返回格式
+    '''
+    async def permissionList(self, request):
+        '''角色权限列表 #查看当前所有权限'''
+        localId = request.getId()
+        if request.isSingle():
+            localId = request.getBot().getBotName()
+        cookie = await request.AsyncGetCookie("permission", localId)
+        if cookie is None:
+            cookie = dict()
+        retDict = {}
+        for i in cookie:
+            for j in cookie[i]:
+                if j not in retDict:
+                    retDict[j] = []
+                retDict[j].append("  " + i)
+        retMsg = []
+        for i in retDict:
+            retMsg.append(i + ":\n" + "\n".join(retDict[i]))
+        await request.send("\n".join(retMsg))
 
 
 def handle(*args, **kwargs):

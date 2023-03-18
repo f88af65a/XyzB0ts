@@ -22,7 +22,7 @@
             }
         },
         "directmessagecreate": {
-            "path": "direct-message/create",
+            "path": "/direct-message/create",
             "method": "post",
             "parameter": {
                 "type": "int",
@@ -61,6 +61,93 @@
             "method": "get",
             "parameter": {
                 "guild_id": "str"
+            }
+        },
+        "guildrolegrant":{
+            "path": "/guild-role/grant",
+            "method": "post",
+            "parameter": {
+                "guild_id": "str",
+                "user_id": "str",
+                "role_id": "int"
+            }
+        },
+        "guildrolerevoke": {
+            "path": "/guild-role/revoke",
+            "method": "post",
+            "parameter": {
+                "guild_id": "str",
+                "user_id": "str",
+                "role_id": "int"
+            }
+        },
+        "directmessageupdate": {
+            "path": "/direct-message/update",
+            "method": "post",
+            "parameter": {
+                "msg_id": "str",
+                "content": "str"
+            }
+        },
+        "channelcreate": {
+            "path": "/channel/create",
+            "method": "post",
+            "parameter": {
+                "guild_id": "str",
+                "parent_id": "str",
+                "name": "str",
+                "type": "int",
+                "limit_amount": "int",
+                "voice_quality": "str",
+                "is_category": "int"
+            }
+        },
+        "guildrolecreate": {
+            "path": "/guild-role/create",
+            "method": "post",
+            "parameter": {
+                "name": "str",
+                "guild_id": "str"
+            }
+        },
+        "channelroleindex": {
+            "path": "/channel-role/index",
+            "method": "get",
+            "parameter": {
+                "channel_id": "str"
+            }
+        },
+        "channelrolecreate": {
+            "path": "/channel-role/create",
+            "method": "post",
+            "parameter": {
+                "channel_id": "str",
+                "type": "str",
+                "value": "str"
+            }
+        },
+        "channelroleupdate": {
+            "path": "/channel-role/update",
+            "method": "post",
+            "parameter": {
+                "channel_id": "str",
+                "type": "str",
+                "value": "str",
+                "allow": "int",
+                "deny": "int"
+            }
+        },
+        "guildroleupdate": {
+            "path": "/guild-role/update",
+            "method": "post",
+            "parameter": {
+                "guild_id": "str",
+                "role_id": "int",
+                "name": "str",
+                "color": "int",
+                "hoist": "int",
+                "mentionable": "int",
+                "permissions": "int"
             }
         }
     }

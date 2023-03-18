@@ -17,7 +17,7 @@ class plugin(BotPlugin):
         "addcard [以半角逗号分隔的文本,最长32位]"
         data = request.getFirstTextSplit()
         if len(data) != 2:
-            await request.sendMessage(self.setFormat.__doc__)
+            await request.sendMessage(self.addcard.__doc__)
             return
         data = data[1].split(",")
         for i in data:

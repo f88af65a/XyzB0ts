@@ -23,13 +23,13 @@ class Cookie:
     def setCookie(self, id: str, key: str, value):
         pass
 
-    async def asyncGetCookie(self, id: str, key: str = None):
+    async def AsyncGetCookie(self, id: str, key: str = None):
         return self.getCookie(id, key)
 
-    async def asyncSetCookie(self, id: str, key: str, value):
+    async def AsyncSetCookie(self, id: str, key: str, value):
         self.setCookie(id, key, value)
 
-    async def FindCookie(self, key: str):
+    async def AsyncFindCookie(self, key: str):
         pass
 
 
@@ -170,6 +170,7 @@ class AioMongoDBCookie(Cookie):
                 upsert=True
             )
 
+    # 根据id搜索Cookie
     async def AsyncFindCookie(self, key: str):
         cursor = self.dataSet.find(
             {"ID": {"$regex": key}},
@@ -227,6 +228,7 @@ async def AsyncGetCookie(id: str, key: str = None):
 
 async def AsyncSetCookie(id: str, key: str, value=None):
     (await (await GetAsyncCookieDriver()).AsyncSetCookie(id, key, value))
+
 
 async def AsyncFindCookie(id: str, key: str):
     (await (await GetAsyncCookieDriver()).AsyncFindCookie(id, key))

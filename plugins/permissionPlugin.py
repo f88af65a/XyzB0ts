@@ -109,17 +109,19 @@ class plugin(BotPlugin):
                 ret |= set(cookie[userId])
             await request.send(str(ret))
             return
-        targetId = data[1]
+        userId = request.userFormat(data[1])
         if request.isSingle():
             cookie = await request.AsyncGetCookie(
-                "roles", request.getBot().getBotName() + ":" + targetId)
+                "roles",
+                request.getBot().getBotName() + ":" + userId
+            )
         else:
             cookie = await request.AsyncGetCookie("roles")
         if cookie is None:
             cookie = {}
-        if targetId not in cookie:
-            cookie[targetId] = []
-        cookie = cookie[targetId]
+        if userId not in cookie:
+            cookie[userId] = []
+        cookie = cookie[userId]
         await request.send("该用户含有以下角色:\n" + "\n".join(cookie))
 
     async def banTarget(self, request):

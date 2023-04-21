@@ -107,7 +107,7 @@ class plugin(BotPlugin):
             await request.send("没有权限")
 
     async def searchCookie(self, request):
-        "searchCookie key #测试权限"
+        "searchCookie key #搜索cookie"
         data = request.getFirstTextSplit()
         if len(data) != 2:
             await request.send(self.searchCookie.__doc__)

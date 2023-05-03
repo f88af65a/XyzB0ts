@@ -11,6 +11,12 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "help", self.helper)
         self.addTarget("FriendMessage", "help", self.helper)
         self.addTarget("GROUP:9", "help", self.helper)
+        self.addTarget("GroupMessage", "?", self.helper)
+        self.addTarget("FriendMessage", "?", self.helper)
+        self.addTarget("GROUP:9", "?", self.helper)
+        self.addTarget("GroupMessage", "帮助", self.helper)
+        self.addTarget("FriendMessage", "帮助", self.helper)
+        self.addTarget("GROUP:9", "帮助", self.helper)
 
     async def helper(self, request):
         """help [命令名]"""

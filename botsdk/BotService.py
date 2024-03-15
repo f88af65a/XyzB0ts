@@ -70,7 +70,7 @@ class BotService(Module):
         # 同步至zookeeper
         await self.SyncToKeeper(bot)
         debugPrint(
-            f'''账号{botName}同步至zookeeper成功''',
+            f'''账号{botName}同步至keeper成功''',
             fromName="BotService"
         )
 

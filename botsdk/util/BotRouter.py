@@ -1,5 +1,4 @@
 import asyncio
-import re
 
 import ujson as json
 from thefuzz import fuzz
@@ -84,10 +83,6 @@ class TypeRouter(BotRouter):
 class TargetRouter(BotRouter):
     def init(self):
         self.cmdTarget = tuple(getConfig()["commandTarget"])
-        self.pattern = re.compile(
-            (r"^(\[(\S*=\S*)&?\])?(["
-             + "".join(["\\" + i for i in getConfig()["commandTarget"]])
-             + r"])(\S+)( \S+)*$"))
 
     async def sendToHandle(self, route, target, request):
         await route.sendMessage(
@@ -117,6 +112,7 @@ class TargetRouter(BotRouter):
         # 类型判断与命令获取
         if (target := request.getFirstText()) is None or not target:
             return [False, None]
+        target = target.split(" ")[0]
         if not target.startswith(self.cmdTarget):
             return [False, None]
         for i in self.cmdTarget:
@@ -140,26 +136,6 @@ class TargetRouter(BotRouter):
             if not await permissionCheck(request, target):
                 await request.sendMessage("权限限制")
                 return [False, None]
-            '''
-            controlData = {"size": 1, "wait": 0}
-            if reData.group(1) is not None:
-                # 控制字段权限判断
-                if not await roleCheck(
-                        request,
-                        {"System:Owner", "System:ADMINISTRATOR"}):
-                    await request.sendMessage("使用控制字段权限不足")
-                    return [False, None]
-                # 控制字段提取
-                controlList = reData.group(1)[1:-1].split("&")
-                for i in controlList:
-                    controlLineSplit = i.split("=")
-                    if len(controlLineSplit) != 2:
-                        await request.sendMessage("控制字段有误")
-                        return [False, None]
-                    else:
-                        controlData[controlLineSplit[0]] = controlLineSplit[1]
-            request.setControlData(controlData)
-            '''
             # 设置处理模块名
             request.setHandleModuleName(
                 pluginsManager.getHandleByTarget(

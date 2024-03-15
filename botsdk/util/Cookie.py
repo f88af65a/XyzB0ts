@@ -5,7 +5,7 @@ import pymongo
 import redis
 from redis import asyncio as aioredis
 from ujson import dumps, loads
-
+import asyncio
 from .JsonConfig import getConfig
 from .TimeTest import timeTest
 
@@ -100,7 +100,8 @@ class AioRedisCookie(Cookie):
 
 class AioMongoDBCookie(Cookie):
     def __init__(self):
-        pass
+        self.cache = {}
+        self.lock = asyncio.Lock()
 
     async def init(self):
         self.conn = motor.motor_asyncio.AsyncIOMotorClient(
@@ -128,9 +129,51 @@ class AioMongoDBCookie(Cookie):
         except Exception:
             pass
 
+    async def AsyncSetCache(self, data, key, id=None):
+        async with self.lock:
+            if key not in self.cache:
+                self.cache[key] = {}
+            if id is None:
+                self.cache[key] = data
+            else:
+                self.cache[key][id] = data
+
+    async def AsyncGetCache(self, key, id=None):
+        async with self.lock:
+            if key not in self.cache:
+                return None
+            if id is None:
+                return self.cache[key]
+            if id not in self.cache[key]:
+                return None
+            return self.cache[key][id]
+
+    async def AsyncDelCache(self, key, id=None):
+        async with self.lock:
+            if key not in self.cache:
+                return
+            if id is None:
+                del self.cache[key]
+                return
+            if id not in self.cache[key]:
+                return
+            del self.cache[key][id]
+
+    async def AsyncGetCookie(self, id: str, key: str = None):
+        ret = await self.AsyncGetCache(key, id)
+        if ret is not None:
+            return ret
+        ret = await self._AsyncGetCookie(id, key)
+        await self.AsyncSetCache(ret, id, key)
+        return ret
+
+    async def AsyncSetCookie(self, id: str, key: str, value=None):
+        await self.AsyncDelCache(id, key)
+        await self._AsyncSetCookie(id, key, value)
+
     # 不存在返回None，存入什么返回什么
     @timeTest
-    async def AsyncGetCookie(self, id: str, key: str = None):
+    async def _AsyncGetCookie(self, id: str, key: str = None):
         if key == "_id" or key == "ID":
             return None
         if not key:
@@ -154,7 +197,7 @@ class AioMongoDBCookie(Cookie):
 
     # 暂时无返回值
     @timeTest
-    async def AsyncSetCookie(self, id: str, key: str, value=None):
+    async def _AsyncSetCookie(self, id: str, key: str, value=None):
         if key == "_id" or key == "ID":
             return
         if value is None:

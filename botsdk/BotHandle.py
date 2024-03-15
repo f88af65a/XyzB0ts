@@ -3,7 +3,6 @@ import os
 import threading
 import time
 
-from confluent_kafka import Consumer
 from ujson import loads
 
 from .Module import Module
@@ -11,45 +10,27 @@ from .util.BotPluginsManager import BotPluginsManager
 from .util.Error import debugPrint, printTraceBack
 from .util.HandlePacket import asyncHandlePacket
 from .util.Tool import getAttrFromModule
-from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 
 class BotHandle(Module):
     async def runInLoop(self):
-        # 将Handle信息同步至Zookeeper
-        if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
-                        "type": "BotHandle",
-                        "startTime": str(int(time.time()))
-                    }):
-            debugPrint(
-                    '''BotHandle同步至zookeeper失败''',
-                    fromName="BotRouter")
-        self.addToExit(GetZKClient().stop)
-        debugPrint('''BotHandle同步至zookeeper成功''', fromName="BotHandle")
-        fetchMessageThread = threading.Thread(target=self.fetchMessageThread)
-        fetchMessageThread.start()
-
-    def fetchMessageThread(self):
         debugPrint('''消息获取线程启动''', fromName="BotHandle")
-        c = Consumer({
-            'bootstrap.servers': 'localhost:9092',
-            'group.id': "targetHandleGroup"
-        })
-        c.subscribe(['targetHandle'])
-        self.addToExit(c.close)
+        # 将Handle信息同步至Zookeeper
+        await self.keeper.Set(
+            f"/BotProcess/{os.getpid()}",
+            {
+                "type": "BotHandle",
+                "startTime": str(int(time.time()))
+            }
+        )
         pluginsManager = BotPluginsManager()
         debugPrint('''插件初始化完成''', fromName="BotHandle")
         while True:
             # 获取msg
-            msg = c.poll(1.0)
-            if msg is None:
-                continue
-            if msg.error():
-                debugPrint(msg.error())
-                continue
-
-            # 初始化msg
-            msg = loads(msg.value())
+            msg = await self.mq.AsyncFetchMessage(
+                "targetHandle"
+            )
+            msg = loads(msg)
             if "code" not in msg:
                 debugPrint("MSG中缺少code", fromName="BotRoute")
                 continue

@@ -1,11 +1,9 @@
 import asyncio
 import os
 import random
-import threading
 import time
 import uuid
 
-from confluent_kafka import Consumer
 from ujson import dumps, loads
 
 from .Module import Module
@@ -13,7 +11,6 @@ from .util.Args import GetArgs
 from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.JsonConfig import getConfig
 from .util.Tool import getAttrFromModule
-from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 
 class BotService(Module):
@@ -42,27 +39,20 @@ class BotService(Module):
                 break
         return loginRetrySize
 
-    def SyncToZookeeper(self, bot):
-        zk = GetZKClient()
+    async def SyncToKeeper(self, bot):
         botPath = f"/Bot/{bot.getBotName()}"
         botData = {
                 "name": bot.getBotName(),
                 "startTime": str(int(time.time())),
                 "data": bot.getData()
             }
-        if zk.exists(botPath):
-            zk.set(botPath, dumps(botData).encode())
-        elif not AddEphemeralNode("/Bot", bot.getBotName(), botData):
-            return False
-        return True
+        await self.keeper.Set(
+            botPath,
+            botData
+        )
 
     @asyncTraceBack
     async def runInLoop(self, botData):
-        self.addToExit(GetZKClient().stop)
-        if GetZKClient().exists(
-                f'''/Bot/{botData["botName"]}'''):
-            debugPrint("检测到Bot以登录", fromName="BotService")
-            self.exit()
         # 初始化Bot
         botType = botData["botType"]
         botPath = (getConfig()["botPath"] + botType).replace("/", ".")
@@ -78,33 +68,23 @@ class BotService(Module):
         debugPrint(f'''账号{botName}登陆成功''', fromName="BotService")
 
         # 同步至zookeeper
-        if not self.SyncToZookeeper(bot):
-            debugPrint(
-                f'''账号{botName}同步至zookeeper失败''',
-                fromName="BotService"
-            )
-            self.exit()
+        await self.SyncToKeeper(bot)
         debugPrint(
             f'''账号{botName}同步至zookeeper成功''',
             fromName="BotService"
         )
 
         # 将Service信息同步至Zookeeper
-        if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
-                        "type": "BotService",
-                        "startTime": str(int(time.time())),
-                        "botType": botType,
-                        "botName": botName
-                    }):
-            debugPrint(
-                    '''BotService同步至zookeeper失败''',
-                    fromName="BotService")
-            return
-        debugPrint('''BotService同步至zookeeper成功''', fromName="BotService")
-
-        # 启动kafka监听线程
-        t = threading.Thread(target=self.kafkaThread, args=(botName,))
-        t.start()
+        await self.keeper.Set(
+            f"/BotProcess/{os.getpid()}",
+            {
+                "type": "BotService",
+                "startTime": str(int(time.time())),
+                "botType": botType,
+                "botName": botName
+             }
+        )
+        debugPrint('''BotService同步至keeper成功''', fromName="BotService")
 
         # eventLoop
         while True:
@@ -134,7 +114,7 @@ class BotService(Module):
                     debugPrint(
                         f'''账号{botName}重连成功''',
                         fromName="BotService")
-                    if not self.SyncToZookeeper(bot):
+                    if not self.SyncToKeeper(bot):
                         debugPrint(
                             f'''账号{botName}同步失败''',
                             fromName="BotService")
@@ -173,8 +153,8 @@ class BotService(Module):
 
                 # 过滤bot自己发的消息
                 if (await bot.filter(request)):
-                    self.sendMessage(
-                        "routeList",
+                    await self.sendMessage(
+                        "RouteQueue",
                         dumps(
                             {
                                 "code": 0,
@@ -184,31 +164,11 @@ class BotService(Module):
                     )
                     debugPrint(
                         f"{localUuid}送至Router",
-                        fromName="BotService")
+                        fromName="BotService"
+                    )
             await asyncio.sleep(0)
-
-    def kafkaThread(self, botName):
-        try:
-            c = Consumer({
-                'bootstrap.servers': 'localhost:9092',
-                'group.id': botName
-            })
-            c.subscribe(['BotService'])
-            self.addToExit(c.close)
-            while True:
-                msg = c.poll(1.0)
-                if msg is not None and not msg.error():
-                    msg = loads(msg.value())
-                    if "code" not in msg:
-                        debugPrint("MSG缺少code", fromName="BotService")
-                    else:
-                        if msg["code"] == 1 and msg["data"] == botName:
-                            self.exit()
-        except Exception:
-            printTraceBack()
-            self.exit()
 
     async def run(self):
         await self.runInLoop(
-                loads(GetArgs()["account"].replace("'", '"'))
-                )
+            self.extend["account"]
+        )

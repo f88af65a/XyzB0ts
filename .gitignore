@@ -115,3 +115,4 @@ dmypy.json
 
 # vscode
 .vscode/
+extendPlugins/bbStats.py

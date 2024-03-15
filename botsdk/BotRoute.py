@@ -1,9 +1,7 @@
 import asyncio
 import os
-import threading
 import time
 
-from confluent_kafka import Consumer
 from ujson import loads
 
 from .Module import Module
@@ -12,7 +10,6 @@ from .util.BotRouter import GeneralRouter, TargetRouter, TypeRouter
 from .util.Error import asyncTraceBack, debugPrint, printTraceBack
 from .util.TimeTest import asyncTimeTest
 from .util.Tool import getAttrFromModule
-from .util.ZookeeperTool import AddEphemeralNode, GetZKClient
 
 
 class BotRoute(Module):
@@ -23,37 +20,23 @@ class BotRoute(Module):
     @asyncTraceBack
     @asyncTimeTest
     async def runInLoop(self):
-        # 将Router信息同步至Zookeeper
-        if not AddEphemeralNode("/BotProcess", f"{os.getpid()}", {
-                        "type": "BotRouter",
-                        "startTime": str(int(time.time()))
-                    }):
-            debugPrint(
-                    '''BotRouter同步至zookeeper失败''',
-                    fromName="BotRouter")
-            return
-        self.addToExit(GetZKClient().stop)
-        debugPrint('''BotRouter同步至zookeeper成功''', fromName="BotRouter")
-        fetchMessageThread = threading.Thread(target=self.fetchMessageThread)
-        fetchMessageThread.start()
-
-    def fetchMessageThread(self):
-        debugPrint('''消息获取线程启动''', fromName="BotRouter")
-        c = Consumer({
-            'bootstrap.servers': 'localhost:9092',
-            'group.id': "routeListGroup"
-        })
-        c.subscribe(['routeList'])
-        self.addToExit(c.close)
+        # 将Router信息同步至keeper
+        await self.keeper.Set(
+            f"/BotProcess/{os.getpid()}",
+            {
+                "type": "BotRouter",
+                "startTime": str(int(time.time()))
+            }
+        )
+        debugPrint('''BotRouter同步至keeper成功''', fromName="BotRouter")
         while True:
             # Route
-            msg = c.poll(1.0)
+            msg = await self.mq.AsyncFetchMessage(
+                "RouteQueue"
+            )
             if msg is None:
                 continue
-            if msg.error():
-                debugPrint(msg.error())
-                continue
-            msg = loads(msg.value())
+            msg = loads(msg.decode())
             if "code" not in msg:
                 debugPrint("MSG中缺少code", fromName="BotRoute")
                 continue
@@ -69,8 +52,9 @@ class BotRoute(Module):
                 )(msg[0], msg[1])
             debugPrint(f"成功收到消息:{request.getUuid()}", fromName="BotRoute")
             asyncio.run_coroutine_threadsafe(
-                    self.routeRequest(request),
-                    self.loop)
+                self.routeRequest(request),
+                self.loop
+            )
 
     @asyncTimeTest
     async def routeRequest(self, request):

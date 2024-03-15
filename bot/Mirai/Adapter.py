@@ -17,4 +17,7 @@ class MiraiAdapter(Adapter):
     async def post(self, parameter, **kwargs):
         return json.loads(
             await botsdk.util.HttpRequest.post(
-                self.url + parameter["path"], kwargs))
+                self.url + parameter["path"], kwargs,
+                headers={"Content-Type": "application/json"}
+            )
+        )

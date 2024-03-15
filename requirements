@@ -1,7 +1,4 @@
-confluent_kafka
-kazoo
 aiohttp
-redis
 ujson
 pillow
 dnspython
@@ -11,3 +8,4 @@ thefuzz
 python-Levenshtein
 pymongo
 motor
+redis

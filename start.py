@@ -5,24 +5,30 @@ import botsdk.BotLoopEvent
 import os
 import sys
 from botsdk.util.Args import GetArgs
+from botsdk.util.JsonConfig import getConfig
 from botsdk.util.Cookie import InitAsyncCookieDriver
+import asyncio
 
 
-def start():
-    os.chdir(sys.path[0])
-    args = GetArgs()
-    handle = None
-    if "service" in args:
-        handle = botsdk.BotService.BotService()
-    if "route" in args:
-        handle = botsdk.BotRoute.BotRoute()
-    if "handle" in args:
-        handle = botsdk.BotHandle.BotHandle()
-    if "loopevent" in args:
-        handle = botsdk.BotLoopEvent.BotLoopEvent()
-    handle.AddOnStart(InitAsyncCookieDriver)
-    handle.start()
+async def main():
+    await InitAsyncCookieDriver()
+    modules = [
+        botsdk.BotRoute.BotRoute(),
+        botsdk.BotHandle.BotHandle(),
+        botsdk.BotLoopEvent.BotLoopEvent()
+    ]
+    for i in getConfig()["account"]:
+        modules.append(
+            botsdk.BotService.BotService({"account": i})
+        )
+    for i in modules:
+        i.start()
+    while True:
+        await asyncio.sleep(1)
 
 
 if __name__ == "__main__":
-    start()
+    os.chdir(sys.path[0])
+    asyncio.run(
+        main()
+    )

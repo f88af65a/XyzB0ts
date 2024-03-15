@@ -50,7 +50,7 @@ class GeneralRouter(BotRouter):
 
 class TypeRouter(BotRouter):
     async def sendToHandle(self, route, request):
-        route.sendMessage(
+        await route.sendMessage(
                 "targetHandle",
                 json.dumps(
                     {
@@ -83,13 +83,14 @@ class TypeRouter(BotRouter):
 
 class TargetRouter(BotRouter):
     def init(self):
+        self.cmdTarget = tuple(getConfig()["commandTarget"])
         self.pattern = re.compile(
             (r"^(\[(\S*=\S*)&?\])?(["
              + "".join(["\\" + i for i in getConfig()["commandTarget"]])
              + r"])(\S+)( \S+)*$"))
 
     async def sendToHandle(self, route, target, request):
-        route.sendMessage(
+        await route.sendMessage(
             "targetHandle",
             json.dumps(
                 {
@@ -116,12 +117,12 @@ class TargetRouter(BotRouter):
         # 类型判断与命令获取
         if (target := request.getFirstText()) is None or not target:
             return [False, None]
-        # 正则匹配
-        reData = self.pattern.search(target)
-        # target获取
-        if reData is None or reData.group(4) is None:
+        if not target.startswith(self.cmdTarget):
             return [False, None]
-        target = reData.group(4)
+        for i in self.cmdTarget:
+            if target.startswith(i):
+                target = target[len(i):]
+                break
         if ":" in target:
             needRole = ":".join(target.split(":")[:-1])
             if not await roleCheck(request, {needRole}):
@@ -139,6 +140,7 @@ class TargetRouter(BotRouter):
             if not await permissionCheck(request, target):
                 await request.sendMessage("权限限制")
                 return [False, None]
+            '''
             controlData = {"size": 1, "wait": 0}
             if reData.group(1) is not None:
                 # 控制字段权限判断
@@ -157,6 +159,7 @@ class TargetRouter(BotRouter):
                     else:
                         controlData[controlLineSplit[0]] = controlLineSplit[1]
             request.setControlData(controlData)
+            '''
             # 设置处理模块名
             request.setHandleModuleName(
                 pluginsManager.getHandleByTarget(

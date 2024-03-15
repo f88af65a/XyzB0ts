@@ -3,22 +3,22 @@ import logging
 from os import _exit
 from threading import Lock
 
-from confluent_kafka import Producer
-
 from .util.Error import debugPrint
 from .util.JsonConfig import getConfig
+from .util.MessageBus import GetMessageBus
+from .util.Keeper import GetKeeper
 
 
 class Module:
-    def __init__(self):
+    def __init__(self, extend=None):
         self.exitList = []
         self.exitListLock = Lock()
         self.onStartList = list()
         self.onLoopList = list()
-        self.p = Producer(
-                {'bootstrap.servers': getConfig()["kafka"]}
-            )
+        self.mq = GetMessageBus()
+        self.keeper = GetKeeper()
         self.init()
+        self.extend = extend
 
     def addToExit(self, func, *args, **kwargs):
         self.exitListLock.acquire()
@@ -57,25 +57,27 @@ class Module:
         pass
 
     async def _start(self):
-        await self.onStart()
-        await self.run()
+        try:
+            await self.onStart()
+            await self.run()
+        except Exception as e:
+            print(e)
 
     def start(self):
         loop = asyncio.get_event_loop()
         self.loop = loop
-        asyncio.run_coroutine_threadsafe(self._start(), self.loop)
-        self.loop.run_forever()
-
-    def sendMessage(self, topic, message: bytes):
-        self.p.poll(0)
-        self.p.produce(
-            topic,
-            message,
-            callback=self.deliveryReport
+        asyncio.run_coroutine_threadsafe(
+            self._start(),
+            self.loop
         )
-        self.p.flush()
 
-    def deliveryReport(self, err, msg):
+    async def sendMessage(self, topic, message: bytes):
+        await self.mq.AsyncSendMessage(
+            topic,
+            message
+        )
+
+    async def deliveryReport(self, err, msg):
         if err is None:
             return
         debugPrint(f"消息发送失败:{err}", fromName="Module")

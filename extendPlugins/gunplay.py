@@ -122,7 +122,7 @@ class DuiQiangGame:
             if buffer["end"] < self.round:
                 del member["buffer"][buffer_mark]
                 continue
-            if buffer["type"] == "flash":
+            if buffer["type"] == "flash" and can_action_flag:
                 if buffer["end"] >= self.round:
                     self.AddRoundMessage(
                         f'{member["name"]}被白了无法行动'
@@ -359,7 +359,8 @@ class DuiQiangGame:
                     continue
                 action_player = self.GetRandomPlayer()
                 if not self.CheckBuffer(action_player):
-                    self.SendRoundMessage()
+                    await self.SendRoundMessage()
+                    await asyncio.sleep(5)
                     self.round += 1
                     continue
                 r = random.randint(1, 100)

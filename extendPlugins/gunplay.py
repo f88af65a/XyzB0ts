@@ -8,7 +8,7 @@ import traceback
 class DuiQiangGame:
     DEFAULT_DMG = 5
     DEFAULT_BULLETS = 1
-    DEFAULT_MIN_DMG_MULTI = 2
+    DEFAULT_MIN_DMG_MULTI = 1
     DEFAULT_MAX_DMG_MULTI = 5
 
     def __init__(self, request, members, add_log, sleep_time=5):
@@ -62,6 +62,13 @@ class DuiQiangGame:
         return self.member_data[
             self.members[random.randint(0, len(self.members) - 1)]
         ]
+
+    def RandomMembers(self):
+        for i in range(len(self.members) - 1):
+            mark = random.randint(i + 1, len(self.members) - 1)
+            local_name = self.members[i]
+            self.members[i] = self.members[mark]
+            self.members[mark] = local_name
 
     def GetLowActionPlayer(self):
         action_player_list = [
@@ -182,18 +189,33 @@ class DuiQiangGame:
         return False
 
     def RewardRound(self, member):
-        action_point = random.randint(1, 100)
-        if action_point <= 30 and member["hp"] < 100:
-            old_hp = member["hp"]
-            member["hp"] += 5 * random.randint(1, 10)
-            member["hp"] = min(
-                member["hp"],
-                100
-            )
+        if random.randint(1, 100) <= 50:
+            move_distance = 6
+            location = member["location"]
+            left = max(0, location - move_distance)
+            right = min(15, location + move_distance)
+            new_location = random.randint(left, right)
+            member["location"] = new_location
             self.AddRoundMessage(
-                f'{member["name"]}({old_hp} -> {member["hp"]})选择了打血'
+                f'{member["name"]}({member["hp"]})改善了战术位置'
             )
-        elif action_point <= 60:
+        action_point = random.randint(1, 100)
+        if action_point <= 35:
+            if member["hp"] < 100:
+                old_hp = member["hp"]
+                member["hp"] += 5 * random.randint(1, 10)
+                member["hp"] = min(
+                    member["hp"],
+                    100
+                )
+                self.AddRoundMessage(
+                    f'{member["name"]}({old_hp} -> {member["hp"]})选择了打血'
+                )
+            else:
+                self.AddRoundMessage(
+                    f'{member["name"]}({member["hp"]})打血的时候发现血是满的'
+                )
+        elif action_point <= 70:
             weapon = random.randint(1, 100)
             if weapon <= 35:
                 member["dmg"] += random.randint(5, 20)
@@ -206,31 +228,11 @@ class DuiQiangGame:
             self.AddRoundMessage(
                 f'{member["name"]}({member["hp"]})选择了起枪'
             )
-        elif action_point <= 80:
+        elif action_point <= 100:
             member["range"] += 1
             self.AddRoundMessage(
                 f'{member["name"]}({member["hp"]})装了个镜子'
             )
-        elif action_point <= 100:
-            move_distance = 6
-            location = member["location"]
-            left = max(0, location - move_distance)
-            right = min(15, location + move_distance)
-            new_location = random.randint(left, right)
-            member["location"] = new_location
-            self.AddRoundMessage(
-                f'{member["name"]}({member["hp"]})改善了战术位置'
-            )
-        '''
-            member["armor"] += random.randint(5, 35)
-            member["armor"] = min(
-                member["armor"],
-                100
-            )
-            self.AddRoundMessage(
-                f'{member["name"]}({member["hp"]})起了一件甲'
-            )
-        '''
 
     def AddItem(self, member, item):
         member["items"].append(item)
@@ -419,6 +421,7 @@ class DuiQiangGame:
             self.RandomGiveItem(member)
 
     async def GameLoop(self):
+        random.seed(int(time.time()))
         while len(self.members) > 1:
             try:
                 if self.MidRoundMessage():
@@ -426,23 +429,25 @@ class DuiQiangGame:
                     await self.SendRoundMessage()
                     await asyncio.sleep(self.sleep_time)
                     continue
-                if random.randint(0, 1) == 0:
-                    action_player = self.GetRandomPlayer()
-                else:
+                if random.randint(0, 1):
                     action_player = self.GetLowActionPlayer()
+                else:
+                    action_player = self.GetRandomPlayer()
                 if not self.CheckBuffer(action_player):
                     self.SetAction(action_player, self.round)
                     await self.SendRoundMessage()
+                    self.RandomMembers()
                     self.round += 1
                     await asyncio.sleep(self.sleep_time)
                     continue
                 r = random.randint(1, 100)
-                if r <= 50:
+                if r <= 40:
                     self.RewardRound(action_player)
                 elif r <= 100:
                     await self.AttackRound(action_player)
                 self.SetAction(action_player, self.round)
                 await self.SendRoundMessage()
+                self.RandomMembers()
                 self.round += 1
             except Exception:
                 print(traceback.format_exc())

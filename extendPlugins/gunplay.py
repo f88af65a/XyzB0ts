@@ -108,6 +108,23 @@ class DuiQiangGame:
             ][0]
         ]
 
+    def GetRandomPlayerByLocation(
+            self, member, target_member, radius):
+        member_list = [i for i in self.members]
+        member_list.remove(member["name"])
+        if len(member_list) == 0:
+            return None
+        origin_location = target_member["location"]
+        ret_member_list = []
+        for i in member_list:
+            location = self.member_data[i]["location"]
+            if (location >= origin_location - radius
+                    and location <= origin_location + radius):
+                ret_member_list.append(i)
+        return self.member_data[
+            ret_member_list[random.randint(0, len(ret_member_list) - 1)]
+        ]
+
     def GiveDamageInfo(
             self, member, target_member, damage, origin_damage):
         old_hp = target_member["hp"]
@@ -233,6 +250,11 @@ class DuiQiangGame:
             self.AddRoundMessage(
                 f'{member["name"]}({member["hp"]})装了个镜子'
             )
+        if random.randint(1, 100) <= 35:
+            self.AddBuffer(member, "camper", self.round+2)
+            self.AddRoundMessage(
+                f'{member["name"]}({member["hp"]})开蹲'
+            )
 
     def AddItem(self, member, item):
         member["items"].append(item)
@@ -285,7 +307,9 @@ class DuiQiangGame:
                     bomb_list.append(f'{i}({old_hp} -> {p["hp"]})')
                     if not self.IsLive(p):
                         dead_list.append(i)
-                        await self.Kill(member, p)
+            for i in dead_list:
+                p = self.member_data[i]
+                await self.Kill(member, p)
             self.AddRoundMessage(
                 f'{member["name"]}朝{target_member["name"]}丢了一颗雷，炸到了'
             )
@@ -335,7 +359,7 @@ class DuiQiangGame:
         hit_dmg = dmg * random.randint(
             member["min_dmg_multi"],
             member["max_dmg_multi"]
-        )
+        ) + int(self.round/2)
         if hit_dmg >= 80:
             self.AddRoundMessage(
                 "时间差不多咯"
@@ -363,37 +387,43 @@ class DuiQiangGame:
         if not hit:
             self.AddRoundMessage("马了,马了好啊")
 
-    async def ShotRound(self, member):
+    async def ShotRound(self, member, target_member=None, deep=0):
         action_point = random.randint(1, 100)
-        if action_point <= 50:
-            self.AddRoundMessage(
-                f'{member["name"]}随便挑了个人'
-            )
-            target_member = self.GetRandomPlayerReject(member)
-        elif action_point <= 100:
-            self.AddRoundMessage(
-                f'{member["name"]}挑了个近的'
-            )
-            target_member = self.GetNearestPlayer(member)
+        if target_member is None:
+            if action_point <= 50:
+                target_member = self.GetRandomPlayerReject(member)
+            elif action_point <= 100:
+                target_member = self.GetNearestPlayer(member)
         if target_member is None:
             self.AddRoundMessage("你别说，没找到人,嘿嘿")
             return
+        self.AddRoundMessage(
+            f'{member["name"]}瞄准了{target_member["name"]}'
+        )
         if member["bullets"] >= 4:
             self.AddRoundMessage(
                 "午食已倒"
             )
         for _ in range(member["bullets"]):
-            await self.Shot(member, target_member)
-            if not self.IsLive(target_member):
-                await self.Kill(member, target_member)
+            target_member_random = self.GetRandomPlayerByLocation(
+                member, target_member, 1
+            )
+            await self.Shot(member, target_member_random)
+            if not self.IsLive(target_member_random):
+                await self.Kill(member, target_member_random)
                 self.AddRoundMessage(
-                    f'{target_member["name"]}寄了'
+                    f'{target_member_random["name"]}寄了'
                 )
                 break
         member["dmg"] = DuiQiangGame.DEFAULT_DMG
         member["bullets"] = DuiQiangGame.DEFAULT_BULLETS
         member["min_dmg_multi"] = DuiQiangGame.DEFAULT_MIN_DMG_MULTI
         member["max_dmg_multi"] = DuiQiangGame.DEFAULT_MAX_DMG_MULTI
+        if (self.IsLive(target_member)
+                and self.HasBuffer(target_member, "camper")
+                and deep == 0):
+            self.AddRoundMessage(f'{target_member["name"]}蹲到了')
+            await self.ShotRound(target_member, member, 1)
 
     def RandomGiveItem(self, member):
         if random.randint(1, 100) <= 15:
@@ -468,6 +498,7 @@ class plugin(BotPlugin):
         self.addTarget("GroupMessage", "转盘", self.zhuanpan)
         self.addTarget("GroupMessage", "对枪", self.duiqiang)
         self.addTarget("GroupMessage", "记录", self.zhuanpanlog)
+        self.addTarget("GroupMessage", "调参", self.setargs)
         self.dead = [
             "你倒在了血泊之中"
         ]
@@ -751,6 +782,11 @@ class plugin(BotPlugin):
                 await request.send("不能重复加入")
             else:
                 await request.send("游戏未结束")
+
+    async def setargs(self, request):
+        await request.send(
+            "参数设置完成"
+        )
 
 
 def handle(*args, **kwargs):

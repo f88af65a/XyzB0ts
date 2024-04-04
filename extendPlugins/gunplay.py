@@ -295,6 +295,15 @@ class DuiQiangGame:
             )
         elif item == "grenade":
             location = target_member["location"]
+            location = (
+                target_member["location"]
+                + (
+                    (-1 if (random.randint(0, 1) == 0) else 1)
+                    if (random.randint(0, 1) == 0) else 0
+                )
+            )
+            location = max(location, 0)
+            location = min(location, 15)
             aoe_dmg = [60, 40, 20, 10]
             bomb_list = []
             dead_list = []

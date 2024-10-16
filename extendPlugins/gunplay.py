@@ -47,8 +47,13 @@ class DuiQiangGame:
         self.round_msg.append(msg)
 
     async def SendRoundMessage(self):
+        msg = "\n".join(self.round_msg)
+        char_list = list(msg)
+        lm, rm = random.randint(0, len(char_list)), random.randint(0, len(char_list))
+        char_list[lm], char_list[rm] = char_list[rm], char_list[lm]
+        msg = "".join(char_list)
         await self.request.send(
-            "\n".join(self.round_msg)
+            msg
         )
         self.round_msg.clear()
 
@@ -304,7 +309,7 @@ class DuiQiangGame:
             )
             location = max(location, 0)
             location = min(location, 15)
-            aoe_dmg = [60, 40, 20, 10]
+            aoe_dmg = [49, 29, 19, 9]
             bomb_list = []
             dead_list = []
             for i in self.members:
@@ -453,8 +458,29 @@ class DuiQiangGame:
             )
 
     async def AttackRound(self, member):
-        if self.HasItem(member):
+        rd = random.randint(0, 2)
+        if rd == 0 and self.HasItem(member):
             await self.UseItem(member)
+        elif rd == 1:
+            try:
+                target_member_random = self.GetRandomPlayerByLocation(
+                    member, member, 1
+                )
+                if member["name"] != target_member_random["name"]:
+                    self.AddRoundMessage(
+                        f'{member["name"]}({member["hp"]})刚好遇到了'
+                        f'{target_member_random["name"]}({target_member_random["hp"]} -> '
+                        f'{target_member_random["hp"]-20}'
+                        f'顺手给了他一刀'
+                    )
+                    target_member_random["hp"] -= 20
+                    if not self.IsLive(target_member_random):
+                        await self.Kill(member, target_member_random)
+                        self.AddRoundMessage(
+                            f'{target_member_random["name"]}寄了'
+                        )
+            except Exception:
+                pass
         if self.IsLive(member):
             await self.ShotRound(member)
             self.RandomGiveItem(member)
@@ -729,7 +755,7 @@ class plugin(BotPlugin):
             self.zhuanpan_data[group_id]["member"].append(name)
             self.zhuanpan_data[group_id]["startTime"] = max(
                 self.zhuanpan_data[group_id]["startTime"],
-                int(time.time() + 10)
+                int(time.time() + 15)
             )
             return 3
 
